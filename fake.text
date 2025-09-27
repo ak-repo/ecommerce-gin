@@ -1,0 +1,16 @@
+func (h *ProductHandler) GetProducts(c *gin.Context) {
+    products, err := h.service.ListProducts()
+    if err != nil {
+        // Pass error to template
+        c.HTML(http.StatusInternalServerError, "products.html", gin.H{
+            "User":  getUserFromContext(c),
+            "Error": "Failed to load products: " + err.Error(),
+        })
+        return
+    }
+
+    c.HTML(http.StatusOK, "products.html", gin.H{
+        "User":     getUserFromContext(c),
+        "Products": products,
+    })
+}

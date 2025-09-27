@@ -7,6 +7,7 @@ import (
 
 type UserAuthRepo interface {
 	CreateUser(user *models.User) error
+	GetUserByEmail(user *models.User)bool
 }
 
 type userAuthRepo struct {
@@ -21,4 +22,12 @@ func NewUserAuthRepo(db *gorm.DB) UserAuthRepo {
 // user registration
 func (r *userAuthRepo) CreateUser(user *models.User) error {
 	return r.DB.Create(user).Error
+}
+
+// Check user email already register
+func (r *userAuthRepo) GetUserByEmail(user *models.User) bool {
+	if err := r.DB.Where("email=?", user.Email).First(user).Error; err != nil {
+		return false
+	}
+	return true
 }

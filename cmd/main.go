@@ -23,6 +23,15 @@ func main() {
 
 	r := gin.New()
 	r.Use(gin.Recovery(), gin.Logger())
+	// r.LoadHTMLGlob("web/templates/base.html")
+	// wd, err := os.Getwd()
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// tmplPath := filepath.Join(wd, "web", "templates", "**", "*")
+	// r.LoadHTMLGlob(tmplPath)
+
+	r.LoadHTMLGlob("web/templates/**/*.html")
 
 	routes.RegisterRoute(r, db, cfg)
 

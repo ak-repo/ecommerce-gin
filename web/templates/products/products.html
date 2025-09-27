@@ -1,0 +1,24 @@
+{{define "products"}} {{block "title" .}}Products - freshBox{{end}} {{block
+"content" .}}
+<h1 class="text-4xl font-bold mb-6">Products</h1>
+
+{{if .Error}}
+<div
+  class="max-w-6xl mx-auto my-4 p-4 bg-red-100 text-red-700 border border-red-300 rounded"
+>
+  {{.Error}}
+</div>
+{{end}}
+
+<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+  {{range .Products}}
+  <div class="bg-white shadow-md rounded p-4">
+    <h2 class="text-xl font-semibold mb-2">{{.Name}}</h2>
+    <p class="text-gray-600 mb-2">{{.Description}}</p>
+    <p class="font-bold text-blue-500 mb-2">$ {{.Price}}</p>
+    <p class="text-sm text-gray-500">Category: {{.Category.Name}}</p>
+    <p class="text-sm text-gray-500">Stock: {{.StockQuantity}}</p>
+  </div>
+  {{end}}
+</div>
+{{end}} {{end}}

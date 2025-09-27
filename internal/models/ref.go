@@ -17,14 +17,7 @@ type Address struct {
 	Country     string `gorm:"size:100;not null"`
 }
 
-type Product struct {
-	gorm.Model
-	Name          string  `gorm:"size:255;not null"`
-	Description   string  `gorm:"type:text"`
-	Price         float64 `gorm:"type:numeric(10,2);not null"`
-	StockQuantity int     `gorm:"not null"`
-	SKU           string  `gorm:"size:100;uniqueIndex;not null"`
-}
+
 
 type Order struct {
 	gorm.Model
