@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/ak-repo/ecommerce-gin/config"
@@ -8,17 +9,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func UserAuthMiddleware(cfg *config.Config) gin.HandlerFunc {
+func AuthMiddleware(cfg *config.Config) gin.HandlerFunc {
 
 	return func(ctx *gin.Context) {
 
-		authHeader := ctx.GetHeader("Authorization")
-		if authHeader == "" {
+		tokenString, err := ctx.Cookie("accessToken")
+		log.Println("token:", tokenString)
+		if err != nil {
 			ctx.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
-
-		tokenString := authHeader
 
 		claims, err := jwtpkg.TokenValidator(tokenString, cfg)
 		if err != nil {
@@ -26,6 +26,7 @@ func UserAuthMiddleware(cfg *config.Config) gin.HandlerFunc {
 		}
 
 		ctx.Set("email", claims.Email)
+		ctx.Set("role", claims.Role)
 		ctx.Next()
 
 	}

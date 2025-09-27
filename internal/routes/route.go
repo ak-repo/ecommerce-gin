@@ -9,7 +9,8 @@ import (
 // Routes handler
 func RegisterRoute(r *gin.Engine, db *db.Database, cfg *config.Config) {
 
-	RegisterUserRoute(r, db, cfg)
 	PublicRoute(r, db, cfg)
+	RegisterUserRoute(r, db, cfg)
+	RegisterAdminRoute(r,db,cfg)
 
 }

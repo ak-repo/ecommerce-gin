@@ -36,6 +36,7 @@ func PublicRoute(r *gin.Engine, db *db.Database, cfg *config.Config) {
 			productHandler := producthandler.NewProductHandler(productService)
 
 			publicRoute.GET("/products", productHandler.GetAllProductHandler)
+			publicRoute.GET("/product/:id", productHandler.GetProductByIDHandler)
 
 		}
 

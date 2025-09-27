@@ -10,15 +10,17 @@ import (
 type Claims struct {
 	Email    string `json:"email"`
 	Username string `json:"username"`
+	Role     string `json:"role"`
 	jwt.RegisteredClaims
 }
 
 // Accesstoken short time
-func AccessTokenGenerator(email, username string, cfg *config.Config) (string, error) {
+func AccessTokenGenerator(email, username, role string, cfg *config.Config) (string, error) {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &Claims{
 		Email:    email,
 		Username: username,
+		Role:     role,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(cfg.JWT.AccessExpiration)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
@@ -30,10 +32,12 @@ func AccessTokenGenerator(email, username string, cfg *config.Config) (string, e
 }
 
 // Refreshtoken long
-func RefreshTokenGenerator(email, role string, cfg *config.Config) (string, error) {
+func RefreshTokenGenerator(email, username, role string, cfg *config.Config) (string, error) {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &Claims{
-		Email: email,
+		Email:    email,
+		Role:     role,
+		Username: username,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(cfg.JWT.RefreshExpiration)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),

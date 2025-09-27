@@ -11,7 +11,7 @@ import (
 func RegisterUserRoute(r *gin.Engine, db *db.Database, cfg *config.Config) {
 
 	userRoute := r.Group("/user")
-	userRoute.Use(middleware.UserAuthMiddleware(cfg))
+	userRoute.Use(middleware.AuthMiddleware(cfg))
 
 	{
 

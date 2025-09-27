@@ -50,7 +50,7 @@ func Load() (*Config, error) {
 	config.Database.SSLMode = utils.GetEnv("DB_SSLMODE", "disable")
 
 	config.JWT.SecretKey = utils.GetEnv("JWT_SECRET", "your-secret-key")
-	config.JWT.AccessExpiration = time.Minute * 10 // 5 minutes
+	config.JWT.AccessExpiration = time.Hour * 10 // 10 hour
 	config.JWT.RefreshExpiration = time.Hour * 168 // 7 days
 
 	return config, nil

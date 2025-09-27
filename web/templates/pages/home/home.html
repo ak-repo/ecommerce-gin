@@ -1,0 +1,29 @@
+{{template "base" .}} {{block "title" .}}Welcome to freshBox!{{end}} {{block
+"content" .}}
+<div class="text-center bg-white p-12 rounded-lg shadow-lg">
+  <h1 class="text-5xl font-bold text-gray-800 mb-4">
+    Freshness Delivered, Daily.
+  </h1>
+  <p class="text-xl text-gray-600 mb-8">
+    Discover delicious, healthy meals and smoothies made from the highest
+    quality ingredients.
+  </p>
+
+  {{if .User}} {{/* If the user is logged in, show a personalized welcome. */}}
+  <p class="text-lg mb-8">Welcome back, <strong>{{.User.Name}}</strong>!</p>
+  <a
+    href="/products"
+    class="inline-block bg-green-500 text-white px-8 py-3 rounded-lg font-semibold text-lg hover:bg-green-600 transition duration-300"
+  >
+    Explore Our Products
+  </a>
+  {{else}} {{/* If the user is a guest, prompt them to register. */}}
+  <a
+    href="/register"
+    class="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold text-lg hover:bg-blue-700 transition duration-300"
+  >
+    Join Now &rarr;
+  </a>
+  {{end}}
+</div>
+{{end}}

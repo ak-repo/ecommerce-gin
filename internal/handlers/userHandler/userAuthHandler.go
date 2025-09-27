@@ -2,6 +2,7 @@ package userhandler
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/ak-repo/ecommerce-gin/internal/models"
 	userservice "github.com/ak-repo/ecommerce-gin/internal/services/userService"
@@ -13,107 +14,83 @@ type UserAuthHandler struct {
 }
 
 func NewUserAuthHandler(userAuthService userservice.UserAuthService) *UserAuthHandler {
-
 	return &UserAuthHandler{userAuthService: userAuthService}
 }
 
-// GET /user/register -> show form
+// ShowRegistrationForm renders the registration page.
 func (h *UserAuthHandler) ShowRegistrationForm(ctx *gin.Context) {
-	ctx.HTML(http.StatusOK, "userRegisterShow.html", gin.H{
-		"Form":   gin.H{},
-		"Errors": gin.H{},
-		"Flash":  "",
+	ctx.HTML(http.StatusOK, "pages/user/userRegisterShow.html", gin.H{
+		"Title":       "Create Your Account",
+		"CurrentYear": time.Now().Year(),
+		"Form":        gin.H{},
+		"Errors":      gin.H{},
 	})
 }
 
-// POST user/register
+// RegistrationHandler processes a new user registration.
 func (h *UserAuthHandler) RegistrationHandler(ctx *gin.Context) {
-
-	input := models.InputUser{}
-
+	var input models.InputUser
 	if err := ctx.ShouldBind(&input); err != nil {
-		ctx.HTML(http.StatusBadRequest, "registerFail.html", gin.H{
-			"Form": gin.H{
-				"Email": input.Email,
-			},
-			"Errors": map[string]string{
-				"General": "Please fill all required fields correctly",
-			},
-			"Flash": "Invalid input",
+		ctx.HTML(http.StatusBadRequest, "pages/user/registerFail.html", gin.H{
+			"Title":       "Registration Failed",
+			"CurrentYear": time.Now().Year(),
+			"Flash":       "Invalid data submitted. Please check the fields and try again.",
 		})
 		return
 	}
 
 	user, err := h.userAuthService.Register(&input)
 	if err != nil {
-		ctx.HTML(http.StatusConflict, "registerFail.html", gin.H{
-			"Form": gin.H{
-				"Email": input.Email,
-			},
-			"Errors": gin.H{"general": err.Error()},
-			"Flash":  "",
+		ctx.HTML(http.StatusConflict, "pages/user/registerFail.html", gin.H{
+			"Title":       "Registration Failed",
+			"CurrentYear": time.Now().Year(),
+			"Flash":       err.Error(),
 		})
 		return
 	}
-	ctx.HTML(http.StatusCreated, "registerSuccess.html", gin.H{
-		"Form": gin.H{
-			"Email": user.Email,
-		},
-		"Errors": "",
-		"Flash":  "",
-	})
 
+	ctx.HTML(http.StatusCreated, "pages/user/registerSuccess.html", gin.H{
+		"Title":       "Registration Successful!",
+		"CurrentYear": time.Now().Year(),
+		"User":        user,
+	})
 }
 
-
-// GET /user/login -> show form
+// ShowLoginForm renders the login page.
 func (h *UserAuthHandler) ShowLoginForm(ctx *gin.Context) {
-
-	ctx.HTML(http.StatusOK, "userLogin.html", gin.H{
-		"Form":   gin.H{},
-		"Errors": gin.H{},
-		"Flash":  "",
+	ctx.HTML(http.StatusOK, "pages/user/userLogin.html", gin.H{
+		"Title":       "Login to freshBox",
+		"CurrentYear": time.Now().Year(),
+		"Form":        gin.H{},
+		"Errors":      gin.H{},
 	})
 }
 
-// POSt /user/login -> Login 
+// LoginHandler processes a user login attempt
 func (h *UserAuthHandler) LoginHandler(ctx *gin.Context) {
-	input := models.InputUser{}
-
+	var input models.InputUser
 	if err := ctx.ShouldBind(&input); err != nil {
-		ctx.HTML(http.StatusBadRequest, "loginFail.html", gin.H{
-			"Form": gin.H{
-				"Email": input.Email,
-			},
-			"Errors": map[string]string{
-				"General": "Please fill all required fields correctly",
-			},
-			"Flash": "Invalid input",
+		ctx.HTML(http.StatusBadRequest, "pages/user/loginFail.html", gin.H{
+			"Title":       "Login Failed",
+			"CurrentYear": time.Now().Year(),
+			"Flash":       "Please provide both email and password.",
 		})
 		return
 	}
 
 	res, err := h.userAuthService.Login(&input)
 	if err != nil {
-		ctx.HTML(http.StatusBadRequest, "loginFail.html", gin.H{
-			"Form": gin.H{
-				"Email": input.Email,
-			},
-			"Errors": map[string]string{
-				"General": err.Error(),
-			},
-			"Flash": "Somthing went wroug",
+		ctx.HTML(http.StatusUnauthorized, "pages/user/loginFail.html", gin.H{
+			"Title":       "Login Failed",
+			"CurrentYear": time.Now().Year(),
+			"Flash":       err.Error(),
 		})
 		return
-
 	}
 
-	//cookie
-	ctx.SetCookie("refreshToken", res.RefreshToken, int(res.RefreshExp), "/", "", true, true)
-	ctx.SetCookie("accessToken", res.AccessToken, int(res.AccessExp), "/", "", true, true)
+	// Set secure cookies
+	ctx.SetCookie("accessToken", res.AccessToken, int(res.AccessExp), "/", "localhost", true, true)
+	ctx.SetCookie("refreshToken", res.RefreshToken, int(res.RefreshExp), "/", "localhost", true, true)
 
-	ctx.HTML(http.StatusOK, "loginSuccess.html", gin.H{
-		"Email": res.User.Email,
-	})
-
+	ctx.Redirect(http.StatusSeeOther, "/products")
 }

@@ -1,0 +1,687 @@
+{
+ 
+  "products": [
+    {
+      "id": "47175570784554",
+      "quantity": 7,
+      "key": "47175570784554:0ce54760f167fb2d13aa9f3761758d22",
+      "title": "Mango + Greens",
+      "price": 84,
+      "discounted_price": 76,
+      "line_price": 76,
+      "final_line_price": 84,
+      "total_discount": 8,
+      "discounts": [
+        {
+          "amount": 8,
+          "title": "10% Plan Discount"
+        }
+      ],
+      "grams": 184,
+      "image": "https://cdn.shopify.com/s/files/1/0732/7567/0826/files/A10-MANGO.jpg?v=1716498612",
+      "product_type": "Smoothie",
+      "product_title": "Mango + Greens",
+      "product_description": "This creamy smoothie gets its vivid hue from nutrient-dense spinach and its lush flavor from juicy mango, coconut cream, and a spritz of lime. Oh, and we added kohlrabi because we like you, and it's a bit of a nutritional powerhouse.",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "selling_plan": {
+        "name": "Delivered every 2 weeks.",
+        "interval": "2 weeks"
+      }
+    },
+    {
+      "id": "46783280054570",
+      "quantity": 4,
+      "key": "46783280054570:355fa0a7f2ff85196209c355d27c0b63",
+      "title": "Tart Cherry + Raspberry",
+      "price": 84,
+      "discounted_price": 76,
+      "line_price": 76,
+      "final_line_price": 84,
+      "total_discount": 8,
+      "discounts": [
+        {
+          "amount": 8,
+          "title": "10% Plan Discount"
+        }
+      ],
+      "grams": 206,
+      "image": "https://cdn.shopify.com/s/files/1/0732/7567/0826/files/A25-RAZZ.jpg?v=1716504576",
+      "product_type": "Smoothie",
+      "product_title": "Tart Cherry + Raspberry",
+      "product_description": "Simply the berriest berry smoothie we could dream up. Raspberries, blueberries, and cherries (ok, technically not a berry) are brilliantly hued and full of antioxidants and anti-inflammatory properties. The natural sweetness of mission figs complements all that juicy tartness.",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "selling_plan": {
+        "name": "Delivered every 2 weeks.",
+        "interval": "2 weeks"
+      }
+    },
+    {
+      "id": "47175581303082",
+      "quantity": 7,
+      "key": "47175581303082:a3d82fd61c16f9b00746cdf59aace8c6",
+      "title": "Ginger + Greens",
+      "price": 84,
+      "discounted_price": 76,
+      "line_price": 76,
+      "final_line_price": 84,
+      "total_discount": 8,
+      "discounts": [
+        {
+          "amount": 8,
+          "title": "10% Plan Discount"
+        }
+      ],
+      "grams": 219,
+      "image": "https://cdn.shopify.com/s/files/1/0732/7567/0826/files/A17-GING.jpg?v=1716498612",
+      "product_type": "Smoothie",
+      "product_title": "Ginger + Greens",
+      "product_description": "The fiery zing of ginger. The velvety texture of bananas, avocado, and flax seeds. A hint of sweetness from dates. A squeeze of lemon. And, of course, nutrient-dense, bright green spinach. It's green juice (but with fiber!) in highly-sippable smoothie form.",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "selling_plan": {
+        "name": "Delivered every 2 weeks.",
+        "interval": "2 weeks"
+      }
+    },
+    {
+      "id": "46783324029226",
+      "quantity": 1,
+      "key": "46783324029226:15df0d4cc386a5933eb6cacd5020b329",
+      "title": "Cherry + Almond",
+      "price": 84,
+      "discounted_price": 76,
+      "line_price": 76,
+      "final_line_price": 84,
+      "total_discount": 8,
+      "discounts": [
+        {
+          "amount": 8,
+          "title": "10% Plan Discount"
+        }
+      ],
+      "grams": 242,
+      "image": "https://cdn.shopify.com/s/files/1/0732/7567/0826/files/A22-PBNJ.jpg?v=1716498612",
+      "product_type": "Smoothie",
+      "product_title": "Cherry + Almond",
+      "product_description": "Imagine a nut butter & jelly sandwich: sweet but not too sweet with cherries, juicy strawberries, and a sprinkle of vanilla bean. Rich and satisfying with almond butter and toasty sacha inchi seeds. No crusts here; we're purists.",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "selling_plan": {
+        "name": "Delivered every 2 weeks.",
+        "interval": "2 weeks"
+      }
+    },
+    {
+      "id": "46783308824874",
+      "quantity": 1,
+      "key": "46783308824874:e99155c047680879286a17d6238de47e",
+      "title": "Mango + Papaya",
+      "price": 84,
+      "discounted_price": 76,
+      "line_price": 76,
+      "final_line_price": 84,
+      "total_discount": 8,
+      "discounts": [
+        {
+          "amount": 8,
+          "title": "10% Plan Discount"
+        }
+      ],
+      "grams": 213,
+      "image": "https://cdn.shopify.com/s/files/1/0732/7567/0826/files/A03-PAPA.jpg?v=1716498612",
+      "product_type": "Smoothie",
+      "product_title": "Mango + Papaya",
+      "product_description": "A naturally sweet blend of hydrating pineapple, mango, and papaya. Some macadamias for that good fat. This smoothie captures the color—and, more importantly, the vibe—of a summer sunset.",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "selling_plan": {
+        "name": "Delivered every 2 weeks.",
+        "interval": "2 weeks"
+      }
+    },
+    {
+      "id": "47121324802346",
+      "quantity": 1,
+      "key": "47121324802346:d44ee605a9e206dbe5b6d35a1743b03f",
+      "title": "White Bean + Spinach Pesto",
+      "price": 107,
+      "discounted_price": 97,
+      "line_price": 97,
+      "final_line_price": 107,
+      "total_discount": 10,
+      "discounts": [
+        {
+          "amount": 10,
+          "title": "10% Plan Discount"
+        }
+      ],
+      "grams": 0,
+      "image": "https://cdn.shopify.com/s/files/1/0732/7567/0826/files/R05-GRBEAN.jpg?v=1716498567",
+      "product_type": "Pasta",
+      "product_title": "White Bean + Spinach Pesto",
+      "product_description": "Yes, this pasta is gluten-free. Yes, this pesto is nut- and dairy-free. And yes, it tastes like the bright, fresh, al dente summer dish we dream about all year long. Built on sunflower seed butter, basil, garlic, and lemon, with a dash of nutritional yeast for a parmesan-like hit of umami, our pesto is rich and creamy. It clings deliciously to sedani, a tubular pasta made of ancient grains and just right for catching the herby sauce. Artichokes and beans add flavor and fiber.",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "selling_plan": {
+        "name": "Delivered every 2 weeks.",
+        "interval": "2 weeks"
+      }
+    },
+    {
+      "id": "47121324835114",
+      "quantity": 1,
+      "key": "47121324835114:a8e4f04f85470e56bd3ec82d9bf7a17d",
+      "title": "Tomato Basil + Portobello Bolognese",
+      "price": 107,
+      "discounted_price": 97,
+      "line_price": 97,
+      "final_line_price": 107,
+      "total_discount": 10,
+      "discounts": [
+        {
+          "amount": 10,
+          "title": "10% Plan Discount"
+        }
+      ],
+      "grams": 198,
+      "image": "https://cdn.shopify.com/s/files/1/0732/7567/0826/files/R06-BOLO.jpg?v=1716498567",
+      "product_type": "Pasta",
+      "product_title": "Tomato Basil + Portobello Bolognese",
+      "product_description": "When all you want is a bottomless bowl of bolognese, these saucy noodles do the trick. Rich tomatoes and onions coat gluten-free sedani—noodles built on ancient grains and perfect for catching sauce. Basil brings brightness, oregano adds herby flair, and portobellos and spinach deliver a hearty bite. Hemp seeds and black lentils add plenty of fiber.",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "selling_plan": {
+        "name": "Delivered every 2 weeks.",
+        "interval": "2 weeks"
+      }
+    },
+    {
+      "id": "46783296045354",
+      "quantity": 1,
+      "key": "46783296045354:487875c22e6db910255951f1557e1f3c",
+      "title": "Banana + Almond",
+      "price": 84,
+      "discounted_price": 76,
+      "line_price": 76,
+      "final_line_price": 84,
+      "total_discount": 8,
+      "discounts": [
+        {
+          "amount": 8,
+          "title": "10% Plan Discount"
+        }
+      ],
+      "grams": 21149,
+      "image": "https://cdn.shopify.com/s/files/1/0732/7567/0826/files/A28-SkippyBanana_Almond.png?v=1746553810",
+      "product_type": "Smoothie",
+      "product_title": "Banana + Almond",
+      "product_description": "This one's for the banana bread fans. Think perfectly ripe bananas and vanilla beans topped with velvety, satisfying nut butter (a mix of hazelnuts, cashews, almonds, and sunflower seeds). Cacao and maca root add rich flavor and maybe a little boost of energy, too.",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "selling_plan": {
+        "name": "Delivered every 2 weeks.",
+        "interval": "2 weeks"
+      }
+    },
+    {
+      "id": "47121677877546",
+      "quantity": 1,
+      "key": "47121677877546:1535ed89a97a1e5f777f1120bbf30956",
+      "title": "Cinnamon + Banana",
+      "price": 67,
+      "discounted_price": 61,
+      "line_price": 61,
+      "final_line_price": 67,
+      "total_discount": 6,
+      "discounts": [
+        {
+          "amount": 6,
+          "title": "10% Plan Discount"
+        }
+      ],
+      "grams": 258,
+      "image": "https://cdn.shopify.com/s/files/1/0732/7567/0826/files/D01-CINNA_9dc0c535-c0f0-4a64-9c61-b7d453f3cd60.jpg?v=1716504918",
+      "product_type": "Breakfast Bowl",
+      "product_title": "Cinnamon + Banana",
+      "product_description": "Name a more perfectly balanced breakfast. We'll wait. Gluten-free rolled oats and sweet potato serve the sustained energy. Maple and cinnamon add a dash of sweet 'n spice, giving it that banana bread taste. The real secret ingredients though? Reishi mushrooms for a little added richness and a whole lot of bliss-boosting. Sounds pretty perfect to us.",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "selling_plan": {
+        "name": "Delivered every 2 weeks.",
+        "interval": "2 weeks"
+      }
+    },
+    {
+      "id": "46783262982442",
+      "quantity": 1,
+      "key": "46783262982442:8351e728d69a8ba6d991329fb0588c65",
+      "title": "Strawberry + Peach",
+      "price": 84,
+      "discounted_price": 76,
+      "line_price": 76,
+      "final_line_price": 84,
+      "total_discount": 8,
+      "discounts": [
+        {
+          "amount": 8,
+          "title": "10% Plan Discount"
+        }
+      ],
+      "grams": 260,
+      "image": "https://cdn.shopify.com/s/files/1/0732/7567/0826/files/A04-STRAW.jpg?v=1716498612",
+      "product_type": "Smoothie",
+      "product_title": "Strawberry + Peach",
+      "product_description": "If you asked a peach what it wanted to be when it grew up, it would tell you: THIS SMOOTHIE. Sweet strawberries, bright raspberries, and a hint of tartness from goji berries round out that irresistibly juicy peach flavor. Bananas, oats, and flax seeds make the whole thing creamy and satisfying.",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "selling_plan": {
+        "name": "Delivered every 2 weeks.",
+        "interval": "2 weeks"
+      }
+    },
+    {
+      "id": "46783285264682",
+      "quantity": 3,
+      "key": "46783285264682:4d66c5484db846bd8090d24690a80272",
+      "title": "Apple + Cinnamon",
+      "price": 84,
+      "discounted_price": 76,
+      "line_price": 229,
+      "final_line_price": 254,
+      "total_discount": 25,
+      "discounts": [
+        {
+          "amount": 25,
+          "title": "10% Plan Discount"
+        }
+      ],
+      "grams": 230,
+      "image": "https://cdn.shopify.com/s/files/1/0732/7567/0826/files/a19-cook-vanilla-bean-cacao-deconstructed-pdp-web-122824.jpg?v=1735398346",
+      "product_type": "Smoothie",
+      "product_title": "Apple + Cinnamon",
+      "product_description": "As easy as apple pie—and even more wholesome. Spiced apples bring that cinnamony goodness, while coconut cream and toasted vanilla bean offer the deep, rich taste of a just-starting-to-melt scoop of French vanilla ice cream. With adaptogenic maca. This Smoothie serves up a little slice of perfection.",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "selling_plan": {
+        "name": "Delivered every 2 weeks.",
+        "interval": "2 weeks"
+      }
+    },
+    {
+      "id": "46783301746986",
+      "quantity": 4,
+      "key": "46783301746986:01a622eec4ab7984c071fcfd27444d21",
+      "title": "Strawberry + Cashew",
+      "price": 84,
+      "discounted_price": 76,
+      "line_price": 305,
+      "final_line_price": 339,
+      "total_discount": 34,
+      "discounts": [
+        {
+          "amount": 34,
+          "title": "10% Plan Discount"
+        }
+      ],
+      "grams": 14,
+      "image": "https://cdn.shopify.com/s/files/1/0732/7567/0826/files/A31-STROAT.jpg?v=1716498612",
+      "product_type": "Smoothie",
+      "product_title": "Strawberry + Cashew",
+      "product_description": "If a strawberry could make its own destiny, this is where it would want to end up: in this satisfying, indulgent smoothie alongside vitamin A-rich carrot. We added cashew and coconut cream because we like to make dreams come true. And because they're delicious.",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "selling_plan": {
+        "name": "Delivered every 2 weeks.",
+        "interval": "2 weeks"
+      }
+    },
+    {
+      "id": "49920346816810",
+      "quantity": 3,
+      "key": "49920346816810:83b675d137dbc720c0f82677d5e3e550",
+      "title": "Peppermint Cacao Truffle",
+      "price": 109,
+      "discounted_price": 98,
+      "line_price": 296,
+      "final_line_price": 329,
+      "total_discount": 33,
+      "discounts": [
+        {
+          "amount": 33,
+          "title": "10% Plan Discount"
+        }
+      ],
+      "grams": 213,
+      "image": "https://cdn.shopify.com/s/files/1/0732/7567/0826/files/H18-CACAOPEP-bag.jpg?v=1739477736",
+      "product_type": "Bite",
+      "product_title": "Peppermint Cacao Truffle",
+      "product_description": "Nutrient-packed cacao with a cooling hit of peppermint. It's fudgy. It's minty. It tastes like dessert. But it's secretly a power snack made with sweet potato and chickpeas, which can help support digestion and take care of that 3 p.m. sugar craving.Servings: 15 bites per bag",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "selling_plan": {
+        "name": "Delivered every 2 weeks.",
+        "interval": "2 weeks"
+      }
+    },
+    {
+      "id": "49692182020394",
+      "quantity": 3,
+      "key": "49692182020394:d5034572bc42545b3e2521183670e560",
+      "title": "Vanilla Bean Protein",
+      "price": 94,
+      "discounted_price": 85,
+      "line_price": 256,
+      "final_line_price": 284,
+      "total_discount": 28,
+      "discounts": [
+        {
+          "amount": 28,
+          "title": "10% Plan Discount"
+        }
+      ],
+      "grams": 198,
+      "image": "https://cdn.shopify.com/s/files/1/0732/7567/0826/files/a37-provan-deconstructed-pdp-web.jpg?v=1733508809",
+      "product_type": "Smoothie",
+      "product_title": "Vanilla Bean Protein",
+      "product_description": "Basically magic. This organic smoothie is giving dreamy, creamy vanilla milkshake, without dairy or artificial anything. She's also giving 20g of plant-based protein, without whey or nuts. The parsnips, dates, and chickpeas? Those are just sneaky bonuses.",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "selling_plan": {
+        "name": "Delivered every 2 weeks.",
+        "interval": "2 weeks"
+      }
+    },
+    {
+      "id": "49692138045738",
+      "quantity": 3,
+      "key": "49692138045738:04bce4e8bfdf9d2d5bbc30ff2f8b6da6",
+      "title": "Mixed Berry Protein",
+      "price": 94,
+      "discounted_price": 85,
+      "line_price": 256,
+      "final_line_price": 284,
+      "total_discount": 28,
+      "discounts": [
+        {
+          "amount": 28,
+          "title": "10% Plan Discount"
+        }
+      ],
+      "grams": 193,
+      "image": "https://cdn.shopify.com/s/files/1/0732/7567/0826/files/a36-prober-deconstructed-pdp-web.jpg?v=1733508810",
+      "product_type": "Smoothie",
+      "product_title": "Mixed Berry Protein",
+      "product_description": "Sipping this refreshing, organic berry delight will make you feel like you're on vacation—while hitting all your protein goals. Strawberries, blueberries, kale, they're all there. So is 20g of pure plant protein. What's not there is even better: namely, potential irritants like whey + nuts.",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "selling_plan": {
+        "name": "Delivered every 2 weeks.",
+        "interval": "2 weeks"
+      }
+    },
+    {
+      "id": "49627247083818",
+      "quantity": 3,
+      "key": "49627247083818:f364e7fc88247ce4662ee5dc35826b38",
+      "title": "Dark Chocolate Protein",
+      "price": 94,
+      "discounted_price": 85,
+      "line_price": 256,
+      "final_line_price": 284,
+      "total_discount": 28,
+      "discounts": [
+        {
+          "amount": 28,
+          "title": "10% Plan Discount"
+        }
+      ],
+      "grams": 234,
+      "image": "https://cdn.shopify.com/s/files/1/0732/7567/0826/files/a35-probro-deconstructed-pdp-web.jpg?v=1733508809",
+      "product_type": "Smoothie",
+      "product_title": "Dark Chocolate Protein",
+      "product_description": "Pure chocolate + pure protein = pure delight. With 20g of plant-based protein—no whey or nuts—and plenty of plants (hello, zucchini, pumpkin seeds and dates), this smoothie is proof you can hit your organic diet goals and your protein goals.",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "selling_plan": {
+        "name": "Delivered every 2 weeks.",
+        "interval": "2 weeks"
+      }
+    },
+    {
+      "id": "46783305777450",
+      "quantity": 4,
+      "key": "46783305777450:78b52c461c67bb054756864ccbef4ac0",
+      "title": "Mint + Cacao",
+      "price": 84,
+      "discounted_price": 76,
+      "line_price": 305,
+      "final_line_price": 339,
+      "total_discount": 34,
+      "discounts": [
+        {
+          "amount": 34,
+          "title": "10% Plan Discount"
+        }
+      ],
+      "grams": 154,
+      "image": "https://cdn.shopify.com/s/files/1/0732/7567/0826/files/A06-MINT.jpg?v=1716498613",
+      "product_type": "Smoothie",
+      "product_title": "Mint + Cacao",
+      "product_description": "This smoothie is giving mint chip scoop. That chocolately cacao crunch. The cool, refreshing hit of peppermint (and chlorella!). And then there's the creaminess that comes from satisfying bananas and cashews. Please pass the spoon. Straw. Whichever.",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "selling_plan": {
+        "name": "Delivered every 2 weeks.",
+        "interval": "2 weeks"
+      }
+    },
+    {
+      "id": "46783260426538",
+      "quantity": 4,
+      "key": "46783260426538:70d66038abeea77e02ff96114bee6bde",
+      "title": "Acai + Cherry",
+      "price": 84,
+      "discounted_price": 76,
+      "line_price": 305,
+      "final_line_price": 339,
+      "total_discount": 34,
+      "discounts": [
+        {
+          "amount": 34,
+          "title": "10% Plan Discount"
+        }
+      ],
+      "grams": 210,
+      "image": "https://cdn.shopify.com/s/files/1/0732/7567/0826/files/A01-ACAI.jpg?v=1716498614",
+      "product_type": "Smoothie",
+      "product_title": "Acai + Cherry",
+      "product_description": "That peak-summer, freshly-picked-berries flavor comes through in every sip of this ruby-hued smoothie. It's a sweet-tart blend of cherries, blueberries, raspberries, and açaí berries—plus some kale, because you do indeed need to eat your greens.",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "selling_plan": {
+        "name": "Delivered every 2 weeks.",
+        "interval": "2 weeks"
+      }
+    },
+    {
+      "id": "46783307219242",
+      "quantity": 0,
+      "key": "46783307219242:95c1c58a12e7c087822dcf0627105328",
+      "title": "Blueberry + Cacao",
+      "price": 84,
+      "discounted_price": 76,
+      "line_price": 305,
+      "final_line_price": 339,
+      "total_discount": 34,
+      "discounts": [
+        {
+          "amount": 34,
+          "title": "10% Plan Discount"
+        }
+      ],
+      "grams": 232,
+      "image": "https://cdn.shopify.com/s/files/1/0732/7567/0826/files/A11-CHOBLU.jpg?v=1716498612",
+      "product_type": "Smoothie",
+      "product_title": "Blueberry + Cacao",
+      "product_description": "Proof that you can have it all: this chocolatey smoothie tastes like dessert and it's is full of ingredients that deliver essential vitamins and nutrients. It's a fiber-forward blend that can support digestion and provide a good source of iron and potassium. Bananas and almonds add subtle nuttiness and a creamy texture to the blueberry flavor.",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "selling_plan": {
+        "name": "Delivered every 2 weeks.",
+        "interval": "2 weeks"
+      }
+    },
+    {
+      "id": "47121687052586",
+      "quantity": 3,
+      "key": "47121687052586:0ea120f3b120082898621fbf0355a06d",
+      "title": "Blueberry + Lemon",
+      "price": 67,
+      "discounted_price": 61,
+      "line_price": 183,
+      "final_line_price": 203,
+      "total_discount": 20,
+      "discounts": [
+        {
+          "amount": 20,
+          "title": "10% Plan Discount"
+        }
+      ],
+      "grams": 145,
+      "image": "https://cdn.shopify.com/s/files/1/0732/7567/0826/files/D05-POPPY.jpg?v=1716497980",
+      "product_type": "Breakfast Bowl",
+      "product_title": "Blueberry + Lemon",
+      "product_description": "A little sweet, a little tart, a lot of satisfying fiber: this breakfast bowl is our energizing answer to the scone. Vibrant blueberries, zingy lemon, whole-grain oats, and crunchy poppy seeds will keep you going for hours.",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "selling_plan": {
+        "name": "Delivered every 2 weeks.",
+        "interval": "2 weeks"
+      }
+    },
+    {
+      "id": "47175598604586",
+      "quantity": 3,
+      "key": "47175598604586:bc5bee60a1d74a8c53b66e497e84a87b",
+      "title": "Strawberry + Goji Berry",
+      "price": 67,
+      "discounted_price": 61,
+      "line_price": 183,
+      "final_line_price": 203,
+      "total_discount": 20,
+      "discounts": [
+        {
+          "amount": 20,
+          "title": "10% Plan Discount"
+        }
+      ],
+      "grams": 133,
+      "image": "https://cdn.shopify.com/s/files/1/0732/7567/0826/files/D07-CREAM.jpg?v=1716497980",
+      "product_type": "Breakfast Bowl",
+      "product_title": "Strawberry + Goji Berry",
+      "product_description": "A swirl of strawberries, vanilla beans, a sprinkling of goji berries, and a squeeze of lemon: this is summer in a bowl. We added fiber-packed flax and oats to set you up for an energized morning.",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "selling_plan": {
+        "name": "Delivered every 2 weeks.",
+        "interval": "2 weeks"
+      }
+    },
+    {
+      "id": "47121676534058",
+      "quantity": 14,
+      "key": "47121676534058:2fe438d6d9b9277f693ad0d75e21a96f",
+      "title": "Apple + Cinnamon",
+      "price": 67,
+      "discounted_price": 61,
+      "line_price": 244,
+      "final_line_price": 271,
+      "total_discount": 27,
+      "discounts": [
+        {
+          "amount": 27,
+          "title": "10% Plan Discount"
+        }
+      ],
+      "grams": 230,
+      "image": "https://cdn.shopify.com/s/files/1/0732/7567/0826/files/D04-FALL-apple-cinnamon-constructed-web_8577ed94-7bf8-4e4a-8c4a-6262e97da3e1.jpg?v=1746823474",
+      "product_type": "Breakfast Bowl",
+      "product_title": "Apple + Cinnamon",
+      "product_description": "You know that clove-y, cinnamony, fresh-baked apple aroma? We made it into a breakfast bowl. It includes apples, of course, and almond butter for creamy protein, pumpkin seeds and walnuts for crunch, and we snuck in some cauliflower to help you feel energized",
+      "quantity_rule": {
+        "min": 1,
+        "max": null,
+        "increment": 1
+      },
+      "selling_plan": {
+        "name": "Delivered every 2 weeks.",
+        "interval": "2 weeks"
+      }
+    }
+  ]
+}
