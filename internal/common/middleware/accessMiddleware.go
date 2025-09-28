@@ -21,7 +21,7 @@ func AccessMiddleware(cfg *config.Config) gin.HandlerFunc {
 			return
 		}
 
-		ctx.Set("username", claims.Username)
+		ctx.Set("username", &claims.Username)
 		ctx.Set("email", claims.Email)
 		ctx.Next()
 	}

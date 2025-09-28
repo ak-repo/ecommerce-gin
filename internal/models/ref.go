@@ -7,15 +7,7 @@ import (
 )
 
 
-type Address struct {
-	gorm.Model
-	UserID      uint   `gorm:"not null"`
-	AddressLine string `gorm:"type:text;not null"`
-	City        string `gorm:"size:100;not null"`
-	State       string `gorm:"size:100;not null"`
-	PostalCode  string `gorm:"size:20;not null"`
-	Country     string `gorm:"size:100;not null"`
-}
+
 
 
 

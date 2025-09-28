@@ -51,12 +51,12 @@ func (s *adminAuthService) AdminLoginService(input *models.InputUser) (*AdminRes
 		return nil, errors.New("entered password is not matching")
 	}
 
-	accessToken, err := jwtpkg.AccessTokenGenerator(admin.Email, admin.Username, admin.Role, s.cfg)
+	accessToken, err := jwtpkg.AccessTokenGenerator(&admin, s.cfg)
 	if err != nil {
 		return nil, errors.New("token generation failed")
 	}
 
-	refreshToken, err := jwtpkg.RefreshTokenGenerator(admin.Email, admin.Username, admin.Role, s.cfg)
+	refreshToken, err := jwtpkg.RefreshTokenGenerator(&admin, s.cfg)
 	if err != nil {
 		return nil, errors.New("token generation failed")
 	}

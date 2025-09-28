@@ -18,8 +18,7 @@
 
         <div class="user-info">
           {{if .User}}
-          <span class="font-semibold">{{.User.Name}}</span>
-          <a href="/logout" class="ml-4 hover:text-red-500">Logout</a>
+          <a href="/user/profile" class="ml-4 hover:text-red-500">Profile</a>
           {{else}}
           <a
             href="/login"

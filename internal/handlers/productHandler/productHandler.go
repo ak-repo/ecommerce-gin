@@ -31,12 +31,25 @@ func (h *ProductHandler) GetAllProductHandler(ctx *gin.Context) {
 		return
 
 	}
+
+	email, ok := ctx.Get("email")
+	if ok {
+		ctx.HTML(http.StatusOK, "pages/products/products.html", gin.H{
+			"Title":       "Products - freshBox",
+			"Products":    products,
+			"CurrentYear": time.Now().Year(),
+			"User":        email,
+		})
+		return
+
+	}
 	ctx.HTML(http.StatusOK, "pages/products/products.html", gin.H{
 		"Title":       "Products - freshBox",
 		"Products":    products,
 		"CurrentYear": time.Now().Year(),
-		"User":        nil, // Pass the user object (or nil)
+		"User":        nil,
 	})
+
 }
 
 // GET  /product/:id
@@ -56,10 +69,11 @@ func (h *ProductHandler) GetProductByIDHandler(ctx *gin.Context) {
 		})
 	}
 
+	email, _ := ctx.Get("email")
+
 	ctx.HTML(http.StatusOK, "pages/products/product.html", gin.H{
 		"Product":     product,
 		"CurrentYear": time.Now().Year(),
-		"User":        nil,
-		"Error":       "",
+		"User":        email,
 	})
 }

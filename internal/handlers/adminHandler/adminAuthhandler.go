@@ -8,21 +8,21 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type AdminAuthHandler struct {
+type AdminHandler struct {
 	adminAuthService adminservice.AdminAuthService
 }
 
-func NewAdminAuthHandler(adminAuthService adminservice.AdminAuthService) *AdminAuthHandler {
-	return &AdminAuthHandler{adminAuthService: adminAuthService}
+func NewAdminHandler(adminAuthService adminservice.AdminAuthService) *AdminHandler {
+	return &AdminHandler{adminAuthService: adminAuthService}
 }
 
-func (h *AdminAuthHandler) AdminLoginFormHandler(ctx *gin.Context) {
+func (h *AdminHandler) AdminLoginFormHandler(ctx *gin.Context) {
 	ctx.HTML(http.StatusOK, "pages/admin/auth/adminLogin.html", gin.H{
 		"title": "Admin Login",
 	})
 }
 
-func (h *AdminAuthHandler) AdminLoginHandler(ctx *gin.Context) {
+func (h *AdminHandler) AdminLoginHandler(ctx *gin.Context) {
 
 	input := models.InputUser{}
 	if err := ctx.ShouldBind(&input); err != nil {
@@ -50,8 +50,18 @@ func (h *AdminAuthHandler) AdminLoginHandler(ctx *gin.Context) {
 
 }
 
+// GET Logout
+func (h *AdminHandler) AdminLogout(ctx *gin.Context) {
+
+	ctx.SetCookie("accessToken", "", 0, "/", "localhost", true, true)
+	ctx.SetCookie("refreshToken", "", 0, "/", "localhost", true, true)
+
+	ctx.Redirect(http.StatusSeeOther, "/admin/login")
+
+}
+
 // GET admin/dashboard
-func (h *AdminAuthHandler) AdminDashboardForm(ctx *gin.Context) {
+func (h *AdminHandler) AdminDashboardForm(ctx *gin.Context) {
 
 	ctx.HTML(http.StatusOK, "pages/admin/dashbord/dashbord.html", gin.H{})
 }

@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 
 	"github.com/ak-repo/ecommerce-gin/config"
+	"github.com/ak-repo/ecommerce-gin/internal/common/middleware"
 	"github.com/ak-repo/ecommerce-gin/internal/models"
 	"github.com/ak-repo/ecommerce-gin/internal/routes"
 	db "github.com/ak-repo/ecommerce-gin/pkg/database"
@@ -27,7 +28,7 @@ func main() {
 	}
 
 	r := gin.New()
-	r.Use(gin.Recovery(), gin.Logger())
+	r.Use(gin.Recovery(), gin.Logger(), middleware.AccessMiddleware(cfg))
 
 	// r.LoadHTMLGlob("web/templates/**/*.html")
 	r.HTMLRender = createMyRender("web/templates")

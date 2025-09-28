@@ -9,16 +9,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type UserAuthHandler struct {
-	userAuthService userservice.UserAuthService
+type UserHandler struct {
+	userService userservice.UserService
 }
 
-func NewUserAuthHandler(userAuthService userservice.UserAuthService) *UserAuthHandler {
-	return &UserAuthHandler{userAuthService: userAuthService}
+func NewUserHandler(userService userservice.UserService) *UserHandler {
+	return &UserHandler{userService: userService}
 }
 
 // ShowRegistrationForm renders the registration page.
-func (h *UserAuthHandler) ShowRegistrationForm(ctx *gin.Context) {
+func (h *UserHandler) ShowRegistrationForm(ctx *gin.Context) {
 	ctx.HTML(http.StatusOK, "pages/user/userRegisterShow.html", gin.H{
 		"Title":       "Create Your Account",
 		"CurrentYear": time.Now().Year(),
@@ -28,7 +28,7 @@ func (h *UserAuthHandler) ShowRegistrationForm(ctx *gin.Context) {
 }
 
 // RegistrationHandler processes a new user registration.
-func (h *UserAuthHandler) RegistrationHandler(ctx *gin.Context) {
+func (h *UserHandler) RegistrationHandler(ctx *gin.Context) {
 	var input models.InputUser
 	if err := ctx.ShouldBind(&input); err != nil {
 		ctx.HTML(http.StatusBadRequest, "pages/user/registerFail.html", gin.H{
@@ -39,7 +39,7 @@ func (h *UserAuthHandler) RegistrationHandler(ctx *gin.Context) {
 		return
 	}
 
-	user, err := h.userAuthService.Register(&input)
+	user, err := h.userService.Register(&input)
 	if err != nil {
 		ctx.HTML(http.StatusConflict, "pages/user/registerFail.html", gin.H{
 			"Title":       "Registration Failed",
@@ -57,7 +57,7 @@ func (h *UserAuthHandler) RegistrationHandler(ctx *gin.Context) {
 }
 
 // ShowLoginForm renders the login page.
-func (h *UserAuthHandler) ShowLoginForm(ctx *gin.Context) {
+func (h *UserHandler) ShowLoginForm(ctx *gin.Context) {
 	ctx.HTML(http.StatusOK, "pages/user/userLogin.html", gin.H{
 		"Title":       "Login to freshBox",
 		"CurrentYear": time.Now().Year(),
@@ -67,7 +67,7 @@ func (h *UserAuthHandler) ShowLoginForm(ctx *gin.Context) {
 }
 
 // LoginHandler processes a user login attempt
-func (h *UserAuthHandler) LoginHandler(ctx *gin.Context) {
+func (h *UserHandler) LoginHandler(ctx *gin.Context) {
 	var input models.InputUser
 	if err := ctx.ShouldBind(&input); err != nil {
 		ctx.HTML(http.StatusBadRequest, "pages/user/loginFail.html", gin.H{
@@ -78,7 +78,7 @@ func (h *UserAuthHandler) LoginHandler(ctx *gin.Context) {
 		return
 	}
 
-	res, err := h.userAuthService.Login(&input)
+	res, err := h.userService.Login(&input)
 	if err != nil {
 		ctx.HTML(http.StatusUnauthorized, "pages/user/loginFail.html", gin.H{
 			"Title":       "Login Failed",
@@ -95,7 +95,49 @@ func (h *UserAuthHandler) LoginHandler(ctx *gin.Context) {
 	ctx.Redirect(http.StatusSeeOther, "/")
 }
 
-func (h *UserAuthHandler) HomePageHandler(ctx *gin.Context) {
+// GET Logout
+func (h *UserHandler) UserLogout(ctx *gin.Context) {
 
-	ctx.HTML(http.StatusOK, "pages/home/home.html", gin.H{})
+	ctx.SetCookie("accessToken", "", 0, "/", "localhost", true, true)
+	ctx.SetCookie("refreshToken", "", 0, "/", "localhost", true, true)
+
+	ctx.Redirect(http.StatusSeeOther, "/")
+
+}
+
+// home page
+func (h *UserHandler) HomePageHandler(ctx *gin.Context) {
+	email, exists := ctx.Get("email")
+	if !exists {
+		ctx.HTML(http.StatusOK, "pages/home/home.html", gin.H{})
+
+	}
+
+	ctx.HTML(http.StatusOK, "pages/home/home.html", gin.H{
+		"User": email,
+	})
+}
+
+// User profile GET user/profile
+func (h *UserHandler) UserProfileHandler(ctx *gin.Context) {
+
+	email, exists := ctx.Get("email")
+	if !exists || email == "" {
+		ctx.String(http.StatusBadRequest, "no email found")
+		return
+	}
+
+	emailStr, ok := email.(string)
+	if !ok {
+		ctx.String(http.StatusBadRequest, "no email")
+	}
+
+	// address
+	addrss, err := h.userService.UserProfileService(emailStr)
+	if err != nil {
+		ctx.String(http.StatusBadRequest, "no address")
+
+	}
+
+	ctx.JSON(http.StatusOK, addrss)
 }

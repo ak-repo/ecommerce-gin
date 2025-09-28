@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/ak-repo/ecommerce-gin/config"
+	"github.com/ak-repo/ecommerce-gin/internal/models"
 	"github.com/golang-jwt/jwt/v4"
 )
 
@@ -15,12 +16,12 @@ type Claims struct {
 }
 
 // Accesstoken short time
-func AccessTokenGenerator(email, username, role string, cfg *config.Config) (string, error) {
+func AccessTokenGenerator(user *models.User, cfg *config.Config) (string, error) {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &Claims{
-		Email:    email,
-		Username: username,
-		Role:     role,
+		Email:    user.Email,
+		Username: user.Username,
+		Role:     user.Role,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(cfg.JWT.AccessExpiration)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
@@ -32,12 +33,12 @@ func AccessTokenGenerator(email, username, role string, cfg *config.Config) (str
 }
 
 // Refreshtoken long
-func RefreshTokenGenerator(email, username, role string, cfg *config.Config) (string, error) {
+func RefreshTokenGenerator(user *models.User, cfg *config.Config) (string, error) {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &Claims{
-		Email:    email,
-		Role:     role,
-		Username: username,
+		Email:    user.Email,
+		Role:     user.Role,
+		Username: user.Username,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(cfg.JWT.RefreshExpiration)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),

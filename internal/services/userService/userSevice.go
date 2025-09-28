@@ -2,6 +2,7 @@ package userservice
 
 import (
 	"errors"
+	"log"
 	"time"
 
 	"github.com/ak-repo/ecommerce-gin/config"
@@ -18,21 +19,22 @@ type Response struct {
 	AccessExp    time.Duration
 	User         *models.User
 }
-type UserAuthService interface {
+type UserService interface {
 	Register(input *models.InputUser) (*models.User, error)
 	Login(input *models.InputUser) (*Response, error)
+	UserProfileService(email string) (*UserProfle, error)
 }
 
-type userAuthService struct {
-	userAuthRepo userrepository.UserAuthRepo
-	cfg          *config.Config
+type userService struct {
+	userRepo userrepository.UserRepo
+	cfg      *config.Config
 }
 
-func NewUserAuthService(userAuthRepo userrepository.UserAuthRepo, cfg *config.Config) UserAuthService {
-	return &userAuthService{userAuthRepo: userAuthRepo, cfg: cfg}
+func NewUserService(userRepo userrepository.UserRepo, cfg *config.Config) UserService {
+	return &userService{userRepo: userRepo, cfg: cfg}
 }
 
-func (s *userAuthService) Register(input *models.InputUser) (*models.User, error) {
+func (s *userService) Register(input *models.InputUser) (*models.User, error) {
 
 	hash, err := utils.HashPassword(input.Password)
 	if err != nil {
@@ -46,12 +48,12 @@ func (s *userAuthService) Register(input *models.InputUser) (*models.User, error
 		IsActive:     true,
 	}
 
-	if ok := s.userAuthRepo.GetUserByEmail(user); ok {
+	if err := s.userRepo.GetUserByEmail(user); err != nil {
 		return nil, errors.New("email already taken")
 
 	}
 
-	if err := s.userAuthRepo.CreateUser(user); err != nil {
+	if err := s.userRepo.CreateUser(user); err != nil {
 		return nil, err
 	}
 
@@ -59,37 +61,70 @@ func (s *userAuthService) Register(input *models.InputUser) (*models.User, error
 
 }
 
-func (s *userAuthService) Login(input *models.InputUser) (*Response, error) {
+func (s *userService) Login(input *models.InputUser) (*Response, error) {
 
-	user := &models.User{
+	user := models.User{
 		Email: input.Email,
 	}
 
-	if ok := s.userAuthRepo.GetUserByEmail(user); !ok {
-		return nil, errors.New("no user found in db")
+	if err := s.userRepo.GetUserByEmail(&user); err != nil {
+		return nil, err
 	}
 
 	if ok := utils.CompareHashAndPassword(input.Password, user.PasswordHash); !ok {
 		return nil, errors.New("entered password is not matching")
 	}
 
-	accessToken, err := jwtpkg.AccessTokenGenerator(user.Email, user.Username, user.Role, s.cfg)
+	log.Println(&user.Username, "user")
+
+	accessToken, err := jwtpkg.AccessTokenGenerator(&user, s.cfg)
 	if err != nil {
 		return nil, errors.New("token generation failed")
 	}
 
-	refreshToken, err := jwtpkg.RefreshTokenGenerator(user.Email, user.Username, user.Role, s.cfg)
+	refreshToken, err := jwtpkg.RefreshTokenGenerator(&user, s.cfg)
 	if err != nil {
 		return nil, errors.New("token generation failed")
 	}
 
 	res := &Response{
-		User:         user,
+		User:         &user,
 		RefreshToken: refreshToken,
 		RefreshExp:   s.cfg.JWT.RefreshExpiration,
 		AccessToken:  accessToken,
 		AccessExp:    s.cfg.JWT.AccessExpiration,
 	}
 	return res, nil
+
+}
+
+type UserProfle struct {
+	User    *models.User
+	Address *models.Address
+}
+
+// User profile
+func (s *userService) UserProfileService(email string) (*UserProfle, error) {
+
+	user := models.User{
+		Email: email,
+	}
+	if err := s.userRepo.GetUserByEmail(&user); err != nil {
+		return nil, err
+	}
+
+	address := models.Address{
+		UserID: user.ID,
+	}
+	if err := s.userRepo.GetUserProfile(&address); err != nil {
+		return nil, err
+	}
+
+	profile := UserProfle{
+		User:    &user,
+		Address: &address,
+	}
+
+	return &profile, nil
 
 }

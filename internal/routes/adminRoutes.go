@@ -20,9 +20,10 @@ func RegisterAdminRoute(r *gin.Engine, db *db.Database, cfg *config.Config) {
 	//auth
 	authRepo := adminrepository.NewAdminAuthRepo(db.DB)
 	authService := adminservice.NewAdminAuthService(authRepo, cfg)
-	authHandler := adminhandler.NewAdminAuthHandler(authService)
+	authHandler := adminhandler.NewAdminHandler(authService)
 	adminRoute.GET("/login", authHandler.AdminLoginFormHandler)
 	adminRoute.POST("/login", authHandler.AdminLoginHandler)
+	
 	adminProtected := adminRoute.Group("/")
 	adminProtected.Use(middleware.AuthMiddleware(cfg), middleware.RoleMiddleware("admin"))
 	{

@@ -19,16 +19,16 @@ func PublicRoute(r *gin.Engine, db *db.Database, cfg *config.Config) {
 	{
 
 		//
-		userAuthRepo := userrepository.NewUserAuthRepo(db.DB)
-		userAuthService := userservice.NewUserAuthService(userAuthRepo, cfg)
-		userAuthHandler := userhandler.NewUserAuthHandler(userAuthService)
+		userRepo := userrepository.NewUserRepo(db.DB)
+		userService := userservice.NewUserService(userRepo, cfg)
+		userHandler := userhandler.NewUserHandler(userService)
 
-		publicRoute.GET("/register", userAuthHandler.ShowRegistrationForm)
-		publicRoute.POST("/register", userAuthHandler.RegistrationHandler)
-		publicRoute.GET("/login", userAuthHandler.ShowLoginForm)
-		publicRoute.POST("/login", userAuthHandler.LoginHandler)
+		publicRoute.GET("/register", userHandler.ShowRegistrationForm)
+		publicRoute.POST("/register", userHandler.RegistrationHandler)
+		publicRoute.GET("/login", userHandler.ShowLoginForm)
+		publicRoute.POST("/login", userHandler.LoginHandler)
 
-		publicRoute.GET("/", userAuthHandler.HomePageHandler)
+		publicRoute.GET("/", userHandler.HomePageHandler)
 
 		{
 			productRepo := productrepository.NewProductRepo(db.DB)

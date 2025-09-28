@@ -5,11 +5,11 @@ import "gorm.io/gorm"
 type User struct {
 	gorm.Model
 	Email        string `gorm:"size:255;uniqueIndex;not null"`
-	PasswordHash string `gorm:"size:255;not null" `
+	PasswordHash string `gorm:"size:255;not null" json:"-"`
 	Username     string `gorm:"size:255;not null" `
 	IsActive     bool   `gorm:"default:true"`
 	Role         string `gorm:"size:100;not null"` // condition need to given
-	// Addresses    []Address
+	Addresses    []Address
 	// Orders       []Order
 	// Cart         Cart
 	// Wishlist     Wishlist
@@ -18,4 +18,27 @@ type User struct {
 type InputUser struct {
 	Email    string `form:"email" json:"email" binding:"required,email"`
 	Password string `form:"password" json:"password" binding:"required"`
+}
+
+type Address struct {
+	gorm.Model
+	UserID      uint   `gorm:"not null"`
+	AddressLine string `gorm:"type:text;not null"`
+	City        string `gorm:"size:100;not null"`
+	State       string `gorm:"size:100;not null"`
+	PostalCode  string `gorm:"size:20;not null"`
+	Country     string `gorm:"size:100;not null"`
+}
+
+func AddressSeed(db *gorm.DB) {
+
+	add := Address{
+		UserID:      2,
+		AddressLine: "Mass",
+		City:        "Calicut",
+		State:       "Kerala",
+		PostalCode:  "673009",
+		Country:     "India",
+	}
+	db.Create(&add)
 }
