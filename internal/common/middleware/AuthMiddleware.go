@@ -16,13 +16,15 @@ func AuthMiddleware(cfg *config.Config) gin.HandlerFunc {
 		tokenString, err := ctx.Cookie("accessToken")
 		log.Println("token:", tokenString)
 		if err != nil {
-			ctx.AbortWithStatus(http.StatusUnauthorized)
+			ctx.HTML(http.StatusUnauthorized, "pages/404/404.html", gin.H{})
+			ctx.Abort()
 			return
 		}
 
 		claims, err := jwtpkg.TokenValidator(tokenString, cfg)
 		if err != nil {
-			ctx.AbortWithError(http.StatusUnauthorized, err)
+			ctx.HTML(http.StatusUnauthorized, "pages/404/404.html", gin.H{})
+			ctx.Abort()
 		}
 
 		ctx.Set("email", claims.Email)

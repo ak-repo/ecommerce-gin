@@ -10,7 +10,7 @@ type ProductService interface {
 	GetAllProductService() ([]models.Product, error)
 	GetOneProductService(id string) (*models.Product, error)
 	GetCategoriesService() ([]models.Category, error)
-	// UpdateProductService(id string, form *producthandler.ProductUpdateForm) error
+	UpdateProductService(product *models.Product, updatedProduct *models.UpdateProductInput) error
 }
 
 type productService struct {
@@ -50,7 +50,10 @@ func (s *productService) GetCategoriesService() ([]models.Category, error) {
 	return categories, err
 }
 
-// // Update product details
-// func (s *productService) UpdateProductService(id string, form *producthandler.ProductUpdateForm) error {
-// 	return s.productRepo.UpdateProduct(id, form)
-// }
+// Update product details
+
+func (s *productService) UpdateProductService(product *models.Product, updatedProduct *models.UpdateProductInput) error {
+
+	return s.productRepo.UpdateProductService(product, updatedProduct)
+
+}

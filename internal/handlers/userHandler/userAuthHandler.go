@@ -92,5 +92,10 @@ func (h *UserAuthHandler) LoginHandler(ctx *gin.Context) {
 	ctx.SetCookie("accessToken", res.AccessToken, int(res.AccessExp), "/", "localhost", true, true)
 	ctx.SetCookie("refreshToken", res.RefreshToken, int(res.RefreshExp), "/", "localhost", true, true)
 
-	ctx.Redirect(http.StatusSeeOther, "/products")
+	ctx.Redirect(http.StatusSeeOther, "/")
+}
+
+func (h *UserAuthHandler) HomePageHandler(ctx *gin.Context) {
+
+	ctx.HTML(http.StatusOK, "pages/home/home.html", gin.H{})
 }

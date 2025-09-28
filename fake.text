@@ -1,77 +1,24 @@
-func (h *AdminproductHandler) ShowProductEdit(ctx *gin.Context) {
-    id := ctx.Param("id")
-    if id == "" {
-        ctx.String(http.StatusBadRequest, "Product ID missing")
+func (h *AdminProductHandler) UpdateProduct(c *gin.Context) {
+    id := c.Param("id")
+
+    var product models.Product
+    if err := h.DB.First(&product, id).Error; err != nil {
+        c.JSON(http.StatusNotFound, gin.H{"error": "Product not found"})
         return
     }
 
-    product, err := h.productService.GetOneProductService(id)
-    if err != nil {
-        ctx.String(http.StatusInternalServerError, "Product not found: %v", err)
+    // Bind only incoming fields (partial update)
+    var input map[string]interface{}
+    if err := c.ShouldBindJSON(&input); err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
         return
     }
 
-    categories, _ := h.productService.GetCategoriesService() // ignore error for simplicity
-
-    ctx.HTML(http.StatusOK, "pages/admin/product/showProduct_edit.html", gin.H{
-        "Product":    product,
-        "Categories": categories,
-    })
-}
-
-func (h *AdminproductHandler) UpdateProduct(ctx *gin.Context) {
-  
-
-    var form struct {
-        Title       string  `form:"title"`
-        Description string  `form:"description"`
-        CategoryID  uint    `form:"category_id"`
-        Price       float64 `form:"price"`
-        Stock       int     `form:"stock"`
-        IsActive    bool    `form:"is_active"`
-        ImageURL    string  `form:"image_url"`
-    }
-
-    if err := ctx.ShouldBind(&form); err != nil {
-        ctx.String(http.StatusBadRequest, "Invalid form: %v", err)
+    // Update only changed fields
+    if err := h.DB.Model(&product).Updates(input).Error; err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update product"})
         return
     }
 
-    err := h.productService.UpdateProductService(id, form)
-    if err != nil {
-        ctx.String(http.StatusInternalServerError, "Update failed: %v", err)
-        return
-    }
-      id := ctx.Param("id")
-
-    ctx.Redirect(http.StatusSeeOther, "/admin/products")
-}
-
-
-func (s *ProductService) UpdateProductService(id string, form any) error {
-    var product Product
-    if err := s.repo.DB.First(&product, "id = ?", id).Error; err != nil {
-        return err
-    }
-
-    // Convert form to struct
-    f := form.(struct {
-        Title       string
-        Description string
-        CategoryID  uint
-        Price       float64
-        Stock       int
-        IsActive    bool
-        ImageURL    string
-    })
-
-    product.Title = f.Title
-    product.Description = f.Description
-    product.CategoryID = f.CategoryID
-    product.BasePrice = f.Price
-    product.Stock = f.Stock
-    product.IsActive = f.IsActive
-    product.ImageURL = f.ImageURL
-
-    return s.repo.DB.Save(&product).Error
+    c.JSON(http.StatusOK, gin.H{"message": "Product updated", "product": product})
 }

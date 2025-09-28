@@ -28,7 +28,7 @@ func PublicRoute(r *gin.Engine, db *db.Database, cfg *config.Config) {
 		publicRoute.GET("/login", userAuthHandler.ShowLoginForm)
 		publicRoute.POST("/login", userAuthHandler.LoginHandler)
 
-		publicRoute.GET("/")
+		publicRoute.GET("/", userAuthHandler.HomePageHandler)
 
 		{
 			productRepo := productrepository.NewProductRepo(db.DB)

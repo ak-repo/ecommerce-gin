@@ -2,7 +2,6 @@ package userservice
 
 import (
 	"errors"
-	"log"
 	"time"
 
 	"github.com/ak-repo/ecommerce-gin/config"
@@ -69,8 +68,6 @@ func (s *userAuthService) Login(input *models.InputUser) (*Response, error) {
 	if ok := s.userAuthRepo.GetUserByEmail(user); !ok {
 		return nil, errors.New("no user found in db")
 	}
-	log.Println("inpu:", input.Password)
-	log.Println("db:", user.PasswordHash)
 
 	if ok := utils.CompareHashAndPassword(input.Password, user.PasswordHash); !ok {
 		return nil, errors.New("entered password is not matching")

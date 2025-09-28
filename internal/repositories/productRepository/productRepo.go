@@ -9,7 +9,7 @@ type ProductRepo interface {
 	GetAllProducts() ([]models.Product, error)
 	GetProductByID(id string) (*models.Product, error)
 	GetCategories() ([]models.Category, error)
-	// UpdateProduct(id string, form *producthandler.ProductUpdateForm) error
+	UpdateProductService(product *models.Product, updatedProduct *models.UpdateProductInput) error
 }
 
 type productRepo struct {
@@ -45,14 +45,28 @@ func (r *productRepo) GetCategories() ([]models.Category, error) {
 }
 
 // Update product details
-// func (r *productRepo) UpdateProduct(id string, form *ProductRepo) error {
-// 	return r.DB.Model(&models.Product{}).Where("id = ?", id).Updates(models.Product{
-// 		Title:       form.Title,
-// 		Description: form.Description,
-// 		CategoryID:  form.CategoryID,
-// 		BasePrice:   form.Price,
-// 		Stock:       form.Stock,
-// 		IsActive:    form.IsActive,
-// 		ImageURL:    form.ImageURL,
-// 	}).Error
-// }
+func (s *productRepo) UpdateProductService(product *models.Product, updatedProduct *models.UpdateProductInput) error {
+	updates := map[string]interface{}{}
+
+	if updatedProduct.Title != nil {
+		updates["name"] = *updatedProduct.Title
+	}
+	if updatedProduct.Description != nil {
+		updates["description"] = *updatedProduct.Description
+	}
+	if updatedProduct.BasePrice != nil {
+		updates["base_price "] = *updatedProduct.BasePrice
+	}
+	if updatedProduct.Stock != nil {
+		updates["stock"] = *updatedProduct.Stock
+	}
+	if updatedProduct.IsActive != nil {
+		updates["is_active"] = *updatedProduct.IsActive
+	}
+
+	if len(updates) == 0 {
+		return nil // nothing to update
+	}
+
+	return s.DB.Model(product).Updates(updatedProduct).Error
+}

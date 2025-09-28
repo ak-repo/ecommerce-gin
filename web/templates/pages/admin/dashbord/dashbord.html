@@ -1,0 +1,62 @@
+{{define "title"}}Admin Dashboard - freshBox{{end}}
+
+{{define "content"}}
+<div class="min-h-screen bg-gray-100 flex">
+ 
+
+  <!-- Main Content -->
+  <main class="flex-1 p-8">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">Dashboard</h1>
+
+    <!-- Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div class="bg-white p-6 rounded-xl shadow">
+        <h2 class="text-gray-600 text-sm">Total Products</h2>
+        <p class="text-2xl font-bold text-gray-800">120</p>
+      </div>
+      <div class="bg-white p-6 rounded-xl shadow">
+        <h2 class="text-gray-600 text-sm">Total Orders</h2>
+        <p class="text-2xl font-bold text-gray-800">85</p>
+      </div>
+      <div class="bg-white p-6 rounded-xl shadow">
+        <h2 class="text-gray-600 text-sm">Users</h2>
+        <p class="text-2xl font-bold text-gray-800">45</p>
+      </div>
+    </div>
+
+    <!-- Fake Table -->
+    <div class="bg-white shadow rounded-xl overflow-hidden">
+      <table class="min-w-full text-left">
+        <thead class="bg-gray-200">
+          <tr>
+            <th class="py-3 px-4">Order ID</th>
+            <th class="py-3 px-4">Customer</th>
+            <th class="py-3 px-4">Status</th>
+            <th class="py-3 px-4">Total</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+          <tr>
+            <td class="py-3 px-4">#1001</td>
+            <td class="py-3 px-4">John Doe</td>
+            <td class="py-3 px-4 text-green-600">Completed</td>
+            <td class="py-3 px-4">$45.00</td>
+          </tr>
+          <tr>
+            <td class="py-3 px-4">#1002</td>
+            <td class="py-3 px-4">Jane Smith</td>
+            <td class="py-3 px-4 text-yellow-600">Pending</td>
+            <td class="py-3 px-4">$32.50</td>
+          </tr>
+          <tr>
+            <td class="py-3 px-4">#1003</td>
+            <td class="py-3 px-4">David Wilson</td>
+            <td class="py-3 px-4 text-red-600">Cancelled</td>
+            <td class="py-3 px-4">$28.00</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+{{end}}

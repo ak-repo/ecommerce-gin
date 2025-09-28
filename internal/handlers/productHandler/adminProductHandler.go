@@ -1,9 +1,11 @@
 package producthandler
 
 import (
+	"log"
 	"net/http"
 	"time"
 
+	"github.com/ak-repo/ecommerce-gin/internal/models"
 	productservice "github.com/ak-repo/ecommerce-gin/internal/services/productService"
 	"github.com/gin-gonic/gin"
 )
@@ -87,36 +89,34 @@ func (h *AdminproductHandler) ShowProductEdit(ctx *gin.Context) {
 	})
 }
 
-type ProductUpdateForm struct {
-	Title       string
-	Description string
-	CategoryID  uint
-	Price       float64
-	Stock       int
-	IsActive    bool
-	ImageURL    string
-}
-
 // POST /admin/product/update/:id → handles update logic.
-// func (h *AdminproductHandler) UpdateProduct(ctx *gin.Context) {
-// 	id := ctx.Param("id")
+func (h *AdminproductHandler) UpdateProductHandler(ctx *gin.Context) {
 
-// 	form := ProductUpdateForm{}
+	id := ctx.Param("id")
 
-// 	if err := ctx.ShouldBind(&form); err != nil {
-// 		ctx.String(http.StatusBadRequest, "Invalid form: %v", err)
-// 		return
-// 	}
+	product, err := h.productService.GetOneProductService(id)
+	if err != nil {
+		ctx.String(http.StatusConflict, "not found in db"+err.Error())
+		return
 
-// 	err := h.productService.UpdateProductService(id, &form)
-// 	if err != nil {
-// 		ctx.String(http.StatusInternalServerError, "Update failed: %v", err)
-// 		return
+	}
 
-// 	}
-// 	// ctx.Redirect(http.StatusSeeOther, "/admin/product/"+id)
-// 	ctx.String(http.StatusOK, "updated")
-// }
+	updates := models.UpdateProductInput{}
+
+	if err := ctx.ShouldBind(&updates); err != nil {
+		ctx.String(http.StatusConflict, "not bind"+err.Error())
+		return
+
+	}
+	log.Println("updates:", updates)
+	if err := h.productService.UpdateProductService(product, &updates); err != nil {
+		ctx.String(http.StatusConflict, "DB error"+err.Error())
+		return
+	}
+
+	ctx.Redirect(http.StatusSeeOther, "/admin/product/"+id) 
+
+}
 
 // GET /admin/products/delete/:id → shows confirmation page.
 

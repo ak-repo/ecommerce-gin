@@ -33,3 +33,13 @@ type Product struct {
 	// Active flag
 	IsActive bool `gorm:"default:true"`
 }
+
+type UpdateProductInput struct {
+	Title       *string  `form:"title" json:"title,omitempty"`
+	Description *string  `form:"description" json:"description,omitempty"`
+	CategoryID  *uint    `form:"category_id" json:"category_id,omitempty"`
+	BasePrice   *float64 `form:"price" json:"price,omitempty"`
+	Stock       *int     `form:"stock" json:"stock,omitempty"`
+	ImageURL    *string  `form:"image_url" json:"image_url,omitempty"`
+	IsActive    *bool    `form:"is_active" json:"is_active,omitempty"`
+}
