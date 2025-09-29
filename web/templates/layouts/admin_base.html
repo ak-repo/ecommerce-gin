@@ -9,8 +9,11 @@
   </head>
   <body class="bg-gray-100 flex min-h-screen">
     <!-- Sidebar -->
+    <!-- Sidebar -->
+    <!-- Sidebar -->
     <aside class="w-64 bg-gray-800 text-white p-6 flex flex-col">
       <h2 class="text-2xl font-bold mb-6">Admin</h2>
+
       <ul class="flex flex-col gap-2">
         <li>
           <a
@@ -36,12 +39,42 @@
             Users
           </a>
         </li>
-            <li>
+        <li>
           <a
             href="/admin/orders"
             class="block py-2 px-3 rounded hover:bg-gray-700"
           >
             Orders
+          </a>
+        </li>
+
+        <!-- Admin Profile Icon after Orders -->
+        <li>
+          <a
+            href="/admin/profile"
+            class="flex items-center gap-2 py-2 px-3 rounded hover:bg-gray-700"
+          >
+            <!-- User Icon from Heroicons -->
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M5.121 17.804A9 9 0 1112 21a9 9 0 01-6.879-3.196z"
+              />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+            </svg>
+            <span>Profile</span>
           </a>
         </li>
       </ul>

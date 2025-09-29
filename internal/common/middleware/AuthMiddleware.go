@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/ak-repo/ecommerce-gin/config"
@@ -14,7 +13,6 @@ func AuthMiddleware(cfg *config.Config) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 
 		tokenString, err := ctx.Cookie("accessToken")
-		log.Println("token:", tokenString)
 		if err != nil {
 			ctx.HTML(http.StatusUnauthorized, "pages/404/404.html", gin.H{})
 			ctx.Abort()

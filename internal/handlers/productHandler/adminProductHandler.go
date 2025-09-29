@@ -121,3 +121,5 @@ func (h *AdminproductHandler) UpdateProductHandler(ctx *gin.Context) {
 // GET /admin/products/delete/:id → shows confirmation page.
 
 // POST /admin/products/delete/:id → actually deletes the product.
+
+

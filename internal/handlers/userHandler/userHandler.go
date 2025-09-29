@@ -111,12 +111,16 @@ func (h *UserHandler) UserLogout(ctx *gin.Context) {
 func (h *UserHandler) HomePageHandler(ctx *gin.Context) {
 	email, exists := ctx.Get("email")
 	if !exists {
-		ctx.HTML(http.StatusOK, "pages/home/home.html", gin.H{})
-
+		ctx.HTML(http.StatusOK, "pages/home/home.html", gin.H{
+			"User":        nil,
+			"CurrentYear": time.Now().Year(),
+		})
+		return
 	}
 
 	ctx.HTML(http.StatusOK, "pages/home/home.html", gin.H{
-		"User": email,
+		"User":        email,
+		"CurrentYear": time.Now().Year(),
 	})
 }
 

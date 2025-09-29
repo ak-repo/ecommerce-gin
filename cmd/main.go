@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"path/filepath"
+	"strings"
 
 	"github.com/ak-repo/ecommerce-gin/config"
 	"github.com/ak-repo/ecommerce-gin/internal/common/middleware"
@@ -61,7 +62,15 @@ func createMyRender(templatesDir string) multitemplate.Renderer {
 	adminPages, _ := filepath.Glob(filepath.Join(templatesDir, "pages", "admin", "**", "*.html"))
 	for _, page := range adminPages {
 		name, _ := filepath.Rel(templatesDir, page)
-		files := append(adminLayouts, page)
+
+		var files []string
+		if strings.HasSuffix(name, "adminLogin.html") {
+			// use admin login base
+			files = []string{filepath.Join(templatesDir, "layouts", "admin_login_base.html"), page}
+		} else {
+			// use normal admin base with sidebar
+			files = append(adminLayouts, page)
+		}
 		r.AddFromFiles(name, files...)
 	}
 
