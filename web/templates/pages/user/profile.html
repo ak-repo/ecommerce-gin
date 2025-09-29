@@ -1,0 +1,66 @@
+{{ define "content" }}
+<div class="bg-white shadow-lg rounded-2xl p-8 max-w-md w-full mx-auto">
+  <!-- Profile Heading -->
+  <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">
+    User Profile
+  </h1>
+
+  <!-- User Info -->
+  <div class="space-y-4">
+    <div>
+      <p class="text-gray-500 text-sm">Email</p>
+      <p class="font-medium text-gray-800">{{ .User.Email }}</p>
+    </div>
+    <div>
+      <p class="text-gray-500 text-sm">Role</p>
+      <p class="font-medium text-gray-800">{{ .User.Role }}</p>
+    </div>
+    <div>
+      <p class="text-gray-500 text-sm">Status</p>
+      {{ if .User.IsActive }}
+      <p class="font-medium text-green-600">Active</p>
+      {{ else }}
+      <p class="font-medium text-red-600">Inactive</p>
+      {{ end }}
+    </div>
+  </div>
+
+  <!-- Addresses -->
+  <div class="mt-6 border-t pt-4">
+    <h2 class="text-lg font-semibold text-gray-700 mb-2">Addresses</h2>
+    {{ if .User.Addresses }} {{ range .User.Addresses }}
+    <div class="mb-4 p-2 border rounded-lg">
+      <p class="text-gray-800">{{ .AddressLine }}</p>
+      <p class="text-gray-800">{{ .City }}, {{ .State }} - {{ .PostalCode }}</p>
+      <p class="text-gray-800">{{ .Country }}</p>
+      <a
+        href="/user/address/{{.ID}}"
+        class="text-blue-500 hover:underline text-sm"
+        >Edit</a
+      >
+    </div>
+    {{ end }} {{ else }}
+    <p class="text-gray-500 italic mb-3">No addresses available</p>
+
+    {{ end }}
+    <a
+      href="/user/address/0"
+      class="inline-block bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition"
+    >
+      Add Address
+    </a>
+  </div>
+
+  <!-- Logout Button -->
+  <div class="mt-8 text-center">
+    <form action="/user/logout" method="POST">
+      <button
+        type="submit"
+        class="w-full bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition"
+      >
+        Logout
+      </button>
+    </form>
+  </div>
+</div>
+{{ end }}

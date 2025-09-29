@@ -10,6 +10,7 @@ import (
 	"github.com/ak-repo/ecommerce-gin/internal/models"
 	userrepository "github.com/ak-repo/ecommerce-gin/internal/repositories/userRepository"
 	jwtpkg "github.com/ak-repo/ecommerce-gin/pkg/jwt_pkg"
+	"gorm.io/gorm"
 )
 
 type Response struct {
@@ -22,7 +23,8 @@ type Response struct {
 type UserService interface {
 	Register(input *models.InputUser) (*models.User, error)
 	Login(input *models.InputUser) (*Response, error)
-	UserProfileService(email string) (*UserProfle, error)
+	UserProfileService(email string) (*models.User, error)
+	UserProfileUpdateService(email string, addresID string, address *models.Address) error
 }
 
 type userService struct {
@@ -48,7 +50,7 @@ func (s *userService) Register(input *models.InputUser) (*models.User, error) {
 		IsActive:     true,
 	}
 
-	if err := s.userRepo.GetUserByEmail(user); err != nil {
+	if err := s.userRepo.GetUserByEmail(&models.User{}, input.Email); err != nil {
 		return nil, errors.New("email already taken")
 
 	}
@@ -63,11 +65,9 @@ func (s *userService) Register(input *models.InputUser) (*models.User, error) {
 
 func (s *userService) Login(input *models.InputUser) (*Response, error) {
 
-	user := models.User{
-		Email: input.Email,
-	}
+	user := models.User{}
 
-	if err := s.userRepo.GetUserByEmail(&user); err != nil {
+	if err := s.userRepo.GetUserByEmail(&user,input.Email); err != nil {
 		return nil, err
 	}
 
@@ -103,28 +103,50 @@ type UserProfle struct {
 	Address *models.Address
 }
 
-// User profile
-func (s *userService) UserProfileService(email string) (*UserProfle, error) {
+func (s *userService) UserProfileService(email string) (*models.User, error) {
+	user := &models.User{}
 
-	user := models.User{
-		Email: email,
-	}
-	if err := s.userRepo.GetUserByEmail(&user); err != nil {
+	// Properly fetch user by email
+	if err := s.userRepo.GetUserByEmail(user, email); err != nil {
 		return nil, err
 	}
 
-	address := models.Address{
-		UserID: user.ID,
-	}
-	if err := s.userRepo.GetUserProfile(&address); err != nil {
-		return nil, err
-	}
-
-	profile := UserProfle{
-		User:    &user,
-		Address: &address,
+	// Load profile details (addresses, etc.)
+	if err := s.userRepo.GetUserProfile(user); err != nil {
+		// not fatal if no addresses found, just return user with empty slice
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, err
+		}
 	}
 
-	return &profile, nil
+	// Always return a valid slice (avoid nil in template)
+	if user.Addresses == nil {
+		user.Addresses = []models.Address{}
+	}
+
+	return user, nil
+}
+
+// User profile add or update
+func (s *userService) UserProfileUpdateService(email string, addresID string, address *models.Address) error {
+
+	user := models.User{}
+	if err := s.userRepo.GetUserByEmail(&user, email); err != nil {
+		return err
+	}
+
+	address.UserID = user.ID
+	if addresID == "0" {
+		if err := s.userRepo.AddUserProfile(address); err != nil {
+			return err
+		}
+	} else {
+		if err := s.userRepo.UpdateUserProfile(addresID, address); err != nil {
+			return err
+		}
+
+	}
+
+	return nil
 
 }
