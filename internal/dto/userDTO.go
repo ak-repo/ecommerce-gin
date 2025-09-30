@@ -41,6 +41,12 @@ type AddressDTO struct {
 	City        string `json:"city"`
 	State       string `json:"state"`
 	Phone       string `json:"phone"`
-	PostalCode string `json:"zip_code"`
-	Country    string `json:"country"`
+	PostalCode  string `json:"zip_code"`
+	Country     string `json:"country"`
+}
+
+type PasswordChange struct {
+	Password        string `form:"Password" binding:"required"`
+	NewPassword     string `form:"NewPassword" binding:"required"`
+	ConfirmPassword string `form:"ConfirmPassword" binding:"required"`
 }

@@ -229,3 +229,56 @@ func (h *UserHandler) UserAddressUpdateHandler(ctx *gin.Context) {
 
 	ctx.Redirect(http.StatusSeeOther, "/user/profile")
 }
+
+// GET user/password -> return password change form
+func (h *UserHandler) UserPasswordChangeFormHandler(ctx *gin.Context) {
+
+	ctx.HTML(http.StatusOK, "pages/user/passwordChange.html", gin.H{})
+}
+
+// POST user/password -> change password
+func (h *UserHandler) UserPasswordChangeHandler(ctx *gin.Context) {
+
+	email, exists := ctx.Get("email")
+	emailStr := email.(string)
+	if !exists || emailStr == "" {
+		ctx.HTML(http.StatusBadRequest, "pages/user/passwordChange.html", gin.H{
+			"Error": "token not found, login required",
+		})
+		return
+
+	}
+	var passform dto.PasswordChange
+
+	if err := ctx.ShouldBind(&passform); err != nil {
+		ctx.HTML(http.StatusBadRequest, "pages/user/passwordChange.html", gin.H{
+			"Error": err.Error(),
+		})
+		return
+	}
+
+	if passform.ConfirmPassword != passform.NewPassword {
+		ctx.HTML(http.StatusBadRequest, "pages/user/passwordChange.html", gin.H{
+			"Error": "confirm password not matching",
+		})
+		return
+	}
+
+	if passform.Password == passform.NewPassword {
+		ctx.HTML(http.StatusBadRequest, "pages/user/passwordChange.html", gin.H{
+			"Error": "old password same as new password",
+		})
+		return
+	}
+
+	err := h.userService.UserPasswordChangeService(emailStr, passform.NewPassword,passform.Password)
+	if err != nil {
+		ctx.HTML(http.StatusInternalServerError, "pages/user/passwordChange.html", gin.H{
+			"Error": err.Error(),
+		})
+		return
+	}
+	ctx.HTML(http.StatusOK, "pages/user/passwordChange.html", gin.H{
+		"Success": "Password changed",
+	})
+}

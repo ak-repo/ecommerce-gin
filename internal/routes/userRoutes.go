@@ -23,7 +23,9 @@ func RegisterUserRoute(r *gin.Engine, db *db.Database, cfg *config.Config) {
 		userHandler := userhandler.NewUserHandler(userService)
 		userRoute.GET("/profile", userHandler.UserProfileHandler)
 		userRoute.GET("/address/:address_id", userHandler.ShowAddressForm)
-		userRoute.POST("/address/update/:address_id",userHandler.UserAddressUpdateHandler)
+		userRoute.POST("/address/update/:address_id", userHandler.UserAddressUpdateHandler)
+		userRoute.GET("/password", userHandler.UserPasswordChangeFormHandler)
+		userRoute.POST("/password", userHandler.UserPasswordChangeHandler)
 
 		userRoute.POST("/logout", userHandler.UserLogout)
 

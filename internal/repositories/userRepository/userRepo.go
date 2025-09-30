@@ -14,6 +14,7 @@ type UserRepo interface {
 	GetUserAddress(userID uint) (*models.Address, error)
 	AddAddress(address *dto.AddressDTO, userID uint) error
 	UpdateAddress(address *dto.AddressDTO) error
+	UpdatePassword(userID uint, password string) error
 }
 
 type userRepo struct {
@@ -42,7 +43,7 @@ func (r *userRepo) GetUserByEmail(email string) (*models.User, error) {
 	var user models.User
 	err := r.DB.Where("email = ?", email).First(&user).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, nil 
+		return nil, nil
 	}
 	if err != nil {
 		return nil, err
@@ -89,4 +90,10 @@ func (r *userRepo) AddAddress(address *dto.AddressDTO, userID uint) error {
 		Country:     address.Country,
 		Phone:       address.Phone,
 	}).Error
+}
+
+// password change
+func (r *userRepo) UpdatePassword(userID uint, hashPassword string) error {
+	return r.DB.Model(&models.User{}).Where("id=?", userID).Update("password_hash", hashPassword).Error
+
 }

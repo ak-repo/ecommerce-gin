@@ -26,6 +26,7 @@ type UserService interface {
 	LoginService(input *dto.LoginRequest) (*dto.LoginResponse, error)
 	UserProfileService(email string) (*dto.ProfileDTO, error)
 	UserAddressUpdateService(address *dto.AddressDTO, addressID, email string) error
+	UserPasswordChangeService(email, newPassword, oldpassword string) error
 }
 
 type userService struct {
@@ -62,8 +63,8 @@ func (s *userService) LoginService(input *dto.LoginRequest) (*dto.LoginResponse,
 	if err != nil {
 		return nil, err
 	}
-	if user == nil{
-		return nil,gorm.ErrRecordNotFound
+	if user == nil {
+		return nil, gorm.ErrRecordNotFound
 	}
 
 	if ok := utils.CompareHashAndPassword(input.Password, user.PasswordHash); !ok {
@@ -140,4 +141,25 @@ func (s *userService) UserAddressUpdateService(address *dto.AddressDTO, addressI
 		return s.userRepo.UpdateAddress(address)
 	}
 
+}
+
+// User password chnage service
+func (s *userService) UserPasswordChangeService(email, newPassword, oldpassword string) error {
+
+	user, err := s.userRepo.GetUserByEmail(email)
+	if err != nil {
+		return err
+	}
+	if user == nil {
+		return gorm.ErrRecordNotFound
+	}
+	if ok := utils.CompareHashAndPassword(oldpassword, user.PasswordHash); !ok {
+		return errors.New("incorrect password")
+	}
+
+	hashPassword, err := utils.HashPassword(newPassword)
+	if err != nil {
+		return err
+	}
+	return s.userRepo.UpdatePassword(user.ID, string(hashPassword))
 }
