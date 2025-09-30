@@ -27,7 +27,6 @@ func (h *AdminOrderHandler) ShowAllOrderHandler(ctx *gin.Context) {
 		})
 	}
 
-	fmt.Println("orders:", orders)
 
 	ctx.HTML(http.StatusOK, "pages/admin/orders/orders.html", gin.H{
 		"Orders": orders,

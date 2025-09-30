@@ -10,7 +10,6 @@ import (
 	"github.com/ak-repo/ecommerce-gin/internal/models"
 	"github.com/ak-repo/ecommerce-gin/internal/routes"
 	db "github.com/ak-repo/ecommerce-gin/pkg/database"
-	dummydata "github.com/ak-repo/ecommerce-gin/pkg/database/dummy_data"
 	"github.com/gin-contrib/multitemplate"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -28,10 +27,10 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to connect DB: %v", err)
 	}
+
 	r := gin.New()
 	r.Use(gin.Recovery(), gin.Logger(), middleware.AccessMiddleware(cfg))
 	r.Static("/web/static", "./static")
-	dummydata.SeedProducts(db.DB)
 
 	// r.LoadHTMLGlob("web/templates/**/*.html")
 	r.HTMLRender = createMyRender("web/templates")
@@ -80,11 +79,12 @@ func createMyRender(templatesDir string) multitemplate.Renderer {
 }
 
 func SeedAdmin(db *gorm.DB) {
-	hash, _ := bcrypt.GenerateFromPassword([]byte("1122"), bcrypt.DefaultCost)
+	hash, _ := bcrypt.GenerateFromPassword([]byte("11"), bcrypt.DefaultCost)
 	db.FirstOrCreate(&models.User{
-		Email:        "ak@fresh.com",
+		Username:     "super admin",
+		Email:        "admin@freshbox.com",
 		PasswordHash: string(hash),
 		Role:         "admin",
 		IsActive:     true,
-	}, models.User{Email: "ak@fresh.com"}) // prevents duplicate
+	}, models.User{Email: "admin@freshbox.com"})
 }

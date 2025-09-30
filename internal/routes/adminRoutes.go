@@ -21,19 +21,23 @@ func RegisterAdminRoute(r *gin.Engine, db *db.Database, cfg *config.Config) {
 
 	adminRoute := r.Group("/admin")
 	//auth
-	authRepo := adminrepository.NewAdminRepo(db.DB)
-	authService := adminservice.NewAdminService(authRepo, cfg)
-	authHandler := adminhandler.NewAdminHandler(authService)
-	adminRoute.GET("/login", authHandler.AdminLoginFormHandler)
-	adminRoute.POST("/login", authHandler.AdminLoginHandler)
+	adminRepo := adminrepository.NewAdminRepo(db.DB)
+	adminService := adminservice.NewAdminService(adminRepo, cfg)
+	adminHandler := adminhandler.NewAdminHandler(adminService)
+	adminRoute.GET("/login", adminHandler.AdminLoginFormHandler)
+	adminRoute.POST("/login", adminHandler.AdminLoginHandler)
 
 	adminProtected := adminRoute.Group("/")
 	adminProtected.Use(middleware.AuthMiddleware(cfg), middleware.RoleMiddleware("admin"))
 	{
 
 		//dash bord
-		adminProtected.GET("/dashboard", authHandler.AdminDashboardForm)
-		adminProtected.GET("/profile", authHandler.AdminProfileHandler)
+		adminProtected.GET("/dashboard", adminHandler.AdminDashboardForm)
+
+		//profile
+		adminProtected.GET("/profile", adminHandler.AdminProfileHandler)
+		adminProtected.GET("/address/:address_id", adminHandler.ShowAddressFormHandler)
+		adminProtected.POST("/address/update/:address_id", adminHandler.UpdateAddressHandler)
 
 		// products
 		productRepo := productrepository.NewProductRepo(db.DB)

@@ -1,77 +1,83 @@
 {{define "title"}}Admin Profile{{end}} {{define "content"}}
-<div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-md">
-  <h1 class="text-3xl font-bold mb-6">Admin Profile</h1>
+<div class="max-w-4xl mx-auto bg-white p-8 rounded-2xl shadow-lg">
+  <h1 class="text-3xl font-bold mb-6 text-center">Admin Profile</h1>
 
   {{if .Error}}
-  <div class="text-red-500 mb-4">{{.Error}}</div>
+  <div class="text-red-500 mb-4 text-center">{{.Error}}</div>
   {{end}}
 
   <!-- Basic Info -->
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
     <div>
-      <p><span class="font-semibold">ID:</span> {{.Profile.ID}}</p>
-      <p><span class="font-semibold">Name:</span> {{.Profile.Name}}</p>
-      <p>
-        <span class="font-semibold">Email:</span> {{.Profile.Email}}
+      <p class="text-gray-500 text-sm">ID</p>
+      <p class="font-medium text-gray-800">{{.Profile.ID}}</p>
+
+      <p class="text-gray-500 text-sm mt-2">Name</p>
+      <p class="font-medium text-gray-800">{{.Profile.Name}}</p>
+
+      <p class="text-gray-500 text-sm mt-2">Email</p>
+      <p class="font-medium text-gray-800">
+        {{.Profile.Email}}
         <a
           href="/admin/profile/change-email"
-          class="ml-2 text-blue-600 hover:underline"
+          class="ml-2 text-blue-500 hover:underline text-sm"
           >Change Email</a
         >
       </p>
-      <p><span class="font-semibold">Role:</span> {{.Profile.Role}}</p>
-      <p><span class="font-semibold">Phone:</span> {{.Profile.Phone}}</p>
+
+      <p class="text-gray-500 text-sm mt-2">Role</p>
+      <p class="font-medium text-gray-800">{{.Profile.Role}}</p>
+
+      {{if .Profile.Address.Phone}}
+      <p class="text-gray-500 text-sm mt-2">Phone</p>
+      
+      <p class="font-medium text-gray-800">{{.Profile.Address.Phone}}</p>
+      {{end}}
     </div>
   </div>
 
   <!-- Address Section -->
-  <div class="mb-6">
-    <h2 class="text-2xl font-semibold mb-3">Address</h2>
+  <div class="mt-6 border-t pt-4">
+    <h2 class="text-xl font-semibold text-gray-700 mb-3">Address</h2>
     {{if .Profile.Address.ID}}
-
-    <p>
-      <span class="font-semibold">Street:</span>
-      {{.Profile.Address.AddressLine}}
-    </p>
-    <p><span class="font-semibold">City:</span> {{.Profile.Address.City}}</p>
-    <p><span class="font-semibold">State:</span> {{.Profile.Address.State}}</p>
-    <p>
-      <span class="font-semibold">Zip Code:</span>
-      {{.Profile.Address.PostalCode}}
-    </p>
-    <p>
-      <span class="font-semibold">Country:</span> {{.Profile.Address.Country}}
-    </p>
-    <a
-      href="/admin/profile/change-address"
-      class="mt-2 inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-      >Change Address</a
-    >
+    <div class="mb-4 p-4 border rounded-lg">
+      <p class="text-gray-800">{{.Profile.Address.AddressLine}}</p>
+      <p class="text-gray-800">
+        {{.Profile.Address.City}}, {{.Profile.Address.State}} -
+        {{.Profile.Address.PostalCode}}
+      </p>
+      <p class="text-gray-800">{{.Profile.Address.Country}}</p>
+      <a
+        href="/admin/address/{{.Profile.Address.ID}}"
+        class="text-blue-500 hover:underline text-sm"
+        >Edit Address</a
+      >
+    </div>
     {{else}}
-    <p>No address found.</p>
+    <p class="text-gray-500 italic mb-3">No address available</p>
     <a
-      href="/admin/profile/add-address"
-      class="mt-2 inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+      href="/admin/address/0"
+      class="inline-block bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition"
       >Add Address</a
     >
     {{end}}
   </div>
 
   <!-- Security -->
-  <div class="mb-6">
-    <h2 class="text-2xl font-semibold mb-3">Security</h2>
+  <div class="mt-6 border-t pt-4">
+    <h2 class="text-xl font-semibold text-gray-700 mb-3">Security</h2>
     <a
       href="/admin/profile/change-password"
-      class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+      class="inline-block bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition"
       >Change Password</a
     >
   </div>
 
   <!-- Logout -->
-  <div>
+  <div class="mt-8 text-center">
     <a
       href="/admin/logout"
-      class="inline-block bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+      class="inline-block bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition"
       >Logout</a
     >
   </div>

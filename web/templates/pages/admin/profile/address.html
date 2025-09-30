@@ -1,0 +1,137 @@
+{{ define "content" }}
+<div class="bg-white shadow-lg rounded-2xl p-8 max-w-md w-full mx-auto mt-10">
+  <!-- Heading -->
+  <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">
+    {{ if .Address.ID }}Edit Address{{ else }}Add Address{{ end }}
+  </h1>
+
+  {{if .Error}}
+  <div class="text-red-500 mb-4">{{.Error}}</div>
+  {{end}}
+
+  <!-- Form -->
+  <form
+    action="{{ if .Address.ID }}/admin/address/update/{{ .Address.ID }}{{ else }}/admin/address/update/0{{ end }}"
+    method="POST"
+    class="space-y-4"
+  >
+    {{ if .Address.ID }}
+    <input type="hidden" name="ID" value="{{ .Address.ID }}" />
+    {{ end }}
+
+    <!-- Phone -->
+    <div>
+      <label for="Phone" class="block text-gray-700 text-sm font-medium mb-1"
+        >Phone</label
+      >
+      <input
+        type="text"
+        id="Phone"
+        name="Phone"
+        value="{{ if .Address.ID }}{{ .Address.Phone }}{{ end }}"
+        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        required
+      />
+    </div>
+
+    <!-- Address Line -->
+    <div>
+      <label
+        for="AddressLine"
+        class="block text-gray-700 text-sm font-medium mb-1"
+        >Address Line</label
+      >
+      <textarea
+        id="AddressLine"
+        name="AddressLine"
+        rows="2"
+        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        required
+      >
+{{ if .Address.ID }}{{ .Address.AddressLine }}{{ end }}</textarea
+      >
+    </div>
+
+    <!-- City -->
+    <div>
+      <label for="City" class="block text-gray-700 text-sm font-medium mb-1"
+        >City</label
+      >
+      <input
+        type="text"
+        id="City"
+        name="City"
+        value="{{ if .Address.ID }}{{ .Address.City }}{{ end }}"
+        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        required
+      />
+    </div>
+
+    <!-- State -->
+    <div>
+      <label for="State" class="block text-gray-700 text-sm font-medium mb-1"
+        >State</label
+      >
+      <input
+        type="text"
+        id="State"
+        name="State"
+        value="{{ if .Address.ID }}{{ .Address.State }}{{ end }}"
+        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        required
+      />
+    </div>
+
+    <!-- Postal Code -->
+    <div>
+      <label
+        for="PostalCode"
+        class="block text-gray-700 text-sm font-medium mb-1"
+        >Postal Code</label
+      >
+      <input
+        type="text"
+        id="PostalCode"
+        name="PostalCode"
+        value="{{ if .Address.ID }}{{ .Address.PostalCode }}{{ end }}"
+        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        required
+      />
+    </div>
+
+    <!-- Country -->
+    <div>
+      <label for="Country" class="block text-gray-700 text-sm font-medium mb-1"
+        >Country</label
+      >
+      <input
+        type="text"
+        id="Country"
+        name="Country"
+        value="{{ if .Address.ID }}{{ .Address.Country }}{{ end }}"
+        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        required
+      />
+    </div>
+
+    <!-- Submit -->
+    <button
+      type="submit"
+      class="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition"
+    >
+      {{ if .Address.ID }}Update Address{{ else }}Save Address{{ end }}
+    </button>
+  </form>
+
+  <!-- Back Links -->
+  <div class="mt-6 text-center">
+    <a
+      href="/admin/profile"
+      class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-400 transition"
+    >
+      Back to Profile
+    </a>
+   
+  </div>
+</div>
+{{ end }}

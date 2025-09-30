@@ -61,6 +61,7 @@ func (h *AdminHandler) AdminLogout(ctx *gin.Context) {
 
 }
 
+// ----------------------------------------------------------
 // GET admin/dashboard
 func (h *AdminHandler) AdminDashboardForm(ctx *gin.Context) {
 
@@ -93,20 +94,34 @@ func (h *AdminHandler) AdminProfileHandler(ctx *gin.Context) {
 }
 
 // GET user/address -> shop user address form
-func (h *AdminHandler) ShowAddressForm(ctx *gin.Context) {
+func (h *AdminHandler) ShowAddressFormHandler(ctx *gin.Context) {
 	addressID := ctx.Param("address_id")
 	email, _ := ctx.Get("email")
 	emailStr := email.(string)
 
+	address := dto.AddressDTO{}
+	if addressID == "0" {
+		ctx.HTML(http.StatusOK, "pages/admin/profile/address.html", gin.H{
+			"Address": address,
+			"User":    email,
+		})
+		return
+
+	}
+
 	profile, err := h.adminService.AdminProfileService(emailStr)
-	if err != nil || addressID == "0" {
-		ctx.String(http.StatusInternalServerError, "user not found")
+	if err != nil {
+		ctx.HTML(http.StatusOK, "pages/admin/profile/address.html", gin.H{
+			"Address": address,
+			"User":    email,
+			"Error":   err.Error(),
+		})
 		return
 	}
 
 	addID, _ := strconv.ParseUint(addressID, 10, 64)
 	if profile.Address.ID == 0 || uint(addID) != profile.Address.ID {
-		ctx.HTML(http.StatusOK, "pages/user/address.html", gin.H{
+		ctx.HTML(http.StatusOK, "pages/admin/profile/address.html", gin.H{
 			"Address": nil,
 			"User":    email,
 		})
@@ -114,8 +129,34 @@ func (h *AdminHandler) ShowAddressForm(ctx *gin.Context) {
 
 	}
 
-	ctx.HTML(http.StatusOK, "pages/user/address.html", gin.H{
+	ctx.HTML(http.StatusOK, "pages/admin/profile/address.html", gin.H{
 		"User":    email,
 		"Address": profile.Address,
 	})
+}
+
+func (h *AdminHandler) UpdateAddressHandler(ctx *gin.Context) {
+	addressID := ctx.Param("address_id")
+	email, _ := ctx.Get("email")
+	emailStr := email.(string)
+
+	var address dto.AddressDTO
+	if err := ctx.ShouldBind(&address); err != nil {
+		ctx.HTML(http.StatusBadRequest, "pages/admin/profile/address.html", gin.H{
+			"Error":   err.Error(),
+			"Address": address,
+		})
+		return
+	}
+
+	if err := h.adminService.AdminAddressUpdateService(emailStr, addressID, &address); err != nil {
+		ctx.HTML(http.StatusBadRequest, "pages/admin/profile/address.html", gin.H{
+			"Error":   err.Error(),
+			"Address": address,
+		})
+		return
+	}
+
+	ctx.Redirect(http.StatusSeeOther, "/admin/profile")
+
 }

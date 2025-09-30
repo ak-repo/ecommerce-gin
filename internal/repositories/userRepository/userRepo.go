@@ -67,7 +67,6 @@ func (r *userRepo) GetUserAddress(userID uint) (*models.Address, error) {
 
 // update user address
 func (r *userRepo) UpdateAddress(address *dto.AddressDTO) error {
-	println("phone:", address.Phone)
 
 	return r.DB.Model(&models.Address{}).Where("id=?", address.ID).Updates(map[string]interface{}{
 		"address_line": address.AddressLine,

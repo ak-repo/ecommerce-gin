@@ -11,6 +11,7 @@ import (
 	"github.com/ak-repo/ecommerce-gin/internal/models"
 	userrepository "github.com/ak-repo/ecommerce-gin/internal/repositories/userRepository"
 	jwtpkg "github.com/ak-repo/ecommerce-gin/pkg/jwt_pkg"
+	"gorm.io/gorm"
 )
 
 type Response struct {
@@ -60,6 +61,9 @@ func (s *userService) LoginService(input *dto.LoginRequest) (*dto.LoginResponse,
 	user, err := s.userRepo.GetUserByEmail(input.Email)
 	if err != nil {
 		return nil, err
+	}
+	if user == nil{
+		return nil,gorm.ErrRecordNotFound
 	}
 
 	if ok := utils.CompareHashAndPassword(input.Password, user.PasswordHash); !ok {

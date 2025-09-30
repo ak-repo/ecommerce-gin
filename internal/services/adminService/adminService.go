@@ -2,17 +2,20 @@ package adminservice
 
 import (
 	"errors"
+	"strconv"
 
 	"github.com/ak-repo/ecommerce-gin/config"
 	"github.com/ak-repo/ecommerce-gin/internal/common/utils"
 	"github.com/ak-repo/ecommerce-gin/internal/dto"
 	adminrepository "github.com/ak-repo/ecommerce-gin/internal/repositories/adminRepository"
 	jwtpkg "github.com/ak-repo/ecommerce-gin/pkg/jwt_pkg"
+	"gorm.io/gorm"
 )
 
 type AdminService interface {
 	AdminLoginService(email, password string) (*dto.LoginResponse, error)
 	AdminProfileService(email string) (*dto.ProfileDTO, error)
+	AdminAddressUpdateService(email, addressID string, address *dto.AddressDTO) error
 }
 
 type adminService struct {
@@ -34,6 +37,9 @@ func (s *adminService) AdminLoginService(email, password string) (*dto.LoginResp
 	admin, err := s.adminRepo.GetAdminInfo(email)
 	if err != nil {
 		return nil, err
+	}
+	if admin == nil {
+		return nil, gorm.ErrRecordNotFound
 	}
 
 	if ok := utils.CompareHashAndPassword(password, admin.PasswordHash); !ok {
@@ -80,15 +86,42 @@ func (s *adminService) AdminProfileService(email string) (*dto.ProfileDTO, error
 		Name:  admin.Username,
 		Email: admin.Email,
 		Role:  admin.Role,
-		Address: dto.AddressDTO{
-			ID:          address.ID,
-			AddressLine: address.AddressLine,
-			City:        address.City,
-			State:       address.State,
-			PostalCode:  address.PostalCode,
-			Country:     address.Country,
-		},
+	}
+	if address != nil {
+		profile.Address =
+			dto.AddressDTO{
+				ID:          address.ID,
+				AddressLine: address.AddressLine,
+				City:        address.City,
+				State:       address.State,
+				PostalCode:  address.PostalCode,
+				Country:     address.Country,
+				Phone:       address.Phone,
+			}
 	}
 
 	return &profile, nil
+}
+
+// admin profile update or add
+func (s *adminService) AdminAddressUpdateService(email, addressID string, address *dto.AddressDTO) error {
+
+	admin, err := s.adminRepo.GetAdminInfo(email)
+	if err != nil {
+		return err
+	}
+	if admin == nil {
+		return gorm.ErrRecordNotFound
+	}
+
+	addressUID, _ := strconv.ParseUint(addressID, 10, 64)
+
+	if addressUID == 0 {
+
+		return s.adminRepo.AddAdminAdress(admin.ID, address)
+
+	} else {
+		uID := uint(addressUID)
+		return s.adminRepo.UpdateAdminAddress(uID, address)
+	}
 }

@@ -130,13 +130,17 @@ func (h *UserHandler) UserProfileHandler(ctx *gin.Context) {
 
 	email, exists := ctx.Get("email")
 	if !exists {
-		ctx.String(http.StatusBadRequest, "no email found")
+		ctx.HTML(http.StatusInternalServerError, "pages/user/profile.html", gin.H{
+			"Error": "no email on token",
+		})
 		return
 	}
 
 	emailStr, ok := email.(string)
 	if !ok || emailStr == "" {
-		ctx.String(http.StatusBadRequest, "invalid email")
+		ctx.HTML(http.StatusInternalServerError, "pages/user/profile.html", gin.H{
+			"Error": "no email on token",
+		})
 		return
 	}
 
