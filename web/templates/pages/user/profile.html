@@ -8,46 +8,73 @@
   <!-- User Info -->
   <div class="space-y-4">
     <div>
+      <p class="text-gray-500 text-sm">Name</p>
+      <p class="font-medium text-gray-800">{{ .Profile.Name }}</p>
+    </div>
+    <div>
       <p class="text-gray-500 text-sm">Email</p>
-      <p class="font-medium text-gray-800">{{ .User.Email }}</p>
-    </div>
-    <div>
-      <p class="text-gray-500 text-sm">Role</p>
-      <p class="font-medium text-gray-800">{{ .User.Role }}</p>
-    </div>
-    <div>
-      <p class="text-gray-500 text-sm">Status</p>
-      {{ if .User.IsActive }}
-      <p class="font-medium text-green-600">Active</p>
-      {{ else }}
-      <p class="font-medium text-red-600">Inactive</p>
-      {{ end }}
-    </div>
-  </div>
-
-  <!-- Addresses -->
-  <div class="mt-6 border-t pt-4">
-    <h2 class="text-lg font-semibold text-gray-700 mb-2">Addresses</h2>
-    {{ if .User.Addresses }} {{ range .User.Addresses }}
-    <div class="mb-4 p-2 border rounded-lg">
-      <p class="text-gray-800">{{ .AddressLine }}</p>
-      <p class="text-gray-800">{{ .City }}, {{ .State }} - {{ .PostalCode }}</p>
-      <p class="text-gray-800">{{ .Country }}</p>
+      <p class="font-medium text-gray-800">{{ .Profile.Email }}</p>
       <a
-        href="/user/address/{{.ID}}"
+        href="/user/profile/change-email"
         class="text-blue-500 hover:underline text-sm"
-        >Edit</a
+        >Change Email</a
       >
     </div>
-    {{ end }} {{ else }}
-    <p class="text-gray-500 italic mb-3">No addresses available</p>
+    {{ if .Profile.Address.Phone}}
+    <div>
+      <p class="text-gray-500 text-sm">Phone</p>
+      <p class="font-medium text-gray-800">{{ .Profile.Address.Phone }}</p>
+    </div>
+    {{end}}
+  </div>
 
-    {{ end }}
+  <!-- My Orders Button -->
+  <div class="mt-6 text-center">
+    <a
+      href="/user/orders"
+      class="inline-block w-full bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600 transition"
+    >
+      My Orders
+    </a>
+  </div>
+
+  <!-- Address -->
+  <div class="mt-6 border-t pt-4">
+    <h2 class="text-lg font-semibold text-gray-700 mb-2">Address</h2>
+    {{ if .Profile.Address.ID }}
+    <div class="mb-4 p-2 border rounded-lg">
+      <p class="text-gray-800">{{ .Profile.Address.AddressLine }}</p>
+      <p class="text-gray-800">
+        {{ .Profile.Address.City }}, {{ .Profile.Address.State }} - {{
+        .Profile.Address.PostalCode }}
+      </p>
+      <p class="text-gray-800">{{ .Profile.Address.Country }}</p>
+      <a
+        href="/user/address/{{.Profile.Address.ID}}"
+        class="text-blue-500 hover:underline text-sm"
+        >Edit Address</a
+      >
+ 
+    </div>
+    {{ else }}
+    <p class="text-gray-500 italic mb-3">No address available</p>
     <a
       href="/user/address/0"
       class="inline-block bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition"
     >
       Add Address
+    </a>
+    {{ end }}
+  </div>
+
+  <!-- Security -->
+  <div class="mt-6 border-t pt-4">
+    <h2 class="text-lg font-semibold text-gray-700 mb-2">Security</h2>
+    <a
+      href="/user/profile/change-password"
+      class="inline-block bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition"
+    >
+      Change Password
     </a>
   </div>
 

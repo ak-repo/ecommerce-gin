@@ -1,0 +1,79 @@
+{{define "title"}}Admin Profile{{end}} {{define "content"}}
+<div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-md">
+  <h1 class="text-3xl font-bold mb-6">Admin Profile</h1>
+
+  {{if .Error}}
+  <div class="text-red-500 mb-4">{{.Error}}</div>
+  {{end}}
+
+  <!-- Basic Info -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+    <div>
+      <p><span class="font-semibold">ID:</span> {{.Profile.ID}}</p>
+      <p><span class="font-semibold">Name:</span> {{.Profile.Name}}</p>
+      <p>
+        <span class="font-semibold">Email:</span> {{.Profile.Email}}
+        <a
+          href="/admin/profile/change-email"
+          class="ml-2 text-blue-600 hover:underline"
+          >Change Email</a
+        >
+      </p>
+      <p><span class="font-semibold">Role:</span> {{.Profile.Role}}</p>
+      <p><span class="font-semibold">Phone:</span> {{.Profile.Phone}}</p>
+    </div>
+  </div>
+
+  <!-- Address Section -->
+  <div class="mb-6">
+    <h2 class="text-2xl font-semibold mb-3">Address</h2>
+    {{if .Profile.Address.ID}}
+
+    <p>
+      <span class="font-semibold">Street:</span>
+      {{.Profile.Address.AddressLine}}
+    </p>
+    <p><span class="font-semibold">City:</span> {{.Profile.Address.City}}</p>
+    <p><span class="font-semibold">State:</span> {{.Profile.Address.State}}</p>
+    <p>
+      <span class="font-semibold">Zip Code:</span>
+      {{.Profile.Address.PostalCode}}
+    </p>
+    <p>
+      <span class="font-semibold">Country:</span> {{.Profile.Address.Country}}
+    </p>
+    <a
+      href="/admin/profile/change-address"
+      class="mt-2 inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+      >Change Address</a
+    >
+    {{else}}
+    <p>No address found.</p>
+    <a
+      href="/admin/profile/add-address"
+      class="mt-2 inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+      >Add Address</a
+    >
+    {{end}}
+  </div>
+
+  <!-- Security -->
+  <div class="mb-6">
+    <h2 class="text-2xl font-semibold mb-3">Security</h2>
+    <a
+      href="/admin/profile/change-password"
+      class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+      >Change Password</a
+    >
+  </div>
+
+  <!-- Logout -->
+  <div>
+    <a
+      href="/admin/logout"
+      class="inline-block bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+      >Logout</a
+    >
+  </div>
+</div>
+{{end}}

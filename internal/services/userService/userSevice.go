@@ -2,15 +2,15 @@ package userservice
 
 import (
 	"errors"
-	"log"
+	"strconv"
 	"time"
 
 	"github.com/ak-repo/ecommerce-gin/config"
 	"github.com/ak-repo/ecommerce-gin/internal/common/utils"
+	"github.com/ak-repo/ecommerce-gin/internal/dto"
 	"github.com/ak-repo/ecommerce-gin/internal/models"
 	userrepository "github.com/ak-repo/ecommerce-gin/internal/repositories/userRepository"
 	jwtpkg "github.com/ak-repo/ecommerce-gin/pkg/jwt_pkg"
-	"gorm.io/gorm"
 )
 
 type Response struct {
@@ -21,10 +21,10 @@ type Response struct {
 	User         *models.User
 }
 type UserService interface {
-	Register(input *models.InputUser) (*models.User, error)
-	Login(input *models.InputUser) (*Response, error)
-	UserProfileService(email string) (*models.User, error)
-	UserProfileUpdateService(email string, addresID string, address *models.Address) error
+	RegisterService(input *dto.RegisterRequest) error
+	LoginService(input *dto.LoginRequest) (*dto.LoginResponse, error)
+	UserProfileService(email string) (*dto.ProfileDTO, error)
+	UserAddressUpdateService(address *dto.AddressDTO, addressID, email string) error
 }
 
 type userService struct {
@@ -36,38 +36,29 @@ func NewUserService(userRepo userrepository.UserRepo, cfg *config.Config) UserSe
 	return &userService{userRepo: userRepo, cfg: cfg}
 }
 
-func (s *userService) Register(input *models.InputUser) (*models.User, error) {
+func (s *userService) RegisterService(input *dto.RegisterRequest) error {
 
 	hash, err := utils.HashPassword(input.Password)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	user := &models.User{
-		Email:        input.Email,
-		PasswordHash: hash,
-		Role:         "customer",
-		IsActive:     true,
+	if user, err := s.userRepo.GetUserByEmail(input.Email); user != nil && err != nil {
+		return errors.New("email already taken")
 	}
 
-	if err := s.userRepo.GetUserByEmail(&models.User{}, input.Email); err != nil {
-		return nil, errors.New("email already taken")
-
+	if err := s.userRepo.CreateUser(input.Username, input.Email, hash); err != nil {
+		return err
 	}
 
-	if err := s.userRepo.CreateUser(user); err != nil {
-		return nil, err
-	}
-
-	return user, nil
+	return nil
 
 }
 
-func (s *userService) Login(input *models.InputUser) (*Response, error) {
+func (s *userService) LoginService(input *dto.LoginRequest) (*dto.LoginResponse, error) {
 
-	user := models.User{}
-
-	if err := s.userRepo.GetUserByEmail(&user,input.Email); err != nil {
+	user, err := s.userRepo.GetUserByEmail(input.Email)
+	if err != nil {
 		return nil, err
 	}
 
@@ -75,78 +66,74 @@ func (s *userService) Login(input *models.InputUser) (*Response, error) {
 		return nil, errors.New("entered password is not matching")
 	}
 
-	log.Println(&user.Username, "user")
-
-	accessToken, err := jwtpkg.AccessTokenGenerator(&user, s.cfg)
+	accessToken, err := jwtpkg.AccessTokenGenerator(user, s.cfg)
 	if err != nil {
 		return nil, errors.New("token generation failed")
 	}
 
-	refreshToken, err := jwtpkg.RefreshTokenGenerator(&user, s.cfg)
+	refreshToken, err := jwtpkg.RefreshTokenGenerator(user, s.cfg)
 	if err != nil {
 		return nil, errors.New("token generation failed")
 	}
 
-	res := &Response{
-		User:         &user,
+	res := dto.LoginResponse{
+		User:         user,
 		RefreshToken: refreshToken,
 		RefreshExp:   s.cfg.JWT.RefreshExpiration,
 		AccessToken:  accessToken,
 		AccessExp:    s.cfg.JWT.AccessExpiration,
 	}
-	return res, nil
+	return &res, nil
 
 }
 
-type UserProfle struct {
-	User    *models.User
-	Address *models.Address
-}
-
-func (s *userService) UserProfileService(email string) (*models.User, error) {
-	user := &models.User{}
-
-	// Properly fetch user by email
-	if err := s.userRepo.GetUserByEmail(user, email); err != nil {
+func (s *userService) UserProfileService(email string) (*dto.ProfileDTO, error) {
+	user, err := s.userRepo.GetUserByEmail(email)
+	if err != nil {
+		return nil, err
+	}
+	address, err := s.userRepo.GetUserAddress(user.ID)
+	if err != nil {
 		return nil, err
 	}
 
-	// Load profile details (addresses, etc.)
-	if err := s.userRepo.GetUserProfile(user); err != nil {
-		// not fatal if no addresses found, just return user with empty slice
-		if !errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, err
+	profile := dto.ProfileDTO{
+		ID:    user.ID,
+		Name:  user.Username,
+		Email: user.Email,
+		Role:  user.Role,
+	}
+	if address != nil {
+		profile.Address = dto.AddressDTO{
+			Phone:       address.Phone,
+			ID:          address.ID,
+			AddressLine: address.AddressLine,
+			City:        address.City,
+			State:       address.State,
+			PostalCode:  address.PostalCode,
+			Country:     address.Country,
 		}
 	}
 
-	// Always return a valid slice (avoid nil in template)
-	if user.Addresses == nil {
-		user.Addresses = []models.Address{}
-	}
+	return &profile, nil
 
-	return user, nil
 }
 
-// User profile add or update
-func (s *userService) UserProfileUpdateService(email string, addresID string, address *models.Address) error {
+func (s *userService) UserAddressUpdateService(address *dto.AddressDTO, addressID, email string) error {
 
-	user := models.User{}
-	if err := s.userRepo.GetUserByEmail(&user, email); err != nil {
+	user, err := s.userRepo.GetUserByEmail(email)
+	if err != nil {
 		return err
 	}
-
-	address.UserID = user.ID
-	if addresID == "0" {
-		if err := s.userRepo.AddUserProfile(address); err != nil {
-			return err
-		}
-	} else {
-		if err := s.userRepo.UpdateUserProfile(addresID, address); err != nil {
-			return err
-		}
-
+	addressUID, err := strconv.ParseUint(addressID, 10, 64)
+	if err != nil {
+		return err
 	}
-
-	return nil
+	if addressUID == 0 {
+		return s.userRepo.AddAddress(address, user.ID)
+	} else {
+		address.ID = uint(addressUID)
+		return s.userRepo.UpdateAddress(address)
+	}
 
 }

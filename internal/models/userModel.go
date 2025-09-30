@@ -9,7 +9,6 @@ type User struct {
 	Username     string `gorm:"size:255;not null" `
 	IsActive     bool   `gorm:"default:true"`
 	Role         string `gorm:"size:100;not null"` // condition need to given
-	Addresses    []Address
 	// Orders       []Order
 	// Cart         Cart
 	// Wishlist     Wishlist
@@ -22,6 +21,7 @@ type InputUser struct {
 
 type Address struct {
 	gorm.Model
+	Phone       string `gorm:"size:20;not null"`
 	UserID      uint   `gorm:"not null"`
 	AddressLine string `gorm:"type:text;not null"`
 	City        string `gorm:"size:100;not null"`

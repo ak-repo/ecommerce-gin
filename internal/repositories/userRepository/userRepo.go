@@ -1,18 +1,19 @@
 package userrepository
 
 import (
-	"strconv"
+	"errors"
 
+	"github.com/ak-repo/ecommerce-gin/internal/dto"
 	"github.com/ak-repo/ecommerce-gin/internal/models"
 	"gorm.io/gorm"
 )
 
 type UserRepo interface {
-	CreateUser(user *models.User) error
-	GetUserByEmail(user *models.User, email string) error
-	GetUserProfile(user *models.User) error
-	UpdateUserProfile(id string, address *models.Address) error
-	AddUserProfile(address *models.Address) error
+	CreateUser(username, email, password string) error
+	GetUserByEmail(email string) (*models.User, error)
+	GetUserAddress(userID uint) (*models.Address, error)
+	AddAddress(address *dto.AddressDTO, userID uint) error
+	UpdateAddress(address *dto.AddressDTO) error
 }
 
 type userRepo struct {
@@ -25,68 +26,68 @@ func NewUserRepo(db *gorm.DB) UserRepo {
 }
 
 // user registration
-func (r *userRepo) CreateUser(user *models.User) error {
-	return r.DB.Create(user).Error
+func (r *userRepo) CreateUser(username, email, password string) error {
+	user := models.User{
+		Email:        email,
+		Username:     username,
+		PasswordHash: password,
+		Role:         "customer",
+		IsActive:     true,
+	}
+	return r.DB.Create(&user).Error
 }
 
-// // Check user email already register
-// func (r *userRepo) GetUserByEmail(user *models.User) error {
-// 	return r.DB.Where("email=?", user.Email).First(user).Error
-
-// }
-
-// // Get user profile
-// func (r *userRepo) GetUserProfile(user *models.User) error {
-
-// 	err := r.DB.Where("user_id = ?", user.ID).Find(&user.Addresses).Error
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	if len(user.Addresses) == 0 {
-// 		// no addresses found
-// 		return gorm.ErrRecordNotFound
-// 	}
-
-// 	return nil
-
-// }
-
-// func (r *userRepo) AddUserProfile(address *models.Address) error {
-
-// 	return r.DB.Create(address).Error
-// }
-
-// func (r *userRepo) UpdateUserProfile(id string, address *models.Address) error {
-// 	idUint, _ := strconv.ParseUint(id, 10, 32)
-// 	return r.DB.Model(&models.Address{}).
-// 		Where("id = ?", uint(idUint)).
-// 		Select("*").
-// 		Updates(address).Error
-// }
-
-func (r *userRepo) GetUserByEmail(user *models.User, email string) error {
-	return r.DB.Where("email = ?", email).First(user).Error
+// return user details
+func (r *userRepo) GetUserByEmail(email string) (*models.User, error) {
+	var user models.User
+	err := r.DB.Where("email = ?", email).First(&user).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil 
+	}
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
 }
 
-func (r *userRepo) GetUserProfile(user *models.User) error {
-	// Preload addresses
-	return r.DB.Preload("Addresses").First(user, "id = ?", user.ID).Error
+// return user address detials
+func (r *userRepo) GetUserAddress(userID uint) (*models.Address, error) {
+
+	var address models.Address
+	err := r.DB.Where("user_id=?", userID).First(&address).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil // return no error, just no address
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	return &address, nil
 }
 
-func (r *userRepo) AddUserProfile(address *models.Address) error {
-	return r.DB.Create(address).Error
+// update user address
+func (r *userRepo) UpdateAddress(address *dto.AddressDTO) error {
+	println("phone:", address.Phone)
+
+	return r.DB.Model(&models.Address{}).Where("id=?", address.ID).Updates(map[string]interface{}{
+		"address_line": address.AddressLine,
+		"city":         address.City,
+		"state":        address.State,
+		"postal_code":  address.PostalCode,
+		"country":      address.Country,
+		"phone":        address.Phone,
+	}).Error
 }
 
-func (r *userRepo) UpdateUserProfile(id string, address *models.Address) error {
-	idUint, _ := strconv.ParseUint(id, 10, 32)
-	return r.DB.Model(&models.Address{}).
-		Where("id = ?", uint(idUint)).
-		Updates(map[string]interface{}{
-			"address_line": address.AddressLine,
-			"city":         address.City,
-			"state":        address.State,
-			"postal_code":  address.PostalCode,
-			"country":      address.Country,
-		}).Error
+func (r *userRepo) AddAddress(address *dto.AddressDTO, userID uint) error {
+
+	return r.DB.Create(&models.Address{
+		UserID:      userID,
+		AddressLine: address.AddressLine,
+		City:        address.City,
+		State:       address.State,
+		PostalCode:  address.PostalCode,
+		Country:     address.Country,
+		Phone:       address.Phone,
+	}).Error
 }

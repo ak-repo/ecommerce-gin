@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/ak-repo/ecommerce-gin/internal/models"
+	"github.com/ak-repo/ecommerce-gin/internal/dto"
 	userservice "github.com/ak-repo/ecommerce-gin/internal/services/userService"
 	"github.com/gin-gonic/gin"
 )
@@ -31,7 +31,7 @@ func (h *UserHandler) ShowRegistrationForm(ctx *gin.Context) {
 
 // RegistrationHandler processes a new user registration.
 func (h *UserHandler) RegistrationHandler(ctx *gin.Context) {
-	var input models.InputUser
+	var input dto.RegisterRequest
 	if err := ctx.ShouldBind(&input); err != nil {
 		ctx.HTML(http.StatusBadRequest, "pages/user/registerFail.html", gin.H{
 			"Title":       "Registration Failed",
@@ -41,7 +41,7 @@ func (h *UserHandler) RegistrationHandler(ctx *gin.Context) {
 		return
 	}
 
-	user, err := h.userService.Register(&input)
+	err := h.userService.RegisterService(&input)
 	if err != nil {
 		ctx.HTML(http.StatusConflict, "pages/user/registerFail.html", gin.H{
 			"Title":       "Registration Failed",
@@ -54,7 +54,7 @@ func (h *UserHandler) RegistrationHandler(ctx *gin.Context) {
 	ctx.HTML(http.StatusCreated, "pages/user/registerSuccess.html", gin.H{
 		"Title":       "Registration Successful!",
 		"CurrentYear": time.Now().Year(),
-		"User":        user,
+		"User":        input.Username,
 	})
 }
 
@@ -70,7 +70,7 @@ func (h *UserHandler) ShowLoginForm(ctx *gin.Context) {
 
 // LoginHandler processes a user login attempt
 func (h *UserHandler) LoginHandler(ctx *gin.Context) {
-	var input models.InputUser
+	var input dto.LoginRequest
 	if err := ctx.ShouldBind(&input); err != nil {
 		ctx.HTML(http.StatusBadRequest, "pages/user/loginFail.html", gin.H{
 			"Title":       "Login Failed",
@@ -80,7 +80,7 @@ func (h *UserHandler) LoginHandler(ctx *gin.Context) {
 		return
 	}
 
-	res, err := h.userService.Login(&input)
+	res, err := h.userService.LoginService(&input)
 	if err != nil {
 		ctx.HTML(http.StatusUnauthorized, "pages/user/loginFail.html", gin.H{
 			"Title":       "Login Failed",
@@ -107,7 +107,8 @@ func (h *UserHandler) UserLogout(ctx *gin.Context) {
 
 }
 
-// home page
+// ------------------------------------------------------------------------------------------------------------------------------------------
+// GET /home   => home page
 func (h *UserHandler) HomePageHandler(ctx *gin.Context) {
 	email, exists := ctx.Get("email")
 	if !exists {
@@ -127,95 +128,100 @@ func (h *UserHandler) HomePageHandler(ctx *gin.Context) {
 // User profile GET user/profile
 func (h *UserHandler) UserProfileHandler(ctx *gin.Context) {
 
-	emailI, exists := ctx.Get("email")
+	email, exists := ctx.Get("email")
 	if !exists {
 		ctx.String(http.StatusBadRequest, "no email found")
 		return
 	}
 
-	emailStr, ok := emailI.(string)
+	emailStr, ok := email.(string)
 	if !ok || emailStr == "" {
 		ctx.String(http.StatusBadRequest, "invalid email")
 		return
 	}
 
-	user, err := h.userService.UserProfileService(emailStr)
-	if err != nil || user == nil {
-		// render template with nil User safely
-		ctx.HTML(http.StatusOK, "pages/user/profile.html", gin.H{
-			"User":    nil,
-			"Address": nil,
+	profile, err := h.userService.UserProfileService(emailStr)
+	if err != nil {
+		ctx.HTML(http.StatusInternalServerError, "pages/user/profile.html", gin.H{
+			"Error": err.Error(),
 		})
 		return
 	}
 
-	var addr *models.Address
-	if len(user.Addresses) > 0 {
-		addr = &user.Addresses[0]
-	}
-
 	ctx.HTML(http.StatusOK, "pages/user/profile.html", gin.H{
-		"User":    user,
-		"Address": addr,
+		"User":    email,
+		"Error":   nil,
+		"Profile": profile,
 	})
+
 }
 
 // GET user/address -> shop user address form
 func (h *UserHandler) ShowAddressForm(ctx *gin.Context) {
-	log.Println("hoooiii")
 	addressID := ctx.Param("address_id")
 	email, _ := ctx.Get("email")
-
 	emailStr := email.(string)
 
-	user, err := h.userService.UserProfileService(emailStr)
-	if err != nil {
-		ctx.String(http.StatusInternalServerError, "user not found")
-		return
-	}
+	address := dto.AddressDTO{}
 	if addressID == "0" {
 		ctx.HTML(http.StatusOK, "pages/user/address.html", gin.H{
-			"Address": nil,
+			"Address": address,
+			"User":    email,
+		})
+		return
+	}
+
+	profile, err := h.userService.UserProfileService(emailStr)
+	if err != nil {
+		ctx.HTML(http.StatusOK, "pages/user/address.html", gin.H{
+			"Address": address,
+			"User":    email,
+			"Error":   err.Error(),
+		})
+		return
+	}
+
+	addID, _ := strconv.ParseUint(addressID, 10, 64)
+	if profile.Address.ID == 0 || uint(addID) != profile.Address.ID {
+		ctx.HTML(http.StatusOK, "pages/user/address.html", gin.H{
+			"Address": address,
 			"User":    email,
 		})
 		return
 
 	}
 
-	var addr *models.Address = nil
-	if addressID != "" && addressID != "0" {
-		id, _ := strconv.Atoi(addressID)
-		for _, v := range user.Addresses {
-			if v.ID == uint(id) {
-				addr = &v
-				break
-			}
-		}
-	}
-
 	ctx.HTML(http.StatusOK, "pages/user/address.html", gin.H{
-		"User":    user,
-		"Address": addr,
+		"User":    email,
+		"Address": profile.Address,
 	})
 }
 
-// POST user/address add user address into db
-func (h *UserHandler) UserAddressHandler(ctx *gin.Context) {
-	address_id := ctx.Param("address_id")
+// POST user/address/update -> add or update user address
+func (h *UserHandler) UserAddressUpdateHandler(ctx *gin.Context) {
+	addressID := ctx.Param("address_id")
 	email, _ := ctx.Get("email")
-	emailStr, _ := email.(string)
-	address := models.Address{}
+	emailStr := email.(string)
+
+	var address dto.AddressDTO
 	if err := ctx.ShouldBind(&address); err != nil {
-		ctx.String(http.StatusBadRequest, "binding failed")
+		ctx.HTML(http.StatusBadRequest, "pages/user/address.html", gin.H{
+			"User":    email,
+			"Address": address,
+			"Error":   err.Error(),
+		})
 		return
 	}
+	log.Println("phone:", address.Phone)
 
-	if err := h.userService.UserProfileUpdateService(emailStr, address_id, &address); err != nil {
-		ctx.String(http.StatusBadRequest, "adding failed")
-
+	if err := h.userService.UserAddressUpdateService(&address, addressID, emailStr); err != nil {
+		ctx.HTML(http.StatusBadRequest, "pages/user/address.html", gin.H{
+			"User":    email,
+			"Address": address,
+			"Error":   err.Error(),
+		})
 		return
 	}
 
 	ctx.Redirect(http.StatusSeeOther, "/user/profile")
-
 }

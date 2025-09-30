@@ -7,9 +7,18 @@ import (
 	"gorm.io/gorm"
 )
 
-func SeedProducts(db *gorm.DB) {
-
-	db.Create(Products)
+func SeedProducts(db *gorm.DB) error {
+	return db.Transaction(func(tx *gorm.DB) error {
+		for _, p := range Products {
+			var existing models.Product
+			if err := tx.First(&existing, "id = ?", p.ID).Error; err == gorm.ErrRecordNotFound {
+				if err := tx.Create(&p).Error; err != nil {
+					return err
+				}
+			}
+		}
+		return nil
+	})
 }
 
 var Products = []models.Product{
