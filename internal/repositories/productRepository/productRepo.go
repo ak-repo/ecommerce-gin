@@ -7,7 +7,7 @@ import (
 
 type ProductRepo interface {
 	GetAllProducts() ([]models.Product, error)
-	GetProductByID(id string) (*models.Product, error)
+	GetProductByID(id uint) (*models.Product, error)
 	GetCategories() ([]models.Category, error)
 	UpdateProductService(product *models.Product, updatedProduct *models.UpdateProductInput) error
 }
@@ -30,7 +30,7 @@ func (r *productRepo) GetAllProducts() ([]models.Product, error) {
 }
 
 // Get one product from DB by ID
-func (r *productRepo) GetProductByID(id string) (*models.Product, error) {
+func (r *productRepo) GetProductByID(id uint) (*models.Product, error) {
 	product := &models.Product{}
 
 	err := r.DB.Preload("Category").First(product, id).Error

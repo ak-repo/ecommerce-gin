@@ -13,7 +13,7 @@ type Category struct {
 }
 
 type Product struct {
-	ID        string `gorm:"primaryKey;size:50"`
+	ID        uint `gorm:"primaryKey;size:50"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`

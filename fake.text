@@ -1,61 +1,92 @@
-// GET /user/address/:address_id
-func (h *UserHandler) ShowAddressForm(ctx *gin.Context) {
-    addressID := ctx.Param("address_id")
-    email, _ := ctx.Get("email")
-    emailStr := email.(string)
+func (s *cartService) AddToCartService(email string, addToCart *dto.AddToCartDTO) error {
 
-    user, err := h.userService.UserProfileService(emailStr)
-    if err != nil {
-        ctx.String(http.StatusInternalServerError, "user not found")
-        return
-    }
+	// 1️⃣ Find the user
+	user, err := s.userRepo.GetUserByEmail(email)
+	if err != nil {
+		return errors.New("user not found")
+	}
 
-    // default: new address
-    var addr *models.Address = nil
-    if addressID != "" && addressID != "0" {
-        id, _ := strconv.Atoi(addressID)
-        for _, v := range user.Addresses {
-            if v.ID == uint(id) {
-                addr = &v
-                break
-            }
-        }
-    }
+	// 2️⃣ Get or create the user's cart
+	cart, err := s.cartRepository.GetOrCreateCart(user.ID)
+	if err != nil {
+		return errors.New("could not get or create cart")
+	}
 
-    ctx.HTML(http.StatusOK, "pages/user/address.html", gin.H{
-        "User":    user,
-        "Address": addr,
-    })
+	// 3️⃣ Check if product already exists in cart
+	cartItem, err := s.cartRepository.GetCartItem(cart.ID, addToCart.ProductID)
+	if err == nil && cartItem != nil {
+		// Update quantity
+		cartItem.Quantity += addToCart.Quantity
+		cartItem.Subtotal = float64(cartItem.Quantity) * cartItem.Price
+		return s.cartRepository.UpdateCartItem(cartItem)
+	}
+
+	// 4️⃣ Otherwise, add new cart item
+	product, err := s.cartRepository.GetProductByID(addToCart.ProductID)
+	if err != nil {
+		return errors.New("product not found")
+	}
+
+	newItem := &cartrepository.CartItem{
+		CartID:    cart.ID,
+		ProductID: product.ID,
+		Quantity:  addToCart.Quantity,
+		Price:     product.BasePrice,
+		Subtotal:  float64(addToCart.Quantity) * product.BasePrice,
+	}
+
+	return s.cartRepository.CreateCartItem(newItem)
 }
 
-// POST /user/address/:address_id
-func (h *UserHandler) UserAddressHandler(ctx *gin.Context) {
-    addressID := ctx.Param("address_id")
-    email, _ := ctx.Get("email")
-    emailStr := email.(string)
 
-    var input models.Address
-    if err := ctx.ShouldBind(&input); err != nil {
-        ctx.String(http.StatusBadRequest, "binding failed: "+err.Error())
-        return
-    }
+package cartrepository
 
-    // Set UserID from logged-in user
-    user, _ := h.userService.GetUserByEmail(emailStr)
-    input.UserID = user.ID
+import (
+	"github.com/ak-repo/ecommerce-gin/internal/models"
+	"gorm.io/gorm"
+)
 
-    // Create or Update
-    if addressID == "0" {
-        if err := h.userService.AddUserProfile(&input); err != nil {
-            ctx.String(http.StatusBadRequest, "adding failed: "+err.Error())
-            return
-        }
-    } else {
-        if err := h.userService.UpdateUserProfile(addressID, &input); err != nil {
-            ctx.String(http.StatusBadRequest, "updating failed: "+err.Error())
-            return
-        }
-    }
+type cartRepo struct {
+	DB *gorm.DB
+}
 
-    ctx.Redirect(http.StatusSeeOther, "/user/profile")
+func NewCartRepository(db *gorm.DB) CartRepository {
+	return &cartRepo{DB: db}
+}
+
+// Get or create a cart for the user
+func (r *cartRepo) GetOrCreateCart(userID uint) (*models.Cart, error) {
+	var cart models.Cart
+	err := r.DB.Preload("CartItems").FirstOrCreate(&cart, models.Cart{UserID: userID}).Error
+	return &cart, err
+}
+
+// Get a specific cart item
+func (r *cartRepo) GetCartItem(cartID, productID uint) (*models.CartItem, error) {
+	var item models.CartItem
+	err := r.DB.Where("cart_id = ? AND product_id = ?", cartID, productID).First(&item).Error
+	if err != nil {
+		return nil, err
+	}
+	return &item, nil
+}
+
+// Create new cart item
+func (r *cartRepo) CreateCartItem(item *models.CartItem) error {
+	return r.DB.Create(item).Error
+}
+
+// Update existing cart item
+func (r *cartRepo) UpdateCartItem(item *models.CartItem) error {
+	return r.DB.Save(item).Error
+}
+
+// Get product by ID (for price)
+func (r *cartRepo) GetProductByID(productID uint) (*models.Product, error) {
+	var product models.Product
+	err := r.DB.First(&product, productID).Error
+	if err != nil {
+		return nil, err
+	}
+	return &product, nil
 }

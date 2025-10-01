@@ -56,6 +56,7 @@ func (h *ProductHandler) GetAllProductHandler(ctx *gin.Context) {
 func (h *ProductHandler) GetProductByIDHandler(ctx *gin.Context) {
 
 	id := ctx.Param("id")
+
 	if id == "" {
 		ctx.HTML(http.StatusBadRequest, "pages/products/product.html", gin.H{
 			"Error": "No id found",
@@ -71,9 +72,13 @@ func (h *ProductHandler) GetProductByIDHandler(ctx *gin.Context) {
 
 	email, _ := ctx.Get("email")
 
+	msg, _ := ctx.Cookie("flash")
+	ctx.SetCookie("flash", "", -1, "/", "localhost", false, true)
+
 	ctx.HTML(http.StatusOK, "pages/products/product.html", gin.H{
 		"Product":     product,
 		"CurrentYear": time.Now().Year(),
+		"Message":     msg,
 		"User":        email,
 	})
 }

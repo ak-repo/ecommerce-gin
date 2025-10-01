@@ -7,6 +7,38 @@ import (
 	"gorm.io/gorm"
 )
 
+var Categories = []models.Category{
+	{Name: "Smoothies"},
+	{Name: "Pasta"},
+	{Name: "Oats"},
+}
+
+func SeedAll(db *gorm.DB) error {
+	return db.Transaction(func(tx *gorm.DB) error {
+		if err := SeedCategories(tx); err != nil {
+			return err
+		}
+		if err := SeedProducts(tx); err != nil {
+			return err
+		}
+		return nil
+	})
+}
+
+func SeedCategories(db *gorm.DB) error {
+	return db.Transaction(func(tx *gorm.DB) error {
+		for _, c := range Categories {
+			var existing models.Category
+			if err := tx.First(&existing, "id = ?", c.ID).Error; err == gorm.ErrRecordNotFound {
+				if err := tx.Create(&c).Error; err != nil {
+					return err
+				}
+			}
+		}
+		return nil
+	})
+}
+
 func SeedProducts(db *gorm.DB) error {
 	return db.Transaction(func(tx *gorm.DB) error {
 		for _, p := range Products {
@@ -23,7 +55,7 @@ func SeedProducts(db *gorm.DB) error {
 
 var Products = []models.Product{
 	{
-		ID:          "47175570784554",
+		ID:          1,
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 		DeletedAt:   gorm.DeletedAt{},
@@ -37,7 +69,7 @@ var Products = []models.Product{
 		CategoryID:  1,
 	},
 	{
-		ID:          "46783280054570",
+		ID:          2,
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 		DeletedAt:   gorm.DeletedAt{},
@@ -51,7 +83,7 @@ var Products = []models.Product{
 		CategoryID:  1,
 	},
 	{
-		ID:          "47175581303082",
+		ID:          3,
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 		DeletedAt:   gorm.DeletedAt{},
@@ -65,7 +97,7 @@ var Products = []models.Product{
 		CategoryID:  1,
 	},
 	{
-		ID:          "46783324029226",
+		ID:          4,
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 		DeletedAt:   gorm.DeletedAt{},
@@ -79,7 +111,7 @@ var Products = []models.Product{
 		CategoryID:  1,
 	},
 	{
-		ID:          "46783308824874",
+		ID:          5,
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 		DeletedAt:   gorm.DeletedAt{},
@@ -93,7 +125,7 @@ var Products = []models.Product{
 		CategoryID:  1,
 	},
 	{
-		ID:          "47121324802346",
+		ID:          6,
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 		DeletedAt:   gorm.DeletedAt{},
@@ -107,7 +139,7 @@ var Products = []models.Product{
 		CategoryID:  2,
 	},
 	{
-		ID:          "47121324835114",
+		ID:          7,
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 		DeletedAt:   gorm.DeletedAt{},
@@ -121,7 +153,7 @@ var Products = []models.Product{
 		CategoryID:  2,
 	},
 	{
-		ID:          "46783296045354",
+		ID:          8,
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 		DeletedAt:   gorm.DeletedAt{},
@@ -135,7 +167,7 @@ var Products = []models.Product{
 		CategoryID:  1,
 	},
 	{
-		ID:          "47121677877546",
+		ID:          9,
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 		DeletedAt:   gorm.DeletedAt{},
@@ -149,7 +181,7 @@ var Products = []models.Product{
 		CategoryID:  3,
 	},
 	{
-		ID:          "46783262982442",
+		ID:          10,
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 		DeletedAt:   gorm.DeletedAt{},
@@ -163,7 +195,7 @@ var Products = []models.Product{
 		CategoryID:  1,
 	},
 	{
-		ID:          "46783285264682",
+		ID:          11,
 		CreatedAt:   time.Now(),
 		UpdatedAt:   time.Now(),
 		DeletedAt:   gorm.DeletedAt{},

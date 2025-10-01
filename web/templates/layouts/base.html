@@ -3,29 +3,131 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{{block "title" .}}freshBox{{end}}</title>
+    <title>freshBox</title>
     <script src="https://cdn.tailwindcss.com"></script>
-  </head>
-  <body class="bg-gray-100 text-gray-800 font-sans flex flex-col min-h-screen">
-    <!-- Navbar -->
-    <nav class="bg-white shadow-md p-4 flex justify-between items-center">
-      <a href="/" class="text-2xl font-bold text-gray-800">freshBox</a>
-      <div class="flex items-center space-x-6">
-        <ul class="flex space-x-6">
-          <li><a href="/" class="hover:text-blue-500">Home</a></li>
-          <li><a href="/products" class="hover:text-blue-500">Products</a></li>
-        </ul>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
 
-        <div class="user-info">
-          {{if .User}}
-          <a href="/user/profile" class="ml-4 hover:text-red-500">Profile</a>
-          {{else}}
-          <a
-            href="/login"
-            class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-            >Login</a
-          >
-          {{end}}
+      body {
+        font-family: "Poppins", sans-serif;
+      }
+
+      .cart-badge,
+      .wishlist-badge {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background-color: #ef4444;
+        color: white;
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        font-size: 0.7rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .nav-link {
+        position: relative;
+        transition: all 0.3s ease;
+      }
+
+      .nav-link::after {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -4px;
+        left: 0;
+        background-color: #3b82f6;
+        transition: width 0.3s ease;
+      }
+
+      .nav-link:hover::after {
+        width: 100%;
+      }
+
+      .icon-container {
+        position: relative;
+        transition: transform 0.3s ease;
+      }
+
+      .icon-container:hover {
+        transform: scale(1.1);
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
+    <!-- Enhanced Navbar -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+      <div class="container mx-auto px-4">
+        <div class="flex justify-between items-center py-3">
+          <!-- Logo -->
+          <a href="/" class="text-2xl font-bold text-gray-800">freshBox</a>
+
+          <!-- Navigation Links -->
+          <div class="hidden md:flex items-center space-x-8">
+            <a
+              href="/"
+              class="nav-link font-medium text-gray-700 hover:text-blue-500"
+              >Home</a
+            >
+            <a
+              href="/products"
+              class="nav-link font-medium text-gray-700 hover:text-blue-500"
+              >Products</a
+            >
+          </div>
+
+          <!-- User Actions -->
+
+          <!-- User Actions -->
+          <div class="flex items-center space-x-6">
+            {{if .User}}
+            <!-- Wishlist Icon -->
+            <div class="icon-container relative">
+              <a
+                href="/user/wishlist"
+                class="text-gray-700 hover:text-red-500 transition-colors"
+              >
+                <i class="far fa-heart text-xl"></i>
+                <span class="wishlist-badge">{{.WishlistCount}}</span>
+              </a>
+            </div>
+
+            <!-- Cart Icon -->
+            <div class="icon-container relative">
+              <a
+                href="/user/cart"
+                class="text-gray-700 hover:text-blue-500 transition-colors"
+              >
+                <i class="fas fa-shopping-cart text-xl"></i>
+                <span class="cart-badge">{{.CartCount}}</span>
+              </a>
+            </div>
+
+            <!-- Profile Icon -->
+            <a
+              href="/user/profile"
+              class="ml-4 text-gray-700 hover:text-blue-500 transition-colors"
+            >
+              <i class="fas fa-user-circle text-xl"></i>
+            </a>
+            {{else}}
+            <!-- Login button for guest users -->
+            <a
+              href="/login"
+              class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+            >
+              Login
+            </a>
+            {{end}}
+          </div>
         </div>
       </div>
     </nav>

@@ -30,7 +30,7 @@ func main() {
 
 	r := gin.New()
 	r.Use(gin.Recovery(), gin.Logger(), middleware.AccessMiddleware(cfg))
-	r.Static("/web/static", "./static")
+	// r.Static("/web/static", "./static")
 
 	// r.LoadHTMLGlob("web/templates/**/*.html")
 	r.HTMLRender = createMyRender("web/templates")

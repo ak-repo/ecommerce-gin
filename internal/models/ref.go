@@ -8,18 +8,6 @@ import (
 
 
 
-type Cart struct {
-	gorm.Model
-	UserID    uint `gorm:"uniqueIndex;not null"`
-	CartItems []CartItem
-}
-
-type CartItem struct {
-	gorm.Model
-	CartID    uint `gorm:"not null"`
-	ProductID uint `gorm:"not null"`
-	Quantity  int  `gorm:"not null"`
-}
 
 type Wishlist struct {
 	gorm.Model

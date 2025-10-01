@@ -1,6 +1,8 @@
 package productservice
 
 import (
+	"strconv"
+
 	"github.com/ak-repo/ecommerce-gin/config"
 	"github.com/ak-repo/ecommerce-gin/internal/models"
 	productrepository "github.com/ak-repo/ecommerce-gin/internal/repositories/productRepository"
@@ -32,7 +34,11 @@ func (s *productService) GetAllProductService() ([]models.Product, error) {
 }
 
 func (s *productService) GetOneProductService(id string) (*models.Product, error) {
-	product, err := s.productRepo.GetProductByID(id)
+	idUID, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		return nil, err
+	}
+	product, err := s.productRepo.GetProductByID(uint(idUID))
 
 	if err != nil {
 		return nil, err

@@ -1,35 +1,38 @@
 {{define "title"}}Our Products - freshBox{{end}} {{define "content"}}
-<div class="container mx-auto">
-  <h1 class="text-4xl font-bold text-gray-800 mb-8 text-center">
+<div class="container mx-auto px-4 py-12">
+  <h1
+    class="text-5xl font-extrabold text-gray-900 mb-12 text-center tracking-wide"
+  >
     Explore Our Collection
   </h1>
 
   {{if gt (len .Products) 0}}
   <div
-    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8"
+    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10"
   >
     {{range .Products}}
-    <a href="/product/{{.ID}}">
+    <a href="/product/{{.ID}}" class="group">
       <div
-        class="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col transform hover:-translate-y-2 transition-transform duration-300"
+        class="bg-white rounded-xl shadow-xl overflow-hidden flex flex-col transform transition-transform duration-300 ease-in-out group-hover:shadow-2xl group-hover:-translate-y-3"
       >
         <div class="relative w-full" style="padding-top: 100%">
           <img
             src="{{.ImageURL}}"
             alt="{{.Title}}"
-            class="absolute top-0 left-0 w-full h-full object-cover"
+            class="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-300 group-hover:scale-105"
+            loading="lazy"
           />
         </div>
-        <div class="p-4 flex-grow flex flex-col">
-          <h2 class="text-lg font-semibold text-gray-900 mb-2 flex-grow">
+        <div class="p-6 flex flex-col flex-grow">
+          <h2 class="text-xl font-semibold text-gray-900 mb-3 leading-snug">
             {{.Title}}
           </h2>
+          <p class="text-sm text-gray-600 mb-4">
+            Category:
+            <span class="font-medium text-gray-800">{{.Category.Name}}</span>
+          </p>
           <div class="mt-auto">
-            <p class="text-sm text-gray-500 mb-2">
-              Category:
-              <span class="font-medium text-gray-700">{{.Category.Name}}</span>
-            </p>
-            <p class="text-2xl font-bold text-blue-600">
+            <p class="text-3xl font-extrabold text-indigo-600 tracking-tight">
               ${{printf "%.2f" .BasePrice}}
             </p>
           </div>
@@ -39,11 +42,11 @@
     {{end}}
   </div>
   {{else}}
-  <div class="text-center bg-white p-12 rounded-lg shadow-md">
-    <h2 class="text-2xl font-semibold text-gray-700 mb-4">
+  <div class="max-w-lg mx-auto text-center bg-white p-16 rounded-xl shadow-lg">
+    <h2 class="text-3xl font-semibold text-gray-800 mb-5">
       No Products Available
     </h2>
-    <p class="text-gray-500">
+    <p class="text-gray-500 text-lg">
       We're currently updating our stock. Please check back again soon!
     </p>
   </div>

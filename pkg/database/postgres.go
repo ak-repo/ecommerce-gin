@@ -18,7 +18,7 @@ func NewDB(dsn string) (*Database, error) {
 		return nil, err
 	}
 
-	if err := db.AutoMigrate(&models.User{}, &models.Product{}, &models.Category{}, &models.Address{}, &models.Order{}, &models.OrderItem{}); err != nil {
+	if err := db.AutoMigrate(&models.User{}, &models.Product{}, &models.Category{}, &models.Address{}, &models.Order{}, &models.OrderItem{}, &models.Cart{}, &models.CartItem{}); err != nil {
 		return nil, err
 	}
 

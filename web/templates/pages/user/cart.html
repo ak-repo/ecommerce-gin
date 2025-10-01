@@ -1,0 +1,89 @@
+{{define "title"}}My Cart - freshBox{{end}}
+
+{{define "content"}}
+<div class="container mx-auto px-4 md:px-0 py-8">
+  <h1 class="text-3xl font-bold mb-6">Your Shopping Cart</h1>
+
+  <!-- Flash Message -->
+  {{if .Message}}
+  <div id="flash-message" class="mb-4 p-4 rounded {{if eq .MessageType "error"}}bg-red-100 text-red-800{{else}}bg-green-100 text-green-800{{end}}">
+    {{.Message}}
+  </div>
+  <script>
+    const flash = document.getElementById("flash-message");
+    if (flash) {
+      setTimeout(() => { flash.style.display = "none"; }, 3000);
+    }
+  </script>
+  {{end}}
+
+  {{if .Cart.Items}}
+  <div class="overflow-x-auto">
+    <table class="min-w-full bg-white shadow-lg rounded-lg overflow-hidden">
+      <thead class="bg-gray-100 text-left">
+        <tr>
+          <th class="py-3 px-6">Product</th>
+          <th class="py-3 px-6">Price</th>
+          <th class="py-3 px-6">Quantity</th>
+          <th class="py-3 px-6">Subtotal</th>
+          <th class="py-3 px-6">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{range .Cart.Items}}
+        <tr class="border-b">
+          <td class="py-4 px-6 flex items-center gap-4">
+            <img
+              src="{{.ProductImageURL}}"
+              alt="{{.Product}}"
+              class="w-20 h-20 object-cover rounded"
+            />
+            <div>
+              <p class="font-medium">{{.Product}}</p>
+              <p class="text-sm text-gray-500">Product ID: {{.ProductID}}</p>
+            </div>
+          </td>
+          <td class="py-4 px-6">${{printf "%.2f" .Price}}</td>
+          <td class="py-4 px-6">
+            <form action="/user/cart/update" method="POST" class="flex items-center gap-2">
+              <input type="hidden" name="cart_item_id" value="{{.CartItemID}}" />
+              <input type="number" name="quantity" value="{{.Quantity}}" min="1"
+                     class="border rounded px-2 py-1 w-20" />
+              <button type="submit"
+                      class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition">
+                Update
+              </button>
+            </form>
+          </td>
+          <td class="py-4 px-6">${{printf "%.2f" .Subtotal}}</td>
+          <td class="py-4 px-6">
+            <form action="/user/cart/remove" method="POST">
+              <input type="hidden" name="cart_item_id" value="{{.CartItemID}}" />
+              <button type="submit"
+                      class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">
+                Remove
+              </button>
+            </form>
+          </td>
+        </tr>
+        {{end}}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Cart summary -->
+  <div class="flex flex-col md:flex-row justify-between items-center mt-6">
+    <div class="text-xl font-bold">
+      Total: ${{printf "%.2f" .Cart.Total}} {{.Cart.Currency}}
+    </div>
+    <a href="/checkout"
+       class="mt-4 md:mt-0 bg-green-500 text-white px-6 py-3 rounded hover:bg-green-600 transition">
+      Proceed to Checkout
+    </a>
+  </div>
+
+  {{else}}
+  <div class="text-center py-20 text-gray-500">Your cart is empty.</div>
+  {{end}}
+</div>
+{{end}}
