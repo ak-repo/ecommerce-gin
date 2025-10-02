@@ -85,6 +85,5 @@ func SeedAdmin(db *gorm.DB) {
 		Email:        "admin@freshbox.com",
 		PasswordHash: string(hash),
 		Role:         "admin",
-		IsActive:     true,
 	}, models.User{Email: "admin@freshbox.com"})
 }

@@ -11,6 +11,7 @@ import (
 type UserRepo interface {
 	CreateUser(username, email, password string) error
 	GetUserByEmail(email string) (*models.User, error)
+	GetUserByID(userID uint) (*models.User, error)
 	GetUserAddress(userID uint) (*models.Address, error)
 	AddAddress(address *dto.AddressDTO, userID uint) error
 	UpdateAddress(address *dto.AddressDTO) error
@@ -29,11 +30,12 @@ func NewUserRepo(db *gorm.DB) UserRepo {
 // user registration
 func (r *userRepo) CreateUser(username, email, password string) error {
 	user := models.User{
-		Email:        email,
-		Username:     username,
-		PasswordHash: password,
-		Role:         "customer",
-		IsActive:     true,
+		Email:         email,
+		Username:      username,
+		PasswordHash:  password,
+		Role:          "customer",
+		Status:        "Active",
+		EmailVerified: false,
 	}
 	return r.DB.Create(&user).Error
 }
@@ -49,6 +51,20 @@ func (r *userRepo) GetUserByEmail(email string) (*models.User, error) {
 		return nil, err
 	}
 	return &user, nil
+}
+
+// user by id
+func (r *userRepo) GetUserByID(userID uint) (*models.User, error) {
+	var user models.User
+	err := r.DB.First(&user, userID).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return &user, nil
+
 }
 
 // return user address detials

@@ -1,0 +1,56 @@
+{{define "title"}}Admin - User Detail{{end}}
+{{define "content"}}
+
+<!-- Error message -->
+{{if .Error}}
+<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+  {{.Error}}
+</div>
+{{else}}
+<h1 class="text-2xl font-bold mb-4">User Detail</h1>
+
+<div class="mb-2"><strong>ID:</strong> {{.User.ID}}</div>
+<div class="mb-2"><strong>Username:</strong> {{.User.Username}}</div>
+<div class="mb-2"><strong>Email:</strong> {{.User.Email}}</div>
+<div class="mb-2"><strong>Role:</strong> {{.User.Role}}</div>
+<div class="mb-2"><strong>Status:</strong> {{.User.Status}}</div>
+<div class="mb-2"><strong>Email Verified:</strong> {{.User.EmailVerified}}</div>
+<div class="mb-2">
+  <strong>Last Login:</strong> {{if .User.LastLoginAt}}{{.User.LastLoginAt}}{{else}}-{{end}}
+</div>
+<div class="mb-2"><strong>Created At:</strong> {{.User.CreatedAt}}</div>
+<div class="mb-2"><strong>Updated At:</strong> {{.User.UpdatedAt}}</div>
+
+<!-- Action Buttons -->
+<div class="mt-4 flex gap-2">
+  <!-- Role Change Form -->
+  <form method="POST" action="/admin/users/{{.User.ID}}/role">
+    <select name="role" class="border px-2 py-1 rounded">
+      <option value="user" {{if eq .User.Role "user"}}selected{{end}}>Customer</option>
+      <option value="admin" {{if eq .User.Role "admin"}}selected{{end}}>Admin</option>
+    </select>
+    <button type="submit" class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">
+      Change Role
+    </button>
+  </form>
+
+  <!-- Block/Unblock Form -->
+  <form method="POST" action="/admin/users/{{.User.ID}}/status">
+    {{if eq .User.Status "active"}}
+      <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
+        Block User
+      </button>
+    {{else}}
+      <button type="submit" class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600">
+        Unblock User
+      </button>
+    {{end}}
+  </form>
+</div>
+
+<a href="/admin/users" class="mt-4 inline-block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+  Back to Users List
+</a>
+{{end}}
+
+{{end}}

@@ -12,6 +12,7 @@ type Claims struct {
 	Email    string `json:"email"`
 	Username string `json:"username"`
 	Role     string `json:"role"`
+	UserID   uint   `json:"userID"`
 	jwt.RegisteredClaims
 }
 
@@ -20,6 +21,7 @@ func AccessTokenGenerator(user *models.User, cfg *config.Config) (string, error)
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &Claims{
 		Email:    user.Email,
+		UserID:   user.ID,
 		Username: user.Username,
 		Role:     user.Role,
 		RegisteredClaims: jwt.RegisteredClaims{

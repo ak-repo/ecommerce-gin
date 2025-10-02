@@ -19,12 +19,21 @@ type RegisterRequest struct {
 	Password string `form:"password" json:"password" binding:"required,min=6"`
 }
 
+type UserDTO struct {
+	ID            uint   `json:"id"`
+	Username      string `json:"username"`
+	Email         string `json:"email"`
+	EmailVerified bool   `json:"email_verified"`
+	Role          string `json:"role"`   // usually "user"
+	Status        string `json:"status"` // active/inactive
+}
+
 type LoginResponse struct {
 	RefreshToken string
 	RefreshExp   time.Duration
 	AccessToken  string
 	AccessExp    time.Duration
-	User         *models.User
+	User         *models.User // change into userDTO
 }
 
 type ProfileDTO struct {
