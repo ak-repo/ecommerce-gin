@@ -1,7 +1,6 @@
 package userhandler
 
 import (
-	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -128,7 +127,7 @@ func (h *UserHandler) HomePageHandler(ctx *gin.Context) {
 // User profile GET user/profile
 func (h *UserHandler) UserProfileHandler(ctx *gin.Context) {
 
-	email, exists := ctx.Get("email")
+	userIDAny, exists := ctx.Get("userID")
 	if !exists {
 		ctx.HTML(http.StatusInternalServerError, "pages/user/profile.html", gin.H{
 			"Error": "no email on token",
@@ -136,15 +135,15 @@ func (h *UserHandler) UserProfileHandler(ctx *gin.Context) {
 		return
 	}
 
-	emailStr, ok := email.(string)
-	if !ok || emailStr == "" {
+	userUID, ok := userIDAny.(uint)
+	if !ok || userUID == 0 {
 		ctx.HTML(http.StatusInternalServerError, "pages/user/profile.html", gin.H{
 			"Error": "no email on token",
 		})
 		return
 	}
 
-	profile, err := h.userService.UserProfileService(emailStr)
+	profile, err := h.userService.UserProfileService(userUID)
 	if err != nil {
 		ctx.HTML(http.StatusInternalServerError, "pages/user/profile.html", gin.H{
 			"Error": err.Error(),
@@ -153,7 +152,7 @@ func (h *UserHandler) UserProfileHandler(ctx *gin.Context) {
 	}
 
 	ctx.HTML(http.StatusOK, "pages/user/profile.html", gin.H{
-		"User":    email,
+		"User":    userUID,
 		"Error":   nil,
 		"Profile": profile,
 	})
@@ -163,23 +162,23 @@ func (h *UserHandler) UserProfileHandler(ctx *gin.Context) {
 // GET user/address -> shop user address form
 func (h *UserHandler) ShowAddressForm(ctx *gin.Context) {
 	addressID := ctx.Param("address_id")
-	email, _ := ctx.Get("email")
-	emailStr := email.(string)
+	userIDAny, _ := ctx.Get("userID")
+	userUID := userIDAny.(uint)
 
 	address := dto.AddressDTO{}
 	if addressID == "0" {
 		ctx.HTML(http.StatusOK, "pages/user/address.html", gin.H{
 			"Address": address,
-			"User":    email,
+			"User":    userUID,
 		})
 		return
 	}
 
-	profile, err := h.userService.UserProfileService(emailStr)
+	profile, err := h.userService.UserProfileService(userUID)
 	if err != nil {
 		ctx.HTML(http.StatusOK, "pages/user/address.html", gin.H{
 			"Address": address,
-			"User":    email,
+			"User":    userUID,
 			"Error":   err.Error(),
 		})
 		return
@@ -189,14 +188,14 @@ func (h *UserHandler) ShowAddressForm(ctx *gin.Context) {
 	if profile.Address.ID == 0 || uint(addID) != profile.Address.ID {
 		ctx.HTML(http.StatusOK, "pages/user/address.html", gin.H{
 			"Address": address,
-			"User":    email,
+			"User":    userUID,
 		})
 		return
 
 	}
 
 	ctx.HTML(http.StatusOK, "pages/user/address.html", gin.H{
-		"User":    email,
+		"User":    userUID,
 		"Address": profile.Address,
 	})
 }
@@ -204,23 +203,32 @@ func (h *UserHandler) ShowAddressForm(ctx *gin.Context) {
 // POST user/address/update -> add or update user address
 func (h *UserHandler) UserAddressUpdateHandler(ctx *gin.Context) {
 	addressID := ctx.Param("address_id")
-	email, _ := ctx.Get("email")
-	emailStr := email.(string)
+	userIDAny, _ := ctx.Get("userID")
+	userUID := userIDAny.(uint)
 
 	var address dto.AddressDTO
 	if err := ctx.ShouldBind(&address); err != nil {
 		ctx.HTML(http.StatusBadRequest, "pages/user/address.html", gin.H{
-			"User":    email,
+			"User":    userUID,
 			"Address": address,
 			"Error":   err.Error(),
 		})
 		return
 	}
-	log.Println("phone:", address.Phone)
 
-	if err := h.userService.UserAddressUpdateService(&address, addressID, emailStr); err != nil {
-		ctx.HTML(http.StatusBadRequest, "pages/user/address.html", gin.H{
-			"User":    email,
+	addressUID, err := strconv.ParseUint(addressID, 10, 64)
+	if err != nil {
+		ctx.HTML(http.StatusInternalServerError, "pages/user/address.html", gin.H{
+			"User":    userUID,
+			"Address": address,
+			"Error":   "address id error: " + err.Error(),
+		})
+		return
+
+	}
+	if err := h.userService.UserAddressUpdateService(&address, uint(addressUID), userUID); err != nil {
+		ctx.HTML(http.StatusInternalServerError, "pages/user/address.html", gin.H{
+			"User":    userUID,
 			"Address": address,
 			"Error":   err.Error(),
 		})
@@ -239,9 +247,9 @@ func (h *UserHandler) UserPasswordChangeFormHandler(ctx *gin.Context) {
 // POST user/password -> change password
 func (h *UserHandler) UserPasswordChangeHandler(ctx *gin.Context) {
 
-	email, exists := ctx.Get("email")
-	emailStr := email.(string)
-	if !exists || emailStr == "" {
+	userIDAny, exists := ctx.Get("userID")
+	userUID := userIDAny.(uint)
+	if !exists || userUID == 0 {
 		ctx.HTML(http.StatusBadRequest, "pages/user/passwordChange.html", gin.H{
 			"Error": "token not found, login required",
 		})
@@ -271,7 +279,7 @@ func (h *UserHandler) UserPasswordChangeHandler(ctx *gin.Context) {
 		return
 	}
 
-	err := h.userService.UserPasswordChangeService(emailStr, passform.NewPassword,passform.Password)
+	err := h.userService.UserPasswordChangeService(passform.NewPassword, passform.Password, userUID)
 	if err != nil {
 		ctx.HTML(http.StatusInternalServerError, "pages/user/passwordChange.html", gin.H{
 			"Error": err.Error(),

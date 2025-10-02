@@ -2,7 +2,6 @@ package userservice
 
 import (
 	"errors"
-	"strconv"
 	"time"
 
 	"github.com/ak-repo/ecommerce-gin/config"
@@ -24,9 +23,9 @@ type Response struct {
 type UserService interface {
 	RegisterService(input *dto.RegisterRequest) error
 	LoginService(input *dto.LoginRequest) (*dto.LoginResponse, error)
-	UserProfileService(email string) (*dto.ProfileDTO, error)
-	UserAddressUpdateService(address *dto.AddressDTO, addressID, email string) error
-	UserPasswordChangeService(email, newPassword, oldpassword string) error
+	UserProfileService(userID uint) (*dto.ProfileDTO, error)
+	UserAddressUpdateService(address *dto.AddressDTO, addressUID, userID uint) error
+	UserPasswordChangeService(newPassword, oldpassword string, userID uint) error
 }
 
 type userService struct {
@@ -92,8 +91,8 @@ func (s *userService) LoginService(input *dto.LoginRequest) (*dto.LoginResponse,
 
 }
 
-func (s *userService) UserProfileService(email string) (*dto.ProfileDTO, error) {
-	user, err := s.userRepo.GetUserByEmail(email)
+func (s *userService) UserProfileService(userID uint) (*dto.ProfileDTO, error) {
+	user, err := s.userRepo.GetUserByID(userID)
 	if err != nil {
 		return nil, err
 	}
@@ -124,13 +123,12 @@ func (s *userService) UserProfileService(email string) (*dto.ProfileDTO, error) 
 
 }
 
-func (s *userService) UserAddressUpdateService(address *dto.AddressDTO, addressID, email string) error {
+func (s *userService) UserAddressUpdateService(address *dto.AddressDTO, addressUID, userID uint) error {
 
-	user, err := s.userRepo.GetUserByEmail(email)
+	user, err := s.userRepo.GetUserByID(userID)
 	if err != nil {
 		return err
 	}
-	addressUID, err := strconv.ParseUint(addressID, 10, 64)
 	if err != nil {
 		return err
 	}
@@ -144,9 +142,9 @@ func (s *userService) UserAddressUpdateService(address *dto.AddressDTO, addressI
 }
 
 // User password chnage service
-func (s *userService) UserPasswordChangeService(email, newPassword, oldpassword string) error {
+func (s *userService) UserPasswordChangeService(newPassword, oldpassword string, userID uint) error {
 
-	user, err := s.userRepo.GetUserByEmail(email)
+	user, err := s.userRepo.GetUserByID(userID)
 	if err != nil {
 		return err
 	}

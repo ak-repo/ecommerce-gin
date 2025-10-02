@@ -20,10 +20,17 @@ func NewCartHandler(cartService cartservice.CartService) *CartHandler {
 // show user cart
 func (h *CartHandler) ShowUserCartHandler(ctx *gin.Context) {
 
-	email, _ := ctx.Get("email")
-	emailStr := email.(string)
+	userIDAny, exists := ctx.Get("userID")
+	userUID, ok := userIDAny.(uint)
+	if !exists || !ok {
+		ctx.HTML(http.StatusInternalServerError, "pages/notification/error.html", gin.H{
+			"Error": "user id not found",
+		})
+		return
 
-	cart, err := h.cartService.UserCartService(emailStr)
+	}
+
+	cart, err := h.cartService.UserCartService(userUID)
 	if err != nil {
 		ctx.HTML(http.StatusInternalServerError, "pages/notification/error.html", gin.H{
 			"Error": err.Error(),
@@ -36,7 +43,7 @@ func (h *CartHandler) ShowUserCartHandler(ctx *gin.Context) {
 	ctx.HTML(http.StatusOK, "pages/user/cart.html", gin.H{
 		"Cart":      cart,
 		"CartCount": len(cart.Items),
-		"User":      email,
+		"User":      userUID,
 		"Message":   msg,
 	})
 }
@@ -44,7 +51,7 @@ func (h *CartHandler) ShowUserCartHandler(ctx *gin.Context) {
 // add to cart
 func (h *CartHandler) AddtoCartHandler(ctx *gin.Context) {
 
-	email, exists := ctx.Get("email")
+	userIDAny, exists := ctx.Get("userID")
 	if !exists {
 		ctx.HTML(http.StatusBadRequest, "pages/notification/error.html", gin.H{
 			"Error": "invalid sesssion, try again",
@@ -55,16 +62,16 @@ func (h *CartHandler) AddtoCartHandler(ctx *gin.Context) {
 	var inputCart dto.AddToCartDTO
 	if err := ctx.ShouldBind(&inputCart); err != nil {
 		ctx.HTML(http.StatusBadRequest, "pages/notification/error.html", gin.H{
-			"User":  email,
+			"User":  userIDAny,
 			"Error": "invalid input",
 		})
 		return
 	}
 
-	emailStr := email.(string)
-	if err := h.cartService.AddtoCartService(emailStr, &inputCart); err != nil {
+	userUID := userIDAny.(uint)
+	if err := h.cartService.AddtoCartService(userUID, &inputCart); err != nil {
 		ctx.HTML(http.StatusBadRequest, "pages/notification/error.html", gin.H{
-			"User":  email,
+			"User":  userIDAny,
 			"Error": "add to cart failed",
 		})
 		return
@@ -79,7 +86,7 @@ func (h *CartHandler) AddtoCartHandler(ctx *gin.Context) {
 
 func (h *CartHandler) UpdateCartQuantityHandler(ctx *gin.Context) {
 
-	email, exists := ctx.Get("email")
+	userIDAny, exists := ctx.Get("userID")
 	if !exists {
 		ctx.HTML(http.StatusBadRequest, "ppages/notification/error.html", gin.H{
 			"Error": "invalid sesssion, try again",
@@ -90,7 +97,7 @@ func (h *CartHandler) UpdateCartQuantityHandler(ctx *gin.Context) {
 	var inputCart dto.UpdateCartItemDTO
 	if err := ctx.ShouldBind(&inputCart); err != nil {
 		ctx.HTML(http.StatusBadRequest, "pages/notification/error.html", gin.H{
-			"User":  email,
+			"User":  userIDAny,
 			"Error": "invalid input",
 		})
 		return
@@ -98,7 +105,7 @@ func (h *CartHandler) UpdateCartQuantityHandler(ctx *gin.Context) {
 
 	if err := h.cartService.UpdateQuantityService(&inputCart); err != nil {
 		ctx.HTML(http.StatusBadRequest, "pages/notification/error.html", gin.H{
-			"User":  email,
+			"User":  userIDAny,
 			"Error": err.Error(),
 		})
 		return
@@ -112,7 +119,7 @@ func (h *CartHandler) UpdateCartQuantityHandler(ctx *gin.Context) {
 // remove cart item
 func (h *CartHandler) RemoveCartItemHandler(ctx *gin.Context) {
 
-	email, exists := ctx.Get("email")
+	userIDAny, exists := ctx.Get("userID")
 	if !exists {
 		ctx.HTML(http.StatusBadRequest, "ppages/notification/error.html", gin.H{
 			"Error": "invalid sesssion, try again",
@@ -126,7 +133,7 @@ func (h *CartHandler) RemoveCartItemHandler(ctx *gin.Context) {
 	if err := h.cartService.RemoveCartItemService(uint(cartIemID)); err != nil {
 		ctx.HTML(http.StatusInternalServerError, "ppages/notification/error.html", gin.H{
 			"Error": "can't remove item, try again",
-			"User":  email,
+			"User":  userIDAny,
 		})
 		return
 	}

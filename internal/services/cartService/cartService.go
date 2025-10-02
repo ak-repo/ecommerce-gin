@@ -1,6 +1,8 @@
 package cartservice
 
 import (
+	"errors"
+
 	"github.com/ak-repo/ecommerce-gin/internal/dto"
 	"github.com/ak-repo/ecommerce-gin/internal/models"
 	cartrepository "github.com/ak-repo/ecommerce-gin/internal/repositories/cartRepository"
@@ -10,8 +12,8 @@ import (
 )
 
 type CartService interface {
-	AddtoCartService(email string, addtoCart *dto.AddToCartDTO) error
-	UserCartService(email string) (*dto.CartDTO, error)
+	AddtoCartService(userID uint, addtoCart *dto.AddToCartDTO) error
+	UserCartService(userID uint) (*dto.CartDTO, error)
 	UpdateQuantityService(updatedCart *dto.UpdateCartItemDTO) error
 	RemoveCartItemService(cartItemID uint) error
 }
@@ -27,14 +29,14 @@ func NewCartRepository(userRepo userrepository.UserRepo, cartRepo cartrepository
 }
 
 // add item into user cart
-func (s *cartService) AddtoCartService(email string, addtoCart *dto.AddToCartDTO) error {
+func (s *cartService) AddtoCartService(userID uint, addtoCart *dto.AddToCartDTO) error {
 
-	user, err := s.userRepository.GetUserByEmail(email)
+	user, err := s.userRepository.GetUserByID(userID)
 	if err != nil {
 		return err
 	}
 	if user == nil {
-		return gorm.ErrRecordNotFound
+		return errors.New("user not found")
 	}
 
 	cart, err := s.cartRepository.GetorCreateCart(user.ID)
@@ -74,9 +76,9 @@ func (s *cartService) AddtoCartService(email string, addtoCart *dto.AddToCartDTO
 }
 
 // display all cart items
-func (s *cartService) UserCartService(email string) (*dto.CartDTO, error) {
+func (s *cartService) UserCartService(userID uint) (*dto.CartDTO, error) {
 
-	user, err := s.userRepository.GetUserByEmail(email)
+	user, err := s.userRepository.GetUserByID(userID)
 	if err != nil {
 		return nil, err
 

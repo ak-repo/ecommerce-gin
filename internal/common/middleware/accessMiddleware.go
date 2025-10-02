@@ -10,7 +10,7 @@ func AccessMiddleware(cfg *config.Config) gin.HandlerFunc {
 
 	return func(ctx *gin.Context) {
 		accessToken, err := ctx.Cookie("accessToken")
-		if err != nil {
+		if err != nil || accessToken == "" {
 			ctx.Next()
 			return
 		}
@@ -23,6 +23,7 @@ func AccessMiddleware(cfg *config.Config) gin.HandlerFunc {
 
 		ctx.Set("username", &claims.Username)
 		ctx.Set("email", claims.Email)
+		ctx.Set("userID", claims.UserID)
 		ctx.Next()
 	}
 }

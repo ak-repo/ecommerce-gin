@@ -32,22 +32,13 @@ func (h *ProductHandler) GetAllProductHandler(ctx *gin.Context) {
 
 	}
 
-	email, ok := ctx.Get("email")
-	if ok {
-		ctx.HTML(http.StatusOK, "pages/products/products.html", gin.H{
-			"Title":       "Products - freshBox",
-			"Products":    products,
-			"CurrentYear": time.Now().Year(),
-			"User":        email,
-		})
-		return
+	userID, _ := ctx.Get("userID")
 
-	}
 	ctx.HTML(http.StatusOK, "pages/products/products.html", gin.H{
 		"Title":       "Products - freshBox",
 		"Products":    products,
 		"CurrentYear": time.Now().Year(),
-		"User":        nil,
+		"User":        userID,
 	})
 
 }
@@ -70,7 +61,7 @@ func (h *ProductHandler) GetProductByIDHandler(ctx *gin.Context) {
 		})
 	}
 
-	email, _ := ctx.Get("email")
+	userID, _ := ctx.Get("userID")
 
 	msg, _ := ctx.Cookie("flash")
 	ctx.SetCookie("flash", "", -1, "/", "localhost", false, true)
@@ -79,6 +70,6 @@ func (h *ProductHandler) GetProductByIDHandler(ctx *gin.Context) {
 		"Product":     product,
 		"CurrentYear": time.Now().Year(),
 		"Message":     msg,
-		"User":        email,
+		"User":        userID,
 	})
 }
