@@ -10,11 +10,11 @@ import (
 func SeedOrders(db *gorm.DB) {
 	orders := []models.Order{
 		{
-			UserID:            1,
+			UserID:            2,
 			OrderDate:         time.Now().AddDate(0, 0, -2),
 			Status:            "Delivered",
 			TotalAmount:       84.00 * 2, // Example
-			ShippingAddressID: 4,         // assuming address exists
+			ShippingAddressID: 2,         // assuming address exists
 			OrderItems: []models.OrderItem{
 				{ProductID: 1, Quantity: 1, UnitPrice: 84.00},
 				{ProductID: 2, Quantity: 1, UnitPrice: 84.00},
@@ -25,7 +25,7 @@ func SeedOrders(db *gorm.DB) {
 			OrderDate:         time.Now().AddDate(0, 0, -1),
 			Status:            "Shipped",
 			TotalAmount:       84.00 * 3,
-			ShippingAddressID: 4,
+			ShippingAddressID: 1,
 			OrderItems: []models.OrderItem{
 				{ProductID: 3, Quantity: 1, UnitPrice: 84.00},
 				{ProductID: 4, Quantity: 2, UnitPrice: 84.00},
@@ -36,7 +36,7 @@ func SeedOrders(db *gorm.DB) {
 			OrderDate:         time.Now(),
 			Status:            "Pending",
 			TotalAmount:       107.00 * 1,
-			ShippingAddressID: 4,
+			ShippingAddressID: 1,
 			OrderItems: []models.OrderItem{
 				{ProductID: 6, Quantity: 1, UnitPrice: 107.00},
 			},

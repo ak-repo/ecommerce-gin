@@ -23,19 +23,20 @@ func main() {
 		log.Fatalf("failed to load env file: %v", err)
 	}
 
-	db, err := db.NewDB(cfg.GetDSN())
+	database, err := db.NewDB(cfg.GetDSN())
 	if err != nil {
 		log.Fatalf("failed to connect DB: %v", err)
 	}
 
+	
 	r := gin.New()
-	r.Use(gin.Recovery(), gin.Logger(), middleware.AccessMiddleware(cfg))
+	r.Use(gin.Logger(), middleware.AccessMiddleware(cfg), middleware.CustomRecovery())
 	r.Static("/web/static", "./web/static")
 
 	// r.LoadHTMLGlob("web/templates/**/*.html")
 	r.HTMLRender = createMyRender("web/templates")
 
-	routes.RegisterRoute(r, db, cfg)
+	routes.RegisterRoute(r, database, cfg)
 
 	if err := r.Run(cfg.ServerAddress()); err != nil {
 		log.Fatalf("failed to start server: %v", err)
@@ -81,9 +82,11 @@ func createMyRender(templatesDir string) multitemplate.Renderer {
 func SeedAdmin(db *gorm.DB) {
 	hash, _ := bcrypt.GenerateFromPassword([]byte("11"), bcrypt.DefaultCost)
 	db.FirstOrCreate(&models.User{
-		Username:     "super admin",
-		Email:        "admin@freshbox.com",
-		PasswordHash: string(hash),
-		Role:         "admin",
+		Username:      "super admin",
+		Email:         "admin@freshbox.com",
+		PasswordHash:  string(hash),
+		Role:          "admin",
+		Status:        "Active",
+		EmailVerified: true,
 	}, models.User{Email: "admin@freshbox.com"})
 }

@@ -8,7 +8,6 @@ import (
 	cartrepository "github.com/ak-repo/ecommerce-gin/internal/repositories/cartRepository"
 	productrepository "github.com/ak-repo/ecommerce-gin/internal/repositories/productRepository"
 	userrepository "github.com/ak-repo/ecommerce-gin/internal/repositories/userRepository"
-	"gorm.io/gorm"
 )
 
 type CartService interface {
@@ -38,24 +37,16 @@ func (s *cartService) AddtoCartService(userID uint, addtoCart *dto.AddToCartDTO)
 	if user == nil {
 		return errors.New("user not found")
 	}
-
 	cart, err := s.cartRepository.GetorCreateCart(user.ID)
-	if err != nil {
-		return err
-	}
 
-	cartItem, err := s.cartRepository.GetCartItem(cart.ID, addtoCart.ProductID)
-	//if the cart item is already,,,update the quatity.
-	if err == nil && cartItem != nil {
-		item := models.CartItem{
-			Model:     gorm.Model{ID: cartItem.ID},
-			CartID:    cartItem.CartID,
-			ProductID: cartItem.ProductID,
-			Price:     cartItem.Price,
-			Quantity:  cartItem.Quantity + addtoCart.Quantity,
-			Subtotal:  cartItem.Price * float64(cartItem.Quantity+addtoCart.Quantity),
+	if err == nil && cart.CartItems != nil {
+		for _, cartItem := range cart.CartItems {
+			if cartItem.ProductID == addtoCart.ProductID {
+				cartItem.Quantity += addtoCart.Quantity
+				cartItem.Subtotal = cartItem.Price * float64(cartItem.Quantity)
+				return s.cartRepository.UpdateCartItem(&cartItem)
+			}
 		}
-		return s.cartRepository.UpdateCartItem(&item)
 
 	}
 
@@ -77,23 +68,17 @@ func (s *cartService) AddtoCartService(userID uint, addtoCart *dto.AddToCartDTO)
 
 // display all cart items
 func (s *cartService) UserCartService(userID uint) (*dto.CartDTO, error) {
-
 	user, err := s.userRepository.GetUserByID(userID)
 	if err != nil {
 		return nil, err
 
 	}
 	if user == nil {
-		return nil, gorm.ErrRecordNotFound
+		return nil, errors.New("user not found")
 	}
 
 	cart, err := s.cartRepository.GetorCreateCart(user.ID)
 
-	if err != nil {
-		return nil, err
-	}
-
-	cartItems, err := s.cartRepository.GetAllCartItems(cart.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -104,7 +89,7 @@ func (s *cartService) UserCartService(userID uint) (*dto.CartDTO, error) {
 	}
 
 	// items chnage
-	for _, item := range cartItems {
+	for _, item := range cart.CartItems {
 		product, err := s.productRepository.GetProductByID(item.ProductID)
 		if err != nil {
 			return nil, err
