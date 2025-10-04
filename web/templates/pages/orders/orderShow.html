@@ -1,0 +1,77 @@
+{{define "title"}}Edit Order{{end}}
+
+{{define "content"}}
+<h1 class="text-3xl font-bold mb-6">Edit Order #{{.Order.OrderID}}</h1>
+
+<!-- Error Message -->
+{{if .Error}}
+<div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+  {{.Error}}
+</div>
+{{end}}
+
+<div class="bg-white shadow rounded-lg p-6">
+  <form action="/admin/order/edit/{{.Order.OrderID}}" method="POST">
+    <!-- Order Info -->
+    <h2 class="text-xl font-semibold mb-2">Order Information</h2>
+    <p><strong>User ID:</strong> {{.Order.UserID}}</p>
+    <p><strong>User Email:</strong> {{.Order.UserEmail}}</p>
+    <p><strong>Order Date:</strong> {{.Order.OrderDate.Format "2006-01-02 15:04:05"}}</p>
+
+    <!-- Status Change -->
+    <div class="mt-4">
+      <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+      <select name="status" class="border-gray-300 rounded px-3 py-2 w-full">
+        <option value="pending" {{if eq .Order.Status "pending"}}selected{{end}}>Pending</option>
+        <option value="confirmed" {{if eq .Order.Status "confirmed"}}selected{{end}}>Confirmed</option>
+        <option value="shipped" {{if eq .Order.Status "shipped"}}selected{{end}}>Shipped</option>
+        <option value="completed" {{if eq .Order.Status "completed"}}selected{{end}}>Completed</option>
+        <option value="cancelled" {{if eq .Order.Status "cancelled"}}selected{{end}}>Cancelled</option>
+        <option value="refunded" {{if eq .Order.Status "refunded"}}selected{{end}}>Refunded</option>
+      </select>
+    </div>
+
+    <!-- Shipping Address -->
+    <h2 class="text-xl font-semibold mt-4 mb-2">Shipping Address</h2>
+    {{with .Order.Address}}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <input type="text" name="street" value="{{.Street}}" placeholder="Street" class="border rounded px-3 py-2 w-full">
+      <input type="text" name="city" value="{{.City}}" placeholder="City" class="border rounded px-3 py-2 w-full">
+      <input type="text" name="state" value="{{.State}}" placeholder="State" class="border rounded px-3 py-2 w-full">
+      <input type="text" name="zip" value="{{.ZipCode}}" placeholder="ZIP Code" class="border rounded px-3 py-2 w-full">
+      <input type="text" name="country" value="{{.Country}}" placeholder="Country" class="border rounded px-3 py-2 w-full">
+    </div>
+    {{end}}
+
+    <!-- Order Items (read-only) -->
+    <h2 class="text-xl font-semibold mt-4 mb-2">Order Items</h2>
+    {{if .Order.Items}}
+    <ul class="list-disc ml-5 mb-2">
+      {{range .Order.Items}}
+      <li>
+        Product ID: {{.ProductID}}, Qty: {{.Quantity}}, Unit: ${{printf "%.2f" .UnitPrice}}, Subtotal: ${{printf "%.2f" .Subtotal}}
+      </li>
+      {{end}}
+    </ul>
+    {{else}}
+    <p>No items found.</p>
+    {{end}}
+
+    <!-- Payment Info (read-only) -->
+    <h2 class="text-xl font-semibold mt-4 mb-2">Payment</h2>
+    {{with .Order.Payment}}
+    <p><strong>Method:</strong> {{.Method}}</p>
+    <p><strong>Amount:</strong> ${{printf "%.2f" .Amount}}</p>
+    <p><strong>Status:</strong> {{.Status}}</p>
+    {{else}}
+    <p>No payment information available.</p>
+    {{end}}
+
+    <!-- Submit -->
+    <div class="mt-6 space-x-2">
+      <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">Update Order</button>
+      <a href="/admin/orders" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">Back to Orders</a>
+    </div>
+  </form>
+</div>
+{{end}}

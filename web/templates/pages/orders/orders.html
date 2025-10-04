@@ -1,0 +1,79 @@
+{{define "title"}}Admin Orders{{end}}
+
+{{define "content"}}
+<h1 class="text-3xl font-bold mb-6">Orders</h1>
+
+<!-- Error Message -->
+{{if .Error}}
+<div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+  {{.Error}}
+</div>
+{{end}}
+
+<div class="overflow-x-auto bg-white shadow rounded-lg">
+  <table class="min-w-full divide-y divide-gray-200">
+    <thead class="bg-gray-50">
+      <tr>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User ID</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order Date</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+      </tr>
+    </thead>
+    <tbody class="bg-white divide-y divide-gray-200">
+      {{if .Orders}}
+        {{range .Orders}}
+        <tr class="hover:bg-gray-50">
+          <td class="px-6 py-4 whitespace-nowrap">{{.OrderID}}</td>
+          <td class="px-6 py-4 whitespace-nowrap">{{.UserID}}</td>
+          <td class="px-6 py-4 whitespace-nowrap">{{.UserEmail}}</td>
+          <td class="px-6 py-4 whitespace-nowrap">{{.OrderDate.Format "2006-01-02 15:04:05"}}</td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+              {{if eq .Status "pending"}}bg-yellow-100 text-yellow-800
+              {{else if eq .Status "completed"}}bg-green-100 text-green-800
+              {{else if eq .Status "cancelled"}}bg-red-100 text-red-800
+              {{else}}bg-gray-100 text-gray-800{{end}}">
+              {{.Status}}
+            </span>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">${{printf "%.2f" .TotalAmount}}</td>
+          <td class="px-6 py-4 whitespace-nowrap space-x-2">
+            <a href="/admin/order/show/{{.OrderID}}" class="px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600">Show</a>
+            <!-- <a href="/admin/order/edit/{{.OrderID}}" class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">Edit</a> -->
+          </td>
+        </tr>
+        <!-- Expandable row for Address, Items, Payment -->
+        <tr class="bg-gray-50">
+          <td colspan="7" class="px-6 py-4">
+            <div class="text-sm font-semibold mb-2">Shipping Address:</div>
+            <div class="text-sm mb-2">
+              {{.Address.Street}}, {{.Address.City}}, {{.Address.State}}, {{.Address.ZipCode}}, {{.Address.Country}}
+            </div>
+
+            <div class="text-sm font-semibold mb-2">Items:</div>
+            <ul class="list-disc ml-6 mb-2">
+              {{range .Items}}
+              <li>{{.ProductID}} - Qty: {{.Quantity}}, Unit: ${{printf "%.2f" .UnitPrice}}, Subtotal: ${{printf "%.2f" .Subtotal}}</li>
+              {{end}}
+            </ul>
+
+            <div class="text-sm font-semibold">Payment:</div>
+            <div class="text-sm">
+              Method: {{.Payment.Method}}, Amount: ${{printf "%.2f" .Payment.Amount}}, Status: {{.Payment.Status}}
+            </div>
+          </td>
+        </tr>
+        {{end}}
+      {{else}}
+      <tr>
+        <td colspan="7" class="px-6 py-4 text-center text-gray-500">No orders found.</td>
+      </tr>
+      {{end}}
+    </tbody>
+  </table>
+</div>
+{{end}}

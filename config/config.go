@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/ak-repo/ecommerce-gin/internal/common/utils"
+	"github.com/ak-repo/ecommerce-gin/pkg/utils"
 	"github.com/joho/godotenv"
 )
 
@@ -36,7 +36,6 @@ func Load() (*Config, error) {
 	if err := godotenv.Load(); err != nil {
 		return nil, err
 	}
-
 	config := &Config{}
 
 	config.Server.Host = utils.GetEnv("SERVER_HOST", "8080")
@@ -50,7 +49,7 @@ func Load() (*Config, error) {
 	config.Database.SSLMode = utils.GetEnv("DB_SSLMODE", "disable")
 
 	config.JWT.SecretKey = utils.GetEnv("JWT_SECRET", "your-secret-key")
-	config.JWT.AccessExpiration = time.Hour * 10 // 10 hour
+	config.JWT.AccessExpiration = time.Hour * 10   // 10 hour
 	config.JWT.RefreshExpiration = time.Hour * 168 // 7 days
 
 	return config, nil

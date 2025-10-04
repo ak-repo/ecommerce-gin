@@ -3,7 +3,7 @@ package dummydata
 import (
 	"time"
 
-	"github.com/ak-repo/ecommerce-gin/internal/models"
+	"github.com/ak-repo/ecommerce-gin/models"
 	"gorm.io/gorm"
 )
 

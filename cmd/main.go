@@ -6,9 +6,9 @@ import (
 	"strings"
 
 	"github.com/ak-repo/ecommerce-gin/config"
-	"github.com/ak-repo/ecommerce-gin/internal/common/middleware"
-	"github.com/ak-repo/ecommerce-gin/internal/models"
-	"github.com/ak-repo/ecommerce-gin/internal/routes"
+	"github.com/ak-repo/ecommerce-gin/models"
+	"github.com/ak-repo/ecommerce-gin/routes"
+
 	db "github.com/ak-repo/ecommerce-gin/pkg/database"
 	"github.com/gin-contrib/multitemplate"
 	"github.com/gin-gonic/gin"
@@ -28,12 +28,10 @@ func main() {
 		log.Fatalf("failed to connect DB: %v", err)
 	}
 
-	
 	r := gin.New()
-	r.Use(gin.Logger(), middleware.AccessMiddleware(cfg), middleware.CustomRecovery())
-	r.Static("/web/static", "./web/static")
+	r.Use(gin.Logger(), gin.Recovery())
+	// r.Static("/web/static", "./web/static")
 
-	// r.LoadHTMLGlob("web/templates/**/*.html")
 	r.HTMLRender = createMyRender("web/templates")
 
 	routes.RegisterRoute(r, database, cfg)
@@ -45,23 +43,11 @@ func main() {
 }
 
 func createMyRender(templatesDir string) multitemplate.Renderer {
-	r := multitemplate.NewRenderer()
+	t := multitemplate.NewRenderer()
 
-	publicLayouts, _ := filepath.Glob(filepath.Join(templatesDir, "layouts", "base.html"))
 	adminLayouts, _ := filepath.Glob(filepath.Join(templatesDir, "layouts", "admin_base.html"))
 
-	publicPages, _ := filepath.Glob(filepath.Join(templatesDir, "pages", "**", "*.html"))
-	for _, page := range publicPages {
-		name, _ := filepath.Rel(templatesDir, page)
-		if filepath.HasPrefix(page, filepath.Join(templatesDir, "pages", "admin")) {
-			continue
-		}
-		files := append(publicLayouts, page)
-		r.AddFromFiles(name, files...)
-	}
-
-	// Admin pages
-	adminPages, _ := filepath.Glob(filepath.Join(templatesDir, "pages", "admin", "**", "*.html"))
+	adminPages, _ := filepath.Glob(filepath.Join(templatesDir, "pages", "**", "*.html"))
 	for _, page := range adminPages {
 		name, _ := filepath.Rel(templatesDir, page)
 
@@ -73,10 +59,10 @@ func createMyRender(templatesDir string) multitemplate.Renderer {
 			// use normal admin base with sidebar
 			files = append(adminLayouts, page)
 		}
-		r.AddFromFiles(name, files...)
+		t.AddFromFiles(name, files...)
 	}
 
-	return r
+	return t
 }
 
 func SeedAdmin(db *gorm.DB) {
