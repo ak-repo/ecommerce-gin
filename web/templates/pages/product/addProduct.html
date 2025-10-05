@@ -1,0 +1,138 @@
+{{define "title"}}Add New Product{{end}} {{define "content"}}
+<div
+  class="max-w-4xl mx-auto bg-gray-800 text-gray-100 p-8 rounded-2xl shadow-md"
+>
+  <h1 class="text-3xl font-bold mb-6 text-center">Add New Product</h1>
+
+  <!-- Form Start -->
+  <form action="/admin/products/add" method="POST" class="space-y-6">
+    <!-- Title -->
+    <div>
+      <label for="title" class="block mb-2 font-semibold">Title</label>
+      <input
+        type="text"
+        id="title"
+        name="title"
+        required
+        class="w-full px-4 py-2 rounded-md bg-gray-700 border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+      />
+    </div>
+
+    <!-- Description -->
+    <div>
+      <label for="description" class="block mb-2 font-semibold"
+        >Description</label
+      >
+      <textarea
+        id="description"
+        name="description"
+        rows="4"
+        required
+        class="w-full px-4 py-2 rounded-md bg-gray-700 border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+      ></textarea>
+    </div>
+
+    <!-- SKU -->
+    <div>
+      <label for="sku" class="block mb-2 font-semibold">SKU</label>
+      <input
+        type="text"
+        id="sku"
+        name="sku"
+        required
+        class="w-full px-4 py-2 rounded-md bg-gray-700 border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+      />
+    </div>
+
+    <!-- Prices -->
+    <div class="grid grid-cols-2 gap-6">
+      <div>
+        <label for="base_price" class="block mb-2 font-semibold"
+          >Base Price</label
+        >
+        <input
+          type="number"
+          step="0.01"
+          id="base_price"
+          name="base_price"
+          required
+          class="w-full px-4 py-2 rounded-md bg-gray-700 border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+        />
+      </div>
+      <div>
+        <label for="discount_price" class="block mb-2 font-semibold"
+          >Discount Price</label
+        >
+        <input
+          type="number"
+          step="0.01"
+          id="discount_price"
+          name="discount_price"
+          class="w-full px-4 py-2 rounded-md bg-gray-700 border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+        />
+      </div>
+    </div>
+
+    <!-- Stock -->
+    <div>
+      <label for="stock" class="block mb-2 font-semibold">Stock</label>
+      <input
+        type="number"
+        id="stock"
+        name="stock"
+        min="0"
+        required
+        class="w-full px-4 py-2 rounded-md bg-gray-700 border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+      />
+    </div>
+
+    <!-- Image URL -->
+    <div>
+      <label for="image_url" class="block mb-2 font-semibold">Image URL</label>
+      <input
+        type="url"
+        id="image_url"
+        name="image_url"
+        class="w-full px-4 py-2 rounded-md bg-gray-700 border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+      />
+    </div>
+
+    <!-- Category -->
+    <div>
+      <label for="category_id" class="block mb-2 font-semibold">Category</label>
+      <select
+        id="category_id"
+        name="category_id"
+        required
+        class="w-full px-4 py-2 rounded-md bg-gray-700 border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+      >
+        {{range .Categories}}
+        <option value="{{.ID}}">{{.Name}}</option>
+        {{end}}
+      </select>
+    </div>
+
+    <!-- Checkboxes -->
+    <div class="flex items-center gap-6">
+      <label class="flex items-center gap-2">
+        <input type="checkbox" name="is_active" class="h-4 w-4" checked />
+        <span>Active</span>
+      </label>
+      <label class="flex items-center gap-2">
+        <input type="checkbox" name="is_published" class="h-4 w-4" />
+        <span>Published</span>
+      </label>
+    </div>
+
+    <!-- Submit -->
+    <div class="text-center">
+      <button
+        type="submit"
+        class="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-md text-white font-semibold transition"
+      >
+        Add Product
+      </button>
+    </div>
+  </form>
+</div>
+{{end}}

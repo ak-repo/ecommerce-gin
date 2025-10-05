@@ -13,7 +13,7 @@ type Category struct {
 }
 
 type Product struct {
-	ID        uint `gorm:"primaryKey;size:50"`
+	ID        uint `gorm:"primaryKey;autoIncrement"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
@@ -22,14 +22,13 @@ type Product struct {
 	Description   string  `gorm:"type:text"`
 	SKU           string  `gorm:"size:100;uniqueIndex"`
 	BasePrice     float64 `gorm:"type:numeric(10,2);not null"`
-	DiscountPrice float64 `gorm:"type:numeric(10,2);default:0"` // Optional discounted price
+	DiscountPrice float64 `gorm:"type:numeric(10,2);default:0"`
 	Stock         int     `gorm:"not null;default:0"`
 	ImageURL      string  `gorm:"type:text"`
 
 	CategoryID uint     `gorm:"not null"`
 	Category   Category `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 
-	// Tags        []string `gorm:"type:json"` // store tags as JSON array
 	IsActive    bool `gorm:"default:true"`
-	IsPublished bool `gorm:"default:false"` // control publish status
+	IsPublished bool `gorm:"default:false"`
 }

@@ -4,9 +4,9 @@ import "gorm.io/gorm"
 
 type User struct {
 	gorm.Model
-	Email        string `gorm:"size:255;uniqueIndex;not null"`
-	PasswordHash string `gorm:"size:255;not null" json:"-"`
-	Username     string `gorm:"size:255;not null" `
+	Email         string `gorm:"size:255;uniqueIndex;not null"`
+	PasswordHash  string `gorm:"size:255;not null" json:"-"`
+	Username      string `gorm:"size:255;not null" `
 	Role          string `gorm:"size:100;not null"`
 	Status        string `gorm:"size:50;default:active"`
 	EmailVerified bool
@@ -26,7 +26,7 @@ type Address struct {
 func AddressSeed(db *gorm.DB) {
 
 	add := Address{
-		UserID:      2,
+		UserID:      1,
 		AddressLine: "Mass",
 		City:        "Calicut",
 		State:       "Kerala",

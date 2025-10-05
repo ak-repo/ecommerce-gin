@@ -1,0 +1,157 @@
+{{define "content"}}
+<div
+  class="max-w-3xl mx-auto mt-10 bg-gray-800 text-gray-100 rounded-xl shadow-lg p-8"
+>
+  <h1 class="text-3xl font-bold mb-6 text-center">Edit Product</h1>
+
+  <!-- Form Start -->
+  <form
+    action="/admin/products/edit/{{.Product.ID}}"
+    method="POST"
+    class="space-y-6"
+  >
+    <!-- Hidden Product ID -->
+    <input type="hidden" id="id" name="id" value="{{.Product.ID}}" />
+
+    <!-- Title -->
+    <div>
+      <label for="title" class="block mb-2 font-semibold">Title</label>
+      <input
+        type="text"
+        id="title"
+        name="title"
+        value="{{.Product.Title}}"
+        required
+        class="w-full px-4 py-2 rounded-md bg-gray-700 border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+      />
+    </div>
+
+    <!-- Description -->
+    <div>
+      <label for="description" class="block mb-2 font-semibold"
+        >Description</label
+      >
+      <textarea
+        id="description"
+        name="description"
+        rows="4"
+        required
+        class="w-full px-4 py-2 rounded-md bg-gray-700 border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+      >
+{{.Product.Description}}</textarea
+      >
+    </div>
+
+    <!-- Base Price -->
+    <div>
+      <label for="price" class="block mb-2 font-semibold">Base Price</label>
+      <input
+        type="number"
+        id="price"
+        name="base_price"
+        step="0.01"
+        value="{{.Product.BasePrice}}"
+        required
+        class="w-full px-4 py-2 rounded-md bg-gray-700 border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+      />
+    </div>
+
+    <!-- Discount Price -->
+    <div>
+      <label for="discount_price" class="block mb-2 font-semibold"
+        >Discount Price</label
+      >
+      <input
+        type="number"
+        id="discount_price"
+        name="discount_price"
+        step="0.01"
+        value="{{.Product.DiscountPrice}}"
+        class="w-full px-4 py-2 rounded-md bg-gray-700 border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+      />
+    </div>
+
+    <!-- Stock -->
+    <div>
+      <label for="stock" class="block mb-2 font-semibold">Stock</label>
+      <input
+        type="number"
+        id="stock"
+        name="stock"
+        value="{{.Product.Stock}}"
+        required
+        class="w-full px-4 py-2 rounded-md bg-gray-700 border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+      />
+    </div>
+
+    <!-- Category -->
+    <div>
+      <label for="category" class="block mb-2 font-semibold">Category</label>
+      <select
+        id="category"
+        name="category_id"
+        class="w-full px-4 py-2 rounded-md bg-gray-700 border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+      >
+        {{range .Categories}} {{if $.Product.Category}}
+        <option
+          value="{{.ID}}"
+          {{if
+          eq
+          .ID
+          $.Product.Category.ID}}selected{{end}}
+        >
+          {{.Name}}
+        </option>
+        {{else}}
+        <option value="{{.ID}}">{{.Name}}</option>
+        {{end}} {{end}}
+      </select>
+    </div>
+
+    <!-- Image Preview -->
+    <div>
+      <label class="block mb-2 font-semibold">Product Image</label>
+      <img
+        src="{{.Product.ImageURL}}"
+        alt="Product Image"
+        class="w-40 h-40 object-cover rounded-md border border-gray-600"
+      />
+    </div>
+
+    <!-- Status Toggles -->
+    <div class="flex items-center space-x-6">
+      <label class="inline-flex items-center">
+        <input
+          type="checkbox"
+          name="is_active"
+          {{if
+          .Product.IsActive}}checked{{end}}
+          class="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500"
+        />
+        <span class="ml-2">Active</span>
+      </label>
+
+      <label class="inline-flex items-center">
+        <input
+          type="checkbox"
+          name="is_published"
+          {{if
+          .Product.IsPublished}}checked{{end}}
+          class="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500"
+        />
+        <span class="ml-2">Published</span>
+      </label>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="flex justify-end">
+      <button
+        type="submit"
+        class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-md transition duration-150"
+      >
+        Update Product
+      </button>
+    </div>
+  </form>
+</div>
+{{end}}

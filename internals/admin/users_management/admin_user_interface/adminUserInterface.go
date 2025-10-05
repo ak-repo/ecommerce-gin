@@ -9,14 +9,20 @@ import (
 type HandlerInterface interface {
 	ListAllUsersHandler(ctx *gin.Context)
 	ListUserByIDHandler(ctx *gin.Context)
+	AdminUserRoleChangeHandler(ctx *gin.Context)
+	AdminUserBlockHandler(ctx *gin.Context)
 }
 
 type ServiceInterface interface {
-	AdminAllUsersService() ([]usersmanagement.AdminUserListDTO, error)
+	AdminAllUsersService(query string) ([]usersmanagement.AdminUserListDTO, error)
 	AdminGetUserByIDService(userID uint) (*usersmanagement.AdminUserDTO, error)
+	AdminUserRoleChangeService(user *usersmanagement.AdminUserRoleChange) error
+	AdminUserBlockService(userID uint) error
 }
 
 type RepoInterface interface {
 	AdminFindUserByID(userID uint) (*models.User, error)
 	AdminGetAllUsers() ([]models.User, error)
+	AdminUserRoleChange(user *usersmanagement.AdminUserRoleChange) error
+	AdminUserBlock(user *models.User) error
 }

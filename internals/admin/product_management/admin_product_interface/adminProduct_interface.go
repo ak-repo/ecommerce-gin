@@ -9,20 +9,25 @@ import (
 type HandlerInterface interface {
 	AdminAllProducstListHandler(ctx *gin.Context)
 	AdminProductListHandler(ctx *gin.Context)
+	AdminAddProductPageHandler(ctx *gin.Context)
+	AdminAddProductHandler(ctx *gin.Context)
+	AdminShowProductEditPageHandler(ctx *gin.Context)
+	AdminUpdateProductHandler(ctx *gin.Context)
 }
 
 type ServiceInterface interface {
-	ListAllProductsService() ([]productmanagement.ProductListItem, error)
+	ListAllProductsService(query string) ([]productmanagement.ProductListItem, error)
 	ListProductByIDService(productID uint) (*productmanagement.ProductResponse, error)
-	UpdateProductDetailsService(updatedProduct *productmanagement.UpdateProductRequest, productID uint) error
+	UpdateProductDetailsService(updatedProduct *productmanagement.UpdateProductRequest) error
 	DeleteProductService(productID uint) error
 	AddNewProductService(newProduct *productmanagement.CreateProductRequest) error
+	GetCategoriesService() ([]productmanagement.CategoryDTO, error)
 }
 
 type RepoInterface interface {
 	GetAllProducts() ([]models.Product, error)
 	GetProductByID(id uint) (*models.Product, error)
-	UpdateProductDetails(productID uint, updatedProduct *productmanagement.UpdateProductRequest) error
+	UpdateProductDetails(updatedProduct *productmanagement.UpdateProductRequest) error
 	DeleteProduct(productID uint) error
 	AddNewProduct(newProduct *productmanagement.CreateProductRequest) error
 	GetCategories() ([]models.Category, error)

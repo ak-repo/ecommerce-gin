@@ -46,7 +46,11 @@ func RegisterAdminRoute(r *gin.Engine, db *db.Database, cfg *config.Config) {
 		productHandler := adminproducthandler.NewAdminProductHandler(productService)
 
 		adminRoute.GET("/products", productHandler.AdminAllProducstListHandler)
-		adminRoute.GET("/product/:id", productHandler.AdminProductListHandler)
+		adminRoute.GET("/products/:id", productHandler.AdminProductListHandler)
+		adminRoute.GET("/products/add", productHandler.AdminAddProductPageHandler)
+		adminRoute.POST("/products/add", productHandler.AdminAddProductHandler)
+		adminRoute.GET("/products/edit/:id", productHandler.AdminShowProductEditPageHandler)
+		adminRoute.POST("/products/edit/:id", productHandler.AdminUpdateProductHandler)
 
 		// orders management
 		orderRepo := orderrepos.NewOrderRepo(db.DB)
@@ -63,6 +67,9 @@ func RegisterAdminRoute(r *gin.Engine, db *db.Database, cfg *config.Config) {
 
 		adminRoute.GET("/users", userHandler.ListAllUsersHandler)
 		adminRoute.GET("/users/:id", userHandler.ListUserByIDHandler)
+		// adminRoute.GET("/users/search", userHandler.AdminUserSearchHandler)
+		adminRoute.POST("/users/role/:id", userHandler.AdminUserRoleChangeHandler)
+		adminRoute.POST("/users/status/:id", userHandler.AdminUserBlockHandler)
 
 	}
 

@@ -2,6 +2,7 @@ package adminproductservice
 
 import (
 	"errors"
+	"strings"
 
 	productmanagement "github.com/ak-repo/ecommerce-gin/internals/admin/product_management"
 	adminproductinterface "github.com/ak-repo/ecommerce-gin/internals/admin/product_management/admin_product_interface"
@@ -17,7 +18,7 @@ func NewAdminProductService(adminProductRepo adminproductinterface.RepoInterface
 
 //----------------------------------------------- GET admin/products => all products ----------------------------------------------------------------
 
-func (s *AdminProductService) ListAllProductsService() ([]productmanagement.ProductListItem, error) {
+func (s *AdminProductService) ListAllProductsService(query string) ([]productmanagement.ProductListItem, error) {
 	products, err := s.AdminProductRepo.GetAllProducts()
 	if err != nil {
 		return nil, err
@@ -29,18 +30,20 @@ func (s *AdminProductService) ListAllProductsService() ([]productmanagement.Prod
 	var listProducts []productmanagement.ProductListItem
 
 	for _, item := range products {
-		product := productmanagement.ProductListItem{
-			Title:         item.Title,
-			ID:            item.ID,
-			SKU:           item.SKU,
-			BasePrice:     item.BasePrice,
-			DiscountPrice: item.DiscountPrice,
-			Stock:         item.Stock,
-			ImageURL:      item.ImageURL,
-			IsActive:      item.IsActive,
-			IsPublished:   item.IsPublished,
+		if strings.Contains(strings.ToLower(item.Title), strings.ToLower(query)) {
+			product := productmanagement.ProductListItem{
+				Title:         item.Title,
+				ID:            item.ID,
+				SKU:           item.SKU,
+				BasePrice:     item.BasePrice,
+				DiscountPrice: item.DiscountPrice,
+				Stock:         item.Stock,
+				ImageURL:      item.ImageURL,
+				IsActive:      item.IsActive,
+				IsPublished:   item.IsPublished,
+			}
+			listProducts = append(listProducts, product)
 		}
-		listProducts = append(listProducts, product)
 
 	}
 	return listProducts, nil
@@ -78,8 +81,8 @@ func (s *AdminProductService) ListProductByIDService(productID uint) (*productma
 }
 
 // ----------------------------------------------- POST admin/products/:id => update product info e.g.= stock,details etc ------------------------------------
-func (s *AdminProductService) UpdateProductDetailsService(updatedProduct *productmanagement.UpdateProductRequest, productID uint) error {
-	return s.AdminProductRepo.UpdateProductDetails(productID, updatedProduct)
+func (s *AdminProductService) UpdateProductDetailsService(updatedProduct *productmanagement.UpdateProductRequest) error {
+	return s.AdminProductRepo.UpdateProductDetails(updatedProduct)
 }
 
 // ----------------------------------------------- POST admin/products/delete => delete product -----------------------------------------------------------
@@ -93,4 +96,21 @@ func (s *AdminProductService) AddNewProductService(newProduct *productmanagement
 	return s.AdminProductRepo.AddNewProduct(newProduct)
 }
 
-//----------------------------------------------- GET admin/products => all products -----------------------------------------------------------
+// ----------------------------------------------- Get categories-----------------------------------------------------------
+func (s *AdminProductService) GetCategoriesService() ([]productmanagement.CategoryDTO, error) {
+
+	data, err := s.AdminProductRepo.GetCategories()
+	if err != nil {
+		return nil, err
+	}
+
+	var categories []productmanagement.CategoryDTO
+	for _, cat := range data {
+		category := productmanagement.CategoryDTO{
+			ID:   cat.ID,
+			Name: cat.Name,
+		}
+		categories = append(categories, category)
+	}
+	return categories, nil
+}

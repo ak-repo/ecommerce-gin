@@ -33,7 +33,7 @@ func (r *AdminProductRepo) GetProductByID(id uint) (*models.Product, error) {
 }
 
 // ----------------------------------------------- POST admin/products/:id => update product info e.g.= stock,details etc ------------------------------------
-func (r *AdminProductRepo) UpdateProductDetails(productID uint, updatedProduct *productmanagement.UpdateProductRequest) error {
+func (r *AdminProductRepo) UpdateProductDetails(updatedProduct *productmanagement.UpdateProductRequest) error {
 	updates := map[string]interface{}{}
 
 	if updatedProduct.Title != nil {
@@ -67,11 +67,11 @@ func (r *AdminProductRepo) UpdateProductDetails(productID uint, updatedProduct *
 	if len(updates) == 0 {
 		return nil // nothing to update
 	}
-	product := models.Product{
-		ID: productID,
-	}
 
-	return r.DB.Model(product).Updates(updates).Error
+	// Use pointer for GORM
+	product := &models.Product{ID: *updatedProduct.ID}
+
+	return r.DB.Debug().Model(product).Updates(updates).Error
 }
 
 //----------------------------------------------- POST admin/products/delete => delete product -----------------------------------------------------------
@@ -102,6 +102,6 @@ func (r *AdminProductRepo) AddNewProduct(newProduct *productmanagement.CreatePro
 
 func (r *AdminProductRepo) GetCategories() ([]models.Category, error) {
 	var categories []models.Category
-	err := r.DB.Preload("Products").Find(&categories).Error
+	err := r.DB.Find(&categories).Error
 	return categories, err
 }

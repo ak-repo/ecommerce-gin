@@ -32,11 +32,12 @@ func (r *AuthRepo) CreateUser(username, email, password, role string) error {
 // return user details
 func (r *AuthRepo) GetUserByEmail(email string) (*models.User, error) {
 	var user models.User
-	err := r.DB.Where("email = ?", email).First(&user).Error
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, nil
-	}
+	err := r.DB.Where("email=?", email).First(&user).Error
+
 	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
 		return nil, err
 	}
 	return &user, nil

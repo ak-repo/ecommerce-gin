@@ -28,6 +28,12 @@ func main() {
 		log.Fatalf("failed to connect DB: %v", err)
 	}
 
+	// seed
+	// SeedAdmin(database.DB)
+	// models.AddressSeed(database.DB)
+	// dummydata.SeedAll(database.DB)
+	// dummydata.SeedOrders(database.DB)
+
 	r := gin.New()
 	r.Use(gin.Logger(), gin.Recovery())
 	// r.Static("/web/static", "./web/static")
@@ -46,19 +52,26 @@ func createMyRender(templatesDir string) multitemplate.Renderer {
 	t := multitemplate.NewRenderer()
 
 	adminLayouts, _ := filepath.Glob(filepath.Join(templatesDir, "layouts", "admin_base.html"))
-
 	adminPages, _ := filepath.Glob(filepath.Join(templatesDir, "pages", "**", "*.html"))
+
 	for _, page := range adminPages {
 		name, _ := filepath.Rel(templatesDir, page)
 
 		var files []string
+
 		if strings.HasSuffix(name, "adminLogin.html") {
-			// use admin login base
+			// Use admin login base
 			files = []string{filepath.Join(templatesDir, "layouts", "admin_login_base.html"), page}
+
+		} else if strings.HasSuffix(name, "success.html") || strings.HasSuffix(name, "error.html") || strings.HasSuffix(name, "404.html") {
+			// Render without any base
+			files = []string{page}
+
 		} else {
-			// use normal admin base with sidebar
+			// Default: use normal admin base with sidebar
 			files = append(adminLayouts, page)
 		}
+
 		t.AddFromFiles(name, files...)
 	}
 
@@ -72,7 +85,7 @@ func SeedAdmin(db *gorm.DB) {
 		Email:         "admin@freshbox.com",
 		PasswordHash:  string(hash),
 		Role:          "admin",
-		Status:        "Active",
+		Status:        "active",
 		EmailVerified: true,
 	}, models.User{Email: "admin@freshbox.com"})
 }

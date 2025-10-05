@@ -1,6 +1,7 @@
 package authhandler
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/ak-repo/ecommerce-gin/internals/auth"
@@ -98,10 +99,11 @@ func (h *AuthHandler) LoginHandler(ctx *gin.Context, role string) {
 
 	res, err := h.authService.LoginService(&input, role)
 	if err != nil {
-		utils.RenderError(ctx, http.StatusBadRequest, role, "invalid inputes", err)
+		utils.RenderError(ctx, http.StatusBadRequest, role, "error while login", err)
 		return
 	}
 
+	log.Println("user:", res.User)
 	// Set secure cookies
 	ctx.SetCookie("refreshToken", res.RefreshToken, int(res.RefreshExp), "/", "localhost", true, true)
 

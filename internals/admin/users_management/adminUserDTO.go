@@ -15,11 +15,17 @@ type AdminUserDTO struct {
 }
 
 type AdminUserListDTO struct {
-	ID       uint   `json:"id"`
-	Username string `json:"username"`
-	Email    string `json:"email"`
-	Role     string `json:"role"`
-	Status   string `json:"status"`
+	ID            uint   `json:"id"`
+	Username      string `json:"username"`
+	Email         string `json:"email"`
+	Role          string `json:"role"`
+	Status        string `json:"status"`
+	EmailVerified bool   `json:"email_verified"`
+}
+
+type AdminUserRoleChange struct {
+	ID   uint   `json:"id" form:"-"`
+	Role string `json:"role" form:"role" binding:"required"`
 }
 
 // func ToAdminUserListDTO(u *models.User) *dto.AdminUserListDTO {

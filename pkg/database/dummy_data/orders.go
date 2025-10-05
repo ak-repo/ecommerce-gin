@@ -10,11 +10,11 @@ import (
 func SeedOrders(db *gorm.DB) {
 	orders := []models.Order{
 		{
-			UserID:            2,
+			UserID:            1,
 			OrderDate:         time.Now().AddDate(0, 0, -2),
 			Status:            "Delivered",
 			TotalAmount:       84.00 * 2, // Example
-			ShippingAddressID: 2,         // assuming address exists
+			ShippingAddressID: 1,         // assuming address exists
 			OrderItems: []models.OrderItem{
 				{ProductID: 1, Quantity: 1, UnitPrice: 84.00},
 				{ProductID: 2, Quantity: 1, UnitPrice: 84.00},
