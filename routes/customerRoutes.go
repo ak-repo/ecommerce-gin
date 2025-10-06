@@ -8,6 +8,9 @@ import (
 	carthandler "github.com/ak-repo/ecommerce-gin/internals/customer/cust_cart/cart_handler"
 	cartrepo "github.com/ak-repo/ecommerce-gin/internals/customer/cust_cart/cart_repo"
 	cartservice "github.com/ak-repo/ecommerce-gin/internals/customer/cust_cart/cart_service"
+	custcheckouthandler "github.com/ak-repo/ecommerce-gin/internals/customer/cust_checkout/cust_checkout_handler"
+	custcheckoutrepo "github.com/ak-repo/ecommerce-gin/internals/customer/cust_checkout/cust_checkout_repo"
+	custcheckoutservice "github.com/ak-repo/ecommerce-gin/internals/customer/cust_checkout/cust_checkout_service"
 	custproducthandler "github.com/ak-repo/ecommerce-gin/internals/customer/cust_product/cust_product_handler"
 	custproductrepo "github.com/ak-repo/ecommerce-gin/internals/customer/cust_product/cust_product_repo"
 	custproductservice "github.com/ak-repo/ecommerce-gin/internals/customer/cust_product/cust_product_service"
@@ -63,6 +66,14 @@ func RegisterCustomerRoute(r *gin.Engine, db *db.Database, cfg *config.Config) {
 		custRoute.GET("/profile", profileHandler.CustomerProfileHandler)
 		custRoute.GET("/profile/address", profileHandler.GetCustomerAddress)
 		custRoute.PATCH("/profile/address", profileHandler.CustomerAddressUpdateHandler)
+
+		// checkout
+		checkoutRepo := custcheckoutrepo.NewCustomerCheckoutRepo(db.DB)
+		checkoutService := custcheckoutservice.NewCustomerCheckoutService(cartService, profileService, authRepo, checkoutRepo)
+		checkoutHandler := custcheckouthandler.NewCustomerCheckoutHandler(checkoutService)
+
+		custRoute.GET("/checkout", checkoutHandler.CustomerShowCheckoutHandler)
+		custRoute.POST("/checkout", checkoutHandler.CustomerCheckoutHandler)
 
 	}
 

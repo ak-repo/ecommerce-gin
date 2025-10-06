@@ -130,3 +130,18 @@ ecommerce-gin/
 └── docs/                         # Documentation
     ├── api.md
     └── arch.md
+
+
+Cart (Add/Update/Delete)
+   ↓
+View Cart
+   ↓
+Select Address
+   ↓
+Checkout (Order Summary)
+   ↓
+Payment (Optional)
+   ↓
+Place Order
+   ↓
+Clear Cart → Show Confirmation

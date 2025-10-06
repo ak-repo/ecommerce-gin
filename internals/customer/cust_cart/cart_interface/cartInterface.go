@@ -18,6 +18,8 @@ type ServiceInterface interface {
 	CustomerCartService(userID uint) (*custcart.CartDTO, error)
 	UpdateQuantityService(updatedCart *custcart.UpdateCartItemDTO) error
 	RemoveCartItemService(cartItemID uint) error
+	DeleteCartService(cartID uint) error
+	DeleteCartitemBycartIDService(cartID uint) error
 }
 
 type RepoInterface interface {
@@ -28,4 +30,6 @@ type RepoInterface interface {
 	UpdateCartItem(cartItem *models.CartItem) error
 	CreateCartItem(cartItem *models.CartItem) error
 	DeleteCartItem(cartItemID uint) error
+	DeleteCart(cartID uint) error
+	DeleteCartItemBycartID(cartID uint) error
 }

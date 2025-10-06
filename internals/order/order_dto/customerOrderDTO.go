@@ -1,29 +1,37 @@
 package orderdto
 
-import "time"
-
-type CustomerCreateOrderRequest struct {
-	AddressID uint                      `json:"address_id" binding:"required"`
-	Items     []CustomerOrderItemCreate `json:"items" binding:"required"`
+type CheckoutRequest struct {
+	UserID      uint   `json:"user_id"` // from auth middleware
+	AddressID   uint   `json:"address_id" binding:"required"`
+	PaymentMode string `json:"payment_mode" binding:"required,oneof=COD ONLINE"`
+	CouponCode  string `json:"coupon_code,omitempty"` // optional
 }
 
-type CustomerOrderItemCreate struct {
-	ProductID uint `json:"product_id" binding:"required"`
-	Quantity  int  `json:"quantity" binding:"required"`
-}
-
-type CustomerOrderResponse struct {
-	OrderID     uint                      `json:"order_id"`
-	OrderDate   time.Time                 `json:"order_date"`
-	Status      string                    `json:"status"`
-	TotalAmount float64                   `json:"total_amount"`
-	Items       []CustomerOrderItemDetail `json:"items"`
-	PaymentID   uint                      `json:"payment_id,omitempty"`
-}
-
-type CustomerOrderItemDetail struct {
+type CheckoutItem struct {
 	ProductID uint    `json:"product_id"`
-	Quantity  int     `json:"quantity"`
-	UnitPrice float64 `json:"unit_price"`
+	Name      string  `json:"name"`
+	Quantity  uint    `json:"quantity"`
+	Price     float64 `json:"price"`
 	Subtotal  float64 `json:"subtotal"`
+}
+
+type CheckoutSummary struct {
+	Subtotal     float64         `json:"subtotal"`
+	ShippingFee  float64         `json:"shipping_fee"`
+	Discount     float64         `json:"discount"`
+	GrandTotal   float64         `json:"grand_total"`
+	PaymentModes []string        `json:"payment_modes"`
+	Items        []CheckoutItem  `json:"items"`
+	Address      AddressResponse `json:"address"`
+}
+
+type AddressResponse struct {
+	ID        uint   `json:"id"`
+	Name      string `json:"name"`
+	Phone     string `json:"phone"`
+	Street    string `json:"street"`
+	City      string `json:"city"`
+	State     string `json:"state"`
+	Pincode   string `json:"pincode"`
+	IsDefault bool   `json:"is_default"`
 }

@@ -122,3 +122,15 @@ func (s *CartService) RemoveCartItemService(cartItemID uint) error {
 
 	return s.CartRepo.DeleteCartItem(cartItemID)
 }
+
+// delete cart
+func (s *CartService) DeleteCartService(cartID uint) error {
+
+	return s.CartRepo.DeleteCart(cartID)
+}
+
+// delete cartitme by cart id
+func (s *CartService) DeleteCartitemBycartIDService(cartID uint) error {
+
+	return s.CartRepo.DeleteCartItemBycartID(cartID)
+}

@@ -23,6 +23,12 @@ func (r *cartRepository) GetorCreateCart(userID uint) (*models.Cart, error) {
 	return &cart, err
 }
 
+// delete cart
+func (r *cartRepository) DeleteCart(cartID uint) error {
+	return r.DB.Delete(&models.Cart{}, "id=?", cartID).Error
+
+}
+
 // get one cart item
 func (r *cartRepository) GetCartItem(cartID, ProductID uint) (*models.CartItem, error) {
 	var item models.CartItem
@@ -63,8 +69,14 @@ func (r *cartRepository) CreateCartItem(cartItem *models.CartItem) error {
 	return r.DB.Create(&cartItem).Error
 }
 
-// Delete cart item
+// Delete cart item by cartItem id
 func (r *cartRepository) DeleteCartItem(cartItemID uint) error {
 
 	return r.DB.Delete(&models.CartItem{}, cartItemID).Error
+}
+
+// Delete cart item by cartItem id
+func (r *cartRepository) DeleteCartItemBycartID(cartID uint) error {
+
+	return r.DB.Delete(&models.CartItem{}, "cart_id=?", cartID).Error
 }
