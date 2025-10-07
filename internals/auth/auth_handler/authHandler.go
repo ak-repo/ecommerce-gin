@@ -120,5 +120,3 @@ func (h *AuthHandler) LoginHandler(ctx *gin.Context, role string) {
 }
 
 // logout  => customer, store, delivery-partner, admin
-
-// OTP

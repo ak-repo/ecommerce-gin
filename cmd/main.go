@@ -29,7 +29,7 @@ func main() {
 	}
 
 	// seed
-	// SeedAdmin(database.DB)
+	SeedAdmin(database.DB)
 	// models.AddressSeed(database.DB)
 	// dummydata.SeedAll(database.DB)
 	// dummydata.SeedOrders(database.DB)

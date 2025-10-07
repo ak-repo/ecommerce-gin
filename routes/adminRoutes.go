@@ -2,6 +2,9 @@ package routes
 
 import (
 	"github.com/ak-repo/ecommerce-gin/config"
+	profilehandler "github.com/ak-repo/ecommerce-gin/internals/admin/admin_profile/profile_handler"
+	profilerepo "github.com/ak-repo/ecommerce-gin/internals/admin/admin_profile/profile_repo"
+	profileservice "github.com/ak-repo/ecommerce-gin/internals/admin/admin_profile/profile_service"
 	admindashhandler "github.com/ak-repo/ecommerce-gin/internals/admin/dashboard_management/admin_dash_handler"
 	adminorderhandler "github.com/ak-repo/ecommerce-gin/internals/admin/orders_management/admin_order_handler"
 	adminproducthandler "github.com/ak-repo/ecommerce-gin/internals/admin/product_management/admin_product_handler"
@@ -23,7 +26,7 @@ import (
 
 func RegisterAdminRoute(r *gin.Engine, db *db.Database, cfg *config.Config) {
 
-	// admin auth
+	// login
 	authRepo := authrepo.NewAuthRepo(db.DB)
 	authService := authservice.NewAuthService(authRepo, cfg)
 	authHandler := authhandler.NewAuthHandler(authService)
@@ -35,6 +38,9 @@ func RegisterAdminRoute(r *gin.Engine, db *db.Database, cfg *config.Config) {
 	adminRoute.Use(middleware.AuthMiddleware(cfg), middleware.RoleMiddleware("admin"))
 
 	{
+		//  auth
+		adminRoute.GET("/password-change", authHandler.AdminPasswordChange)
+		adminRoute.POST("/password-change", authHandler.AdminPasswordChange)
 
 		// dashbord
 		dashboardHandler := admindashhandler.NewAdminDashboardHandler()
@@ -59,6 +65,7 @@ func RegisterAdminRoute(r *gin.Engine, db *db.Database, cfg *config.Config) {
 
 		adminRoute.GET("/orders", orderHandler.ShowAllOrderHandler)
 		adminRoute.GET("/orders/:id", orderHandler.ShowOrderByIDHandler)
+		adminRoute.POST("/orders/status/:id", orderHandler.UpdateOrderStatusHandler)
 
 		// user management
 		userRepo := adminuserrepo.NewAdminUserRepo(db.DB)
@@ -67,9 +74,17 @@ func RegisterAdminRoute(r *gin.Engine, db *db.Database, cfg *config.Config) {
 
 		adminRoute.GET("/users", userHandler.ListAllUsersHandler)
 		adminRoute.GET("/users/:id", userHandler.ListUserByIDHandler)
-		// adminRoute.GET("/users/search", userHandler.AdminUserSearchHandler)
 		adminRoute.POST("/users/role/:id", userHandler.AdminUserRoleChangeHandler)
 		adminRoute.POST("/users/status/:id", userHandler.AdminUserBlockHandler)
+
+		// admin profile
+		profileRepo := profilerepo.NewAdminProfileRepo(db.DB)
+		profileSevice := profileservice.NewAdminProfileService(authRepo, profileRepo)
+		profileHandle := profilehandler.NewAdminProfileHandler(profileSevice)
+
+		adminRoute.GET("/profile", profileHandle.AdminProfileHandler)
+		adminRoute.GET("/address/:id", profileHandle.ShowAddressFormHandler)
+		adminRoute.POST("/address/update/:id", profileHandle.UpdateAddressHandler)
 
 	}
 

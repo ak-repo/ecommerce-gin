@@ -43,18 +43,19 @@
     </div>
 
     <!-- Status Control (Admin) -->
-    <form action="/admin/order/edit/{{.Order.OrderID}}" method="POST" class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+    <form action="/admin/orders/status/{{.Order.OrderID}}" method="POST" class="bg-gray-50 border border-gray-200 rounded-xl p-4">
       <h3 class="text-lg font-semibold text-gray-800 mb-3">Change Order Status</h3>
       <div class="flex flex-col sm:flex-row items-center gap-3">
         <select name="status" class="border border-gray-300 rounded-lg px-3 py-2 w-full sm:w-auto focus:ring focus:ring-blue-200">
           <option value="pending" {{if eq .Order.Status "pending"}}selected{{end}}>Pending</option>
-          <option value="confirmed" {{if eq .Order.Status "confirmed"}}selected{{end}}>Confirmed</option>
           <option value="accepted" {{if eq .Order.Status "accepted"}}selected{{end}}>Accepted</option>
-          <option value="assigned" {{if eq .Order.Status "assigned"}}selected{{end}}>Assigned to Store</option>
+          <option value="confirmed" {{if eq .Order.Status "confirmed"}}selected{{end}}>Confirmed</option>
           <option value="shipped" {{if eq .Order.Status "shipped"}}selected{{end}}>Shipped</option>
-          <option value="completed" {{if eq .Order.Status "completed"}}selected{{end}}>Completed</option>
+          <option value="delivered" {{if eq .Order.Status "delivered"}}selected{{end}}>Delivered</option>
           <option value="cancelled" {{if eq .Order.Status "cancelled"}}selected{{end}}>Cancelled</option>
           <option value="refunded" {{if eq .Order.Status "refunded"}}selected{{end}}>Refunded</option>
+          <option value="completed" {{if eq .Order.Status "completed"}}selected{{end}}>Completed</option>
+
         </select>
 
         <button type="submit"

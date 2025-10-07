@@ -17,16 +17,22 @@ type AuthHandlerInterface interface {
 	AdminLogin(ctx *gin.Context)
 	AdminLoginForm(ctx *gin.Context)
 	LoginHandler(ctx *gin.Context, role string)
+
+	//password change
+	CustomerPasswordChange(ctx *gin.Context)
+	AdminPasswordChange(ctx *gin.Context)
+	PasswordChangeHandler(ctx *gin.Context, role string)
 }
 
 type AuthServiceInterface interface {
 	RegisterService(input *auth.RegisterRequest, role string) error
 	LoginService(input *auth.LoginRequest, role string) (*auth.LoginResponse, error)
+	PasswordChangeService(userID uint, req *auth.PasswordChange) error
 }
 
 type AuthRepoInterface interface {
 	CreateUser(username, email, password, role string) error
 	GetUserByEmail(email string) (*models.User, error)
 	GetUserByID(userID uint) (*models.User, error)
-	UpdatePassword(userID uint, hashPassword string) error
+	PasswordChange(userID uint, password string) error
 }

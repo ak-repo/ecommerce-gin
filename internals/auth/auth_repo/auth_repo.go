@@ -57,8 +57,3 @@ func (r *AuthRepo) GetUserByID(userID uint) (*models.User, error) {
 
 }
 
-// password change
-func (r *AuthRepo) UpdatePassword(userID uint, hashPassword string) error {
-	return r.DB.Model(&models.User{}).Where("id=?", userID).Update("password_hash", hashPassword).Error
-
-}

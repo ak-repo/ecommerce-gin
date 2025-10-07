@@ -68,7 +68,10 @@ func (s *CustomerCheckoutService) ProcessCheckoutService(req *custcheckout.Check
 	if err := s.CheckoutRepo.OrderCreation(&order); err != nil {
 		return nil, err
 	}
+	if order.ID == 0 {
+		return nil, errors.New("order creation failed")
 
+	}
 	// order items
 	var orderItems []models.OrderItem
 	for _, i := range checkout.Items {
@@ -84,6 +87,15 @@ func (s *CustomerCheckoutService) ProcessCheckoutService(req *custcheckout.Check
 		return nil, err
 	}
 	// payment creation
+	payment := models.Payment{
+		OrderID:       order.ID,
+		PaymentMethod: req.PaymentMode,
+		Amount:        order.TotalAmount,
+		Status:        "pending",
+	}
+	if err := s.CheckoutRepo.PaymentCreation(&payment); err != nil {
+		return nil, err
+	}
 
 	// clear cart
 	if err := s.CartService.DeleteCartService(checkout.Items[0].CartID); err != nil {

@@ -24,8 +24,10 @@ type AdminOrderResponse struct {
 type AdminOrderItemResp struct {
 	ProductID uint    `json:"product_id"`
 	Quantity  int     `json:"quantity"`
+	Name      string  `json:"name"`
 	UnitPrice float64 `json:"unit_price"`
 	Subtotal  float64 `json:"subtotal"`
+	ImageURL  string  `json:"image_url,omitempty"`
 }
 
 type AdminOrderAddressDTO struct {

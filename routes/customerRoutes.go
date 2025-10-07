@@ -11,12 +11,15 @@ import (
 	custcheckouthandler "github.com/ak-repo/ecommerce-gin/internals/customer/cust_checkout/cust_checkout_handler"
 	custcheckoutrepo "github.com/ak-repo/ecommerce-gin/internals/customer/cust_checkout/cust_checkout_repo"
 	custcheckoutservice "github.com/ak-repo/ecommerce-gin/internals/customer/cust_checkout/cust_checkout_service"
+	customerorderhandler "github.com/ak-repo/ecommerce-gin/internals/customer/cust_order/customer_order_handler"
 	custproducthandler "github.com/ak-repo/ecommerce-gin/internals/customer/cust_product/cust_product_handler"
 	custproductrepo "github.com/ak-repo/ecommerce-gin/internals/customer/cust_product/cust_product_repo"
 	custproductservice "github.com/ak-repo/ecommerce-gin/internals/customer/cust_product/cust_product_service"
 	customerprofilehandler "github.com/ak-repo/ecommerce-gin/internals/customer/cust_profile/customer_profile_handler"
 	customerprofilerepo "github.com/ak-repo/ecommerce-gin/internals/customer/cust_profile/customer_profile_repo"
 	customerprofileservice "github.com/ak-repo/ecommerce-gin/internals/customer/cust_profile/customer_profile_service"
+	orderrepos "github.com/ak-repo/ecommerce-gin/internals/order/order_repos"
+	orderservices "github.com/ak-repo/ecommerce-gin/internals/order/order_services"
 	middleware "github.com/ak-repo/ecommerce-gin/middleware/auth"
 
 	db "github.com/ak-repo/ecommerce-gin/pkg/database"
@@ -48,6 +51,8 @@ func RegisterCustomerRoute(r *gin.Engine, db *db.Database, cfg *config.Config) {
 		custRoute := publicRoute.Group("/auth")
 		custRoute.Use(middleware.AuthMiddleware(cfg), middleware.RoleMiddleware("customer"))
 
+		custRoute.POST("/password-change", authHandler.CustomerPasswordChange)
+
 		// cart
 		cartRepo := cartrepo.NewCartRepository(db.DB)
 		cartService := cartservice.NewCartRepository(cartRepo, authRepo, productRepo)
@@ -74,6 +79,14 @@ func RegisterCustomerRoute(r *gin.Engine, db *db.Database, cfg *config.Config) {
 
 		custRoute.GET("/checkout", checkoutHandler.CustomerShowCheckoutHandler)
 		custRoute.POST("/checkout", checkoutHandler.CustomerCheckoutHandler)
+
+		// orders
+		orderRepo := orderrepos.NewOrderRepo(db.DB)
+		orderService := orderservices.NewOrderService(orderRepo)
+		orderHandler := customerorderhandler.NewCustomerOrderHandler(orderService)
+
+		custRoute.GET("/orders", orderHandler.ListCustomerOrdersHandler)
+		custRoute.GET("/orders/:id", orderHandler.CustomerOrderDetailHandler)
 
 	}
 

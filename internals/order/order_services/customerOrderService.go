@@ -1,9 +1,0 @@
-package orderservices
-
-
-// CreateCustomerOrder
-
-
-
-//  GetCustomerOrders
-

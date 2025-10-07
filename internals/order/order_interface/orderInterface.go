@@ -6,13 +6,18 @@ import (
 )
 
 type OrderServiceInterface interface {
-	// admin
 	GetAllOrdersService() ([]orderdto.AdminOrderResponse, error)
 	GetOrderByIDService(id uint) (*orderdto.AdminOrderResponse, error)
+	UpdateOrderStatusService(order *orderdto.AdminUpdateOrderStatusRequest) error
+
+	GetCustomerOrdersService(userID uint) (*orderdto.CustomerOrderListResponse, error)
+	GetCustomerOrderbyOrderIDService(orderID uint) (*orderdto.CustomerOrderDetailResponse, error)
 }
 
 type OrderRepoInterface interface {
-	// admin
 	GetAllOrders() ([]models.Order, error)
 	GetOrderByID(orderID uint) (*models.Order, error)
+	OrderStatusUpdate(order *orderdto.AdminUpdateOrderStatusRequest) error
+
+	GetOrdersByUserID(userID uint) ([]models.Order, error)
 }

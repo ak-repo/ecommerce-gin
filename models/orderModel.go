@@ -22,6 +22,7 @@ type OrderItem struct {
 	gorm.Model
 	OrderID   uint    `gorm:"not null"`
 	ProductID uint    `gorm:"not null"`
+	Product   Product `gorm:"foreignKey:ProductID"`
 	Quantity  int     `gorm:"not null"`
 	UnitPrice float64 `gorm:"type:numeric(10,2);not null"`
 }
