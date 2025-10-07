@@ -22,12 +22,20 @@ type AuthHandlerInterface interface {
 	CustomerPasswordChange(ctx *gin.Context)
 	AdminPasswordChange(ctx *gin.Context)
 	PasswordChangeHandler(ctx *gin.Context, role string)
+
+	// otp
+	SendOTPHandler(ctx *gin.Context)
+	VerifyOTPHandler(ctx *gin.Context)
 }
 
 type AuthServiceInterface interface {
 	RegisterService(input *auth.RegisterRequest, role string) error
 	LoginService(input *auth.LoginRequest, role string) (*auth.LoginResponse, error)
 	PasswordChangeService(userID uint, req *auth.PasswordChange) error
+
+	//otp
+	SentOTPService(req *auth.SendOTPRequest) error
+	VerifyOTPService(req *auth.VerifyOTPRequest) error
 }
 
 type AuthRepoInterface interface {
@@ -35,4 +43,10 @@ type AuthRepoInterface interface {
 	GetUserByEmail(email string) (*models.User, error)
 	GetUserByID(userID uint) (*models.User, error)
 	PasswordChange(userID uint, password string) error
+
+	//otp
+	CreateOTP(record *models.EmailOTP) error
+	DeleteOTP(record *models.EmailOTP) error
+	VerifyOTP(req *auth.VerifyOTPRequest) (*models.EmailOTP, error)
+	UpdateOTP(record *models.EmailOTP) error
 }

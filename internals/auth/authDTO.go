@@ -43,3 +43,13 @@ type PasswordChange struct {
 	NewPassword     string `form:"new_password" json:"new_password" binding:"required"`                             // new password
 	ConfirmPassword string `form:"confirm_password" json:"confirm_password" binding:"required,eqfield=NewPassword"` // confirm password must match
 }
+
+// --------------------------otp verfication-----------
+type SendOTPRequest struct {
+	Email string `json:"email" binding:"required,email"`
+}
+
+type VerifyOTPRequest struct {
+	Email string `json:"email" binding:"required,email"`
+	OTP   string `json:"otp" binding:"required"`
+}
