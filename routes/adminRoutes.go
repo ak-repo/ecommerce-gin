@@ -10,6 +10,7 @@ import (
 	adminproducthandler "github.com/ak-repo/ecommerce-gin/internals/admin/product_management/admin_product_handler"
 	adminproductrepo "github.com/ak-repo/ecommerce-gin/internals/admin/product_management/admin_product_repo"
 	adminproductservice "github.com/ak-repo/ecommerce-gin/internals/admin/product_management/admin_product_service"
+	reviewmanagement "github.com/ak-repo/ecommerce-gin/internals/admin/review_management"
 	adminuserhandler "github.com/ak-repo/ecommerce-gin/internals/admin/users_management/admin_user_handler"
 	adminuserrepo "github.com/ak-repo/ecommerce-gin/internals/admin/users_management/admin_user_repo"
 	adminuserservice "github.com/ak-repo/ecommerce-gin/internals/admin/users_management/admin_user_service"
@@ -18,6 +19,8 @@ import (
 	authservice "github.com/ak-repo/ecommerce-gin/internals/auth/auth_service"
 	orderrepos "github.com/ak-repo/ecommerce-gin/internals/order/order_repos"
 	orderservices "github.com/ak-repo/ecommerce-gin/internals/order/order_services"
+	reviewrepo "github.com/ak-repo/ecommerce-gin/internals/review/review_repo"
+	reviewservice "github.com/ak-repo/ecommerce-gin/internals/review/review_service"
 	middleware "github.com/ak-repo/ecommerce-gin/middleware/auth"
 
 	db "github.com/ak-repo/ecommerce-gin/pkg/database"
@@ -89,6 +92,14 @@ func RegisterAdminRoute(r *gin.Engine, db *db.Database, cfg *config.Config) {
 		adminRoute.GET("/address/:id", profileHandle.ShowAddressFormHandler)
 		adminRoute.POST("/address/update/:id", profileHandle.UpdateAddressHandler)
 
+		// reviews and rating management
+		reviewRepo := reviewrepo.NewReviewRepo(db.DB)
+		reviewService := reviewservice.NewReviewService(reviewRepo)
+		reviewHandle := reviewmanagement.NewAdminReviewService(reviewService)
+
+		adminRoute.GET("/reviews", reviewHandle.ListAllReviewsHandler)
+		adminRoute.POST("/reviews/approve/:id", reviewHandle.ApproveReviewHandler)
+		adminRoute.POST("/reviews/reject/:id", reviewHandle.RejectReviewHandler)
 	}
 
 }

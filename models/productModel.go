@@ -31,4 +31,9 @@ type Product struct {
 
 	IsActive    bool `gorm:"default:true"`
 	IsPublished bool `gorm:"default:false"`
+
+	// --- Reviews ---
+	Reviews     []Review `gorm:"foreignKey:ProductID"`
+	AvgRating   float64  `gorm:"-:migration"` // calculated, ignored by GORM migrations
+	ReviewCount int      `gorm:"-:migration"` // calculated
 }

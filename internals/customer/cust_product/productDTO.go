@@ -1,5 +1,7 @@
 package custproduct
 
+import reviewdto "github.com/ak-repo/ecommerce-gin/internals/review/review_DTO"
+
 // Customer-facing full product details
 type CustomerProductResponse struct {
 	ID            uint        `json:"id"`
@@ -13,6 +15,7 @@ type CustomerProductResponse struct {
 	Category      CategoryDTO `json:"category"`
 
 	IsPublished bool `json:"is_published"`
+	Reviews     []reviewdto.ReviewResponse
 }
 
 // Lightweight product for listing (e.g., homepage, catalog)

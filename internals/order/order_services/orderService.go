@@ -2,7 +2,6 @@ package orderservices
 
 import (
 	"errors"
-	"log"
 
 	orderdto "github.com/ak-repo/ecommerce-gin/internals/order/order_dto"
 	orderinterface "github.com/ak-repo/ecommerce-gin/internals/order/order_interface"
@@ -162,25 +161,12 @@ func (s *OrderService) OrderCancellationReqListingService() ([]orderdto.AdminCan
 	return requests, nil
 }
 
-//	validStatuses := map[string]bool{
-//		"pending": true, "accepted": true, "confirmed": true,
-//		"shipped": true, "delivered": true, "cancelled": true,
-//		"refunded": true, "completed": true,
-//	}
-//
-//	if !validStatuses[req.Status] {
-//		return errors.New("invalid status")
-//	}
-//
-// return s.OrderRepo.OrderStatusUpdate(req)
-// accepts cancellation req
 func (s *OrderService) AcceptCancellationReqService(reqID uint) error {
 	orderID, err := s.OrderRepo.AcceptOrderCancellationReq(reqID)
 	if err != nil {
 		return err
 	}
 
-	log.Println("id--------------", orderID)
 	status := orderdto.AdminUpdateOrderStatusRequest{
 		OrderID: orderID,
 		Status:  "cancelled",

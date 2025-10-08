@@ -16,13 +16,16 @@ func NewCustomerProductRepo(db *gorm.DB) custproductinterface.RepoInterface {
 
 func (r *CustomerProductRepo) GetAllProducts() ([]models.Product, error) {
 	var products []models.Product
-	err := r.DB.Preload("Category").Find(&products).Error
+	err := r.DB.Preload("Category").
+		Find(&products).Error
 	return products, err
 }
 
 func (r *CustomerProductRepo) GetProductByID(id uint) (*models.Product, error) {
 	product := &models.Product{}
 
-	err := r.DB.Preload("Category").First(product, id).Error
+	err := r.DB.Preload("Category").
+		Preload("Reviews", "status=?", "APPROVED").
+		First(product, id).Error
 	return product, err
 }

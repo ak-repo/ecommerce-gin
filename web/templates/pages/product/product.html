@@ -1,15 +1,16 @@
-{{define "title"}}View Product - Admin{{end}}
-
-{{define "content"}}
+{{define "title"}}View Product - Admin{{end}} {{define "content"}}
 <h1 class="text-3xl font-bold mb-6 text-gray-800">Product Details</h1>
 
 <div class="bg-white shadow-md rounded-lg p-6 max-w-4xl mx-auto">
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    
     <!-- Product Image -->
     <div class="flex justify-center items-center bg-gray-100 rounded-lg p-4">
       {{if .Product.ImageURL}}
-      <img src="{{.Product.ImageURL}}" alt="{{.Product.Title}}" class="max-h-64 object-contain rounded border border-gray-200">
+      <img
+        src="{{.Product.ImageURL}}"
+        alt="{{.Product.Title}}"
+        class="max-h-64 object-contain rounded border border-gray-200"
+      />
       {{else}}
       <span class="text-gray-400">No Image</span>
       {{end}}
@@ -26,9 +27,18 @@
         <div class="space-y-1 text-gray-700">
           <p><span class="font-semibold">ID:</span> {{.Product.ID}}</p>
           <p><span class="font-semibold">SKU:</span> {{.Product.SKU}}</p>
-          <p><span class="font-semibold">Category:</span> {{.Product.Category.Name}}</p>
-          <p><span class="font-semibold">Price:</span> {{.Product.BasePrice}}</p>
-          <p><span class="font-semibold">Discount:</span> {{if gt .Product.DiscountPrice 0.0}}{{.Product.DiscountPrice}}{{else}}-{{end}}</p>
+          <p>
+            <span class="font-semibold">Category:</span>
+            {{.Product.Category.Name}}
+          </p>
+          <p>
+            <span class="font-semibold">Price:</span> {{.Product.BasePrice}}
+          </p>
+          <p>
+            <span class="font-semibold">Discount:</span> {{if gt
+            .Product.DiscountPrice
+            0.0}}{{.Product.DiscountPrice}}{{else}}-{{end}}
+          </p>
           <p><span class="font-semibold">Stock:</span> {{.Product.Stock}}</p>
           <p>
             <span class="font-semibold">Status:</span>
@@ -46,19 +56,36 @@
             <span class="text-gray-600 font-medium">No</span>
             {{end}}
           </p>
-          <p><span class="font-semibold">Created At:</span> {{.Product.CreatedAt}}</p>
-          <p><span class="font-semibold">Updated At:</span> {{.Product.UpdatedAt}}</p>
+          <p>
+            <span class="font-semibold">Created At:</span>
+            {{.Product.CreatedAt}}
+          </p>
+          <p>
+            <span class="font-semibold">Updated At:</span>
+            {{.Product.UpdatedAt}}
+          </p>
         </div>
       </div>
 
       <!-- Actions -->
       <div class="mt-6 flex flex-wrap gap-3">
-        <a href="/admin/products/edit/{{.Product.ID}}" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">Edit</a>
-        <a href="/admin/products/delete/{{.Product.ID}}" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Delete</a>
-        <a href="/admin/products" class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">Back</a>
+        <a
+          href="/admin/products/edit/{{.Product.ID}}"
+          class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
+          >Edit</a
+        >
+        <a
+          href="/admin/products/delete/{{.Product.ID}}"
+          class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+          >Delete</a
+        >
+        <a
+          href="/admin/products"
+          class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400"
+          >Back</a
+        >
       </div>
     </div>
-
   </div>
 </div>
 {{end}}

@@ -18,8 +18,11 @@ import (
 	customerprofilehandler "github.com/ak-repo/ecommerce-gin/internals/customer/cust_profile/customer_profile_handler"
 	customerprofilerepo "github.com/ak-repo/ecommerce-gin/internals/customer/cust_profile/customer_profile_repo"
 	customerprofileservice "github.com/ak-repo/ecommerce-gin/internals/customer/cust_profile/customer_profile_service"
+	custreview "github.com/ak-repo/ecommerce-gin/internals/customer/cust_review"
 	orderrepos "github.com/ak-repo/ecommerce-gin/internals/order/order_repos"
 	orderservices "github.com/ak-repo/ecommerce-gin/internals/order/order_services"
+	reviewrepo "github.com/ak-repo/ecommerce-gin/internals/review/review_repo"
+	reviewservice "github.com/ak-repo/ecommerce-gin/internals/review/review_service"
 	middleware "github.com/ak-repo/ecommerce-gin/middleware/auth"
 
 	db "github.com/ak-repo/ecommerce-gin/pkg/database"
@@ -92,6 +95,12 @@ func RegisterCustomerRoute(r *gin.Engine, db *db.Database, cfg *config.Config) {
 		custRoute.POST("/orders/cancel", orderHandler.CustomerOrderCancellationReqHandler)
 		custRoute.GET("/orders/cancel-response/:id", orderHandler.CustomerOrderCancellationReqResponseHandler)
 
+		// reviews
+		reviewRepo := reviewrepo.NewReviewRepo(db.DB)
+		reviewService := reviewservice.NewReviewService(reviewRepo)
+		reviewHandler := custreview.NewCustomerReviewHandler(reviewService)
+
+		custRoute.POST("/review", reviewHandler.ReviewCreateCustomerHandler)
 	}
 
 }

@@ -5,6 +5,7 @@ import (
 
 	custproduct "github.com/ak-repo/ecommerce-gin/internals/customer/cust_product"
 	custproductinterface "github.com/ak-repo/ecommerce-gin/internals/customer/cust_product/cust_product_interface"
+	reviewdto "github.com/ak-repo/ecommerce-gin/internals/review/review_DTO"
 )
 
 type CustomerProductService struct {
@@ -69,6 +70,19 @@ func (s *CustomerProductService) ListProductByIDService(productID uint) (*custpr
 			Name: product.Category.Name,
 		},
 	}
+	var reviews []reviewdto.ReviewResponse
+	for _, r := range product.Reviews {
+		review := reviewdto.ReviewResponse{
+			ID:        r.ID,
+			ProductID: r.ProductID,
+			UserID:    r.UserID,
+			Rating:    r.Rating,
+			Comment:   r.Comment,
+			CreatedAt: r.CreatedAt,
+		}
+		reviews = append(reviews, review)
+	}
+	listproduct.Reviews = reviews
 
 	return &listproduct, nil
 }
