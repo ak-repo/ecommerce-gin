@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
+	orderdto "github.com/ak-repo/ecommerce-gin/internals/order/order_dto"
 	orderinterface "github.com/ak-repo/ecommerce-gin/internals/order/order_interface"
 	"github.com/ak-repo/ecommerce-gin/pkg/utils"
 	"github.com/gin-gonic/gin"
@@ -67,4 +68,49 @@ func (h *CustomerOrderHandler) CustomerOrderDetailHandler(ctx *gin.Context) {
 		"data": order,
 	})
 
+}
+
+// POST cust/auth/orders/cancel
+func (h *CustomerOrderHandler) CustomerOrderCancellationReqHandler(ctx *gin.Context) {
+
+	id, exists := ctx.Get("userID")
+	userID := id.(uint)
+	if !exists || id == 0 {
+		utils.RenderError(ctx, http.StatusUnauthorized, "customer", "User authentication failed", errors.New("user ID not found or invalid"))
+		return
+	}
+
+	var req orderdto.CreateCancelRequest
+	if err := ctx.ShouldBind(&req); err != nil {
+		utils.RenderError(ctx, http.StatusBadRequest, "customer", "invalid input", err)
+		return
+	}
+
+	if err := h.OrderService.CancelOrderByCustomerService(&req, userID); err != nil {
+		utils.RenderError(ctx, http.StatusInternalServerError, "customer", "order cancellation failed", err)
+		return
+	}
+
+	utils.RenderSuccess(ctx, http.StatusAccepted, "customer", "order cancellation request accepted", nil)
+}
+
+// GET - cust/auth/orders/cancel-response/:id
+func (h *CustomerOrderHandler) CustomerOrderCancellationReqResponseHandler(ctx *gin.Context) {
+
+	id := ctx.Param("id")
+	orderID, err := strconv.ParseUint(id, 10, 64)
+	if err != nil || id == "" {
+		utils.RenderError(ctx, http.StatusBadRequest, "customer", "invalid input", err)
+		return
+	}
+
+	response, err := h.OrderService.CancellationResponseForCustomerService(uint(orderID))
+	if err != nil {
+		utils.RenderError(ctx, http.StatusInternalServerError, "customer", "no response", err)
+		return
+	}
+
+	utils.RenderSuccess(ctx, http.StatusOK, "customer", "order cancellation response", map[string]interface{}{
+		"data": response,
+	})
 }

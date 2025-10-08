@@ -49,4 +49,5 @@ type AuthRepoInterface interface {
 	DeleteOTP(record *models.EmailOTP) error
 	VerifyOTP(req *auth.VerifyOTPRequest) (*models.EmailOTP, error)
 	UpdateOTP(record *models.EmailOTP) error
+	UserEmailVerified(userID uint) error
 }

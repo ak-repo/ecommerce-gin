@@ -4,12 +4,14 @@ import (
 	"log"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/ak-repo/ecommerce-gin/config"
 	"github.com/ak-repo/ecommerce-gin/models"
 	"github.com/ak-repo/ecommerce-gin/routes"
 
 	db "github.com/ak-repo/ecommerce-gin/pkg/database"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/multitemplate"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -28,15 +30,18 @@ func main() {
 		log.Fatalf("failed to connect DB: %v", err)
 	}
 
-	// seed
-	SeedAdmin(database.DB)
-	// models.AddressSeed(database.DB)
-	// dummydata.SeedAll(database.DB)
-	// dummydata.SeedOrders(database.DB)
-
 	r := gin.New()
 	r.Use(gin.Logger(), gin.Recovery())
 	// r.Static("/web/static", "./web/static")
+	// CORS configuration
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:5173"}, // your frontend URL
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
 
 	r.HTMLRender = createMyRender("web/templates")
 

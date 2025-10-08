@@ -2,9 +2,11 @@ package orderservices
 
 import (
 	"errors"
+	"log"
 
 	orderdto "github.com/ak-repo/ecommerce-gin/internals/order/order_dto"
 	orderinterface "github.com/ak-repo/ecommerce-gin/internals/order/order_interface"
+	"github.com/ak-repo/ecommerce-gin/models"
 )
 
 type OrderService struct {
@@ -46,6 +48,7 @@ func (s *OrderService) GetAllOrdersService() ([]orderdto.AdminOrderResponse, err
 			OrderDate:   val.CreatedAt,
 			Status:      val.Status,
 			TotalAmount: val.TotalAmount,
+			UserEmail:   val.User.Email,
 			Address: orderdto.AdminOrderAddressDTO{
 				ID:      val.ShippingAddress.ID,
 				Street:  val.ShippingAddress.AddressLine,
@@ -86,6 +89,7 @@ func (s *OrderService) GetOrderByIDService(id uint) (*orderdto.AdminOrderRespons
 		OrderDate:   data.CreatedAt,
 		Status:      data.Status,
 		TotalAmount: data.TotalAmount,
+		UserEmail:   data.User.Email,
 		Address: orderdto.AdminOrderAddressDTO{
 			ID:      data.ShippingAddress.ID,
 			Street:  data.ShippingAddress.AddressLine,
@@ -132,6 +136,82 @@ func (s *OrderService) UpdateOrderStatusService(req *orderdto.AdminUpdateOrderSt
 
 }
 
+// list customer order cancellation requeat for admin
+func (s *OrderService) OrderCancellationReqListingService() ([]orderdto.AdminCancelRequestResponse, error) {
+
+	data, err := s.OrderRepo.GetAllCancelRequest()
+	if err != nil {
+		return nil, err
+	}
+
+	var requests []orderdto.AdminCancelRequestResponse
+	for _, o := range data {
+		req := orderdto.AdminCancelRequestResponse{
+			ID:          o.ID,
+			OrderID:     o.OrderID,
+			UserID:      o.UserID,
+			Customer:    o.User.Username,
+			OrderStatus: o.Order.Status,
+			Status:      o.Status,
+			Reason:      o.Reason,
+			CreatedAt:   o.CreatedAt,
+		}
+		requests = append(requests, req)
+	}
+
+	return requests, nil
+}
+
+//	validStatuses := map[string]bool{
+//		"pending": true, "accepted": true, "confirmed": true,
+//		"shipped": true, "delivered": true, "cancelled": true,
+//		"refunded": true, "completed": true,
+//	}
+//
+//	if !validStatuses[req.Status] {
+//		return errors.New("invalid status")
+//	}
+//
+// return s.OrderRepo.OrderStatusUpdate(req)
+// accepts cancellation req
+func (s *OrderService) AcceptCancellationReqService(reqID uint) error {
+	orderID, err := s.OrderRepo.AcceptOrderCancellationReq(reqID)
+	if err != nil {
+		return err
+	}
+
+	log.Println("id--------------", orderID)
+	status := orderdto.AdminUpdateOrderStatusRequest{
+		OrderID: orderID,
+		Status:  "cancelled",
+	}
+	if err := s.OrderRepo.OrderStatusUpdate(&status); err != nil {
+		return err
+	}
+
+	return nil
+
+}
+
+// reject order  cancellation req
+func (s *OrderService) RejectCancellationReqService(reqID uint) error {
+	orderID, err := s.OrderRepo.RejectOrderCancellationReq(reqID)
+	if err != nil {
+		return err
+	}
+
+	status := orderdto.AdminUpdateOrderStatusRequest{
+		OrderID: orderID,
+		Status:  "confirmed",
+	}
+	if err := s.OrderRepo.OrderStatusUpdate(&status); err != nil {
+		return err
+	}
+	return nil
+
+}
+
+// ----------------------------------------------------------------for customers----------------------------------------------------------
 // GetCustomerOrders
 func (s *OrderService) GetCustomerOrdersService(userID uint) (*orderdto.CustomerOrderListResponse, error) {
 
@@ -152,6 +232,7 @@ func (s *OrderService) GetCustomerOrdersService(userID uint) (*orderdto.Customer
 			TotalAmount: i.TotalAmount,
 			PaymentMode: i.Payment.PaymentMethod,
 		}
+
 		orders = append(orders, order)
 
 	}
@@ -186,6 +267,16 @@ func (s *OrderService) GetCustomerOrderbyOrderIDService(orderID uint) (*orderdto
 			Status: data.Payment.Status,
 		},
 	}
+
+	if data.CancelRequest != nil {
+		order.CancelReq = &orderdto.CustomerCancelRequestResponse{
+			ID:      data.CancelRequest.ID,
+			OrderID: data.CancelRequest.OrderID,
+			Status:  data.CancelRequest.Status,
+			Reason:  data.CancelRequest.Reason,
+		}
+	}
+
 	var items []orderdto.CustomerOrderItemResp
 	for _, i := range data.OrderItems {
 		item := orderdto.CustomerOrderItemResp{
@@ -201,4 +292,30 @@ func (s *OrderService) GetCustomerOrderbyOrderIDService(orderID uint) (*orderdto
 	order.Items = items
 
 	return &order, nil
+}
+
+// order cancellation service for customer
+func (s *OrderService) CancelOrderByCustomerService(req *orderdto.CreateCancelRequest, userID uint) error {
+	cancelOrder := models.OrderCancelRequest{
+		OrderID: req.OrderID,
+		UserID:  userID,
+		Reason:  req.Reason,
+	}
+
+	return s.OrderRepo.CancellationByCustomer(&cancelOrder)
+}
+
+// order cancellation req-response for customer
+func (s *OrderService) CancellationResponseForCustomerService(orderID uint) (*orderdto.CustomerCancelRequestResponse, error) {
+	data, err := s.OrderRepo.CancellationResponseToCustomer(orderID)
+	if err != nil {
+		return nil, err
+	}
+	response := orderdto.CustomerCancelRequestResponse{
+		ID:      data.ID,
+		Reason:  data.Reason,
+		Status:  data.Status,
+		OrderID: data.OrderID,
+	}
+	return &response, nil
 }

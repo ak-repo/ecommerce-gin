@@ -22,14 +22,41 @@ func NewAdminUserHandler(adminUserService adminuserinterface.ServiceInterface) a
 // GET admin/users   => display all users & users search
 func (h *AdminUserHandler) ListAllUsersHandler(ctx *gin.Context) {
 	search := ctx.Query("q")
+	role := ctx.Query("role")
+	status := ctx.Query("status")
 	users, err := h.AdminUserService.AdminAllUsersService(search)
 	if err != nil {
 		utils.RenderError(ctx, http.StatusInternalServerError, "admin", "users not found => DP not found", err)
 		return
 	}
+	var filterd []usersmanagement.AdminUserListDTO
+	if role != "" {
+		// clear(filered)
+		for _, u := range users {
+
+			if u.Role == role {
+				filterd = append(filterd, u)
+			}
+		}
+	}
+
+	if status != "" {
+		// clear(filterd )
+		for _, u := range users {
+
+			if u.Status == status {
+				filterd = append(filterd, u)
+			}
+		}
+	}
+	if len(filterd) == 0 {
+		filterd = users
+	}
 	ctx.HTML(http.StatusOK, "pages/users/users.html", gin.H{
-		"Users": users,
-		"Query": search,
+		"Users":        filterd,
+		"Query":        search,
+		"FilterStatus": status,
+		"FilterRole":   role,
 	})
 }
 

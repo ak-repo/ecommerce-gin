@@ -58,5 +58,17 @@ func (s *AuthService) VerifyOTPService(req *auth.VerifyOTPRequest) error {
 	record.Used = true
 	s.authRepo.UpdateOTP(record)
 
+	// set email verified true
+	user, err := s.authRepo.GetUserByEmail(req.Email)
+	if err != nil {
+		return err
+	}
+	if user == nil {
+		return errors.New("verified email is not valid- no matching user is found")
+	}
+	if err := s.authRepo.UserEmailVerified(user.ID); err != nil {
+		return err
+	}
+
 	return nil
 }

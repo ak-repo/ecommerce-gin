@@ -9,6 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// otp  sent and verifcation
 func (r *AuthRepo) CreateOTP(record *models.EmailOTP) error {
 	return r.DB.Create(record).Error
 }
@@ -32,4 +33,10 @@ func (r *AuthRepo) VerifyOTP(req *auth.VerifyOTPRequest) (*models.EmailOTP, erro
 
 func (r *AuthRepo) UpdateOTP(record *models.EmailOTP) error {
 	return r.DB.Save(record).Error
+}
+
+// email verification true
+func (r *AuthRepo) UserEmailVerified(userID uint) error {
+
+	return r.DB.Model(&models.User{}).Where("id=?", userID).Update("email_verified", true).Error
 }

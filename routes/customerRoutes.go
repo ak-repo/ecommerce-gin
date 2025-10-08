@@ -52,8 +52,8 @@ func RegisterCustomerRoute(r *gin.Engine, db *db.Database, cfg *config.Config) {
 		custRoute.Use(middleware.AuthMiddleware(cfg), middleware.RoleMiddleware("customer"))
 
 		custRoute.POST("/password-change", authHandler.CustomerPasswordChange)
-		custRoute.POST("/sent-OTP",authHandler.SendOTPHandler)
-		custRoute.POST("/verify-OTP",authHandler.VerifyOTPHandler)
+		custRoute.POST("/sent-OTP", authHandler.SendOTPHandler)
+		custRoute.POST("/verify-OTP", authHandler.VerifyOTPHandler)
 
 		// cart
 		cartRepo := cartrepo.NewCartRepository(db.DB)
@@ -89,6 +89,8 @@ func RegisterCustomerRoute(r *gin.Engine, db *db.Database, cfg *config.Config) {
 
 		custRoute.GET("/orders", orderHandler.ListCustomerOrdersHandler)
 		custRoute.GET("/orders/:id", orderHandler.CustomerOrderDetailHandler)
+		custRoute.POST("/orders/cancel", orderHandler.CustomerOrderCancellationReqHandler)
+		custRoute.GET("/orders/cancel-response/:id", orderHandler.CustomerOrderCancellationReqResponseHandler)
 
 	}
 

@@ -1,0 +1,67 @@
+{{ define "content" }}
+<div class="p-6 bg-gray-100 min-h-screen">
+  <h1 class="text-2xl font-bold mb-6">Order Cancellation Requests</h1>
+
+  <div class="overflow-x-auto bg-white shadow-md rounded-lg">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-200">
+        <tr>
+          <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">
+            ID
+          </th>
+          <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">
+            Order ID
+          </th>
+          <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">
+            Customer
+          </th>
+          <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">
+            Order Status
+          </th>
+          <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">
+            Reason
+          </th>
+          <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">
+            Status
+          </th>
+          <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">
+            Actions
+          </th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200">
+        {{range .CancelRequests}}
+        <tr class="hover:bg-gray-50">
+          <td class="px-4 py-2">{{.ID}}</td>
+          <td class="px-4 py-2">{{.OrderID}}</td>
+          <td class="px-4 py-2">{{.Customer}}</td>
+          <td class="px-4 py-2">{{.OrderStatus}}</td>
+          <td class="px-4 py-2">{{.Reason}}</td>
+          <td class="px-4 py-2">{{.Status}}</td>
+          <td class="px-4 py-2 flex gap-2">
+            {{if eq .Status "PENDING"}}
+            <form action="/admin/orders/cancels/accept/{{.ID}}" method="POST">
+              <button
+                class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
+              >
+                Accept
+              </button>
+            </form>
+            <form action="/admin/orders/cancels/reject/{{.ID}}" method="POST">
+              <button
+                class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+              >
+                Reject
+              </button>
+            </form>
+            {{else}}
+            <span class="text-gray-500 italic">No actions</span>
+            {{end}}
+          </td>
+        </tr>
+        {{end}}
+      </tbody>
+    </table>
+  </div>
+</div>
+{{ end }}

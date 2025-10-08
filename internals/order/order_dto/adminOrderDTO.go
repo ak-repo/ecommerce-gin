@@ -45,3 +45,21 @@ type AdminOrderPaymentDTO struct {
 	Amount    float64 `json:"amount"`
 	Status    string  `json:"status"`
 }
+
+// order cancellation
+// Admin view for each cancel request
+type AdminCancelRequestResponse struct {
+	ID          uint      `json:"id"`
+	OrderID     uint      `json:"order_id"`
+	UserID      uint      `json:"user_id"`
+	Customer    string    `json:"customer"`     // name/email
+	OrderStatus string    `json:"order_status"` // current order status
+	Reason      string    `json:"reason"`
+	Status      string    `json:"status"` // PENDING / APPROVED / REJECTED
+	CreatedAt   time.Time `json:"created_at"`
+}
+
+// Wrapper for listing
+type AdminCancelRequestListResponse struct {
+	CancelRequests []AdminCancelRequestResponse `json:"cancel_requests"`
+}

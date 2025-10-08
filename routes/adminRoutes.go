@@ -66,6 +66,9 @@ func RegisterAdminRoute(r *gin.Engine, db *db.Database, cfg *config.Config) {
 		adminRoute.GET("/orders", orderHandler.ShowAllOrderHandler)
 		adminRoute.GET("/orders/:id", orderHandler.ShowOrderByIDHandler)
 		adminRoute.POST("/orders/status/:id", orderHandler.UpdateOrderStatusHandler)
+		adminRoute.GET("/orders/cancels", orderHandler.ShowAllCancelRequestHandler)
+		adminRoute.POST("/orders/cancels/accept/:id", orderHandler.OrderCancellationAcceptHandler)
+		adminRoute.POST("/orders/cancels/reject/:id", orderHandler.OrderCancellationRejectHandler)
 
 		// user management
 		userRepo := adminuserrepo.NewAdminUserRepo(db.DB)

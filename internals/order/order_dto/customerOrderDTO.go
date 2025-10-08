@@ -7,27 +7,24 @@ type CustomerOrderListResponse struct {
 	Orders []CustomerOrderSummary `json:"orders"`
 }
 type CustomerOrderSummary struct {
-	OrderID     uint      `json:"order_id"`
-	OrderDate   time.Time `json:"order_date"`
-	Status      string    `json:"status"`
-	TotalAmount float64   `json:"total_amount"`
-	PaymentMode string    `json:"payment_mode"`
+	OrderID     uint                           `json:"order_id"`
+	OrderDate   time.Time                      `json:"order_date"`
+	Status      string                         `json:"status"`
+	TotalAmount float64                        `json:"total_amount"`
+	PaymentMode string                         `json:"payment_mode"`
+	
 }
 
-
-
-
-
 // 2. Show individual order (detailed view)
-//
 type CustomerOrderDetailResponse struct {
-	OrderID     uint                    `json:"order_id"`
-	OrderDate   time.Time               `json:"order_date"`
-	Status      string                  `json:"status"`
-	TotalAmount float64                 `json:"total_amount"`
-	Address     CustomerOrderAddressDTO `json:"shipping_address"`
-	Items       []CustomerOrderItemResp `json:"items"`
-	Payment     CustomerOrderPaymentDTO `json:"payment"`
+	OrderID     uint                           `json:"order_id"`
+	OrderDate   time.Time                      `json:"order_date"`
+	Status      string                         `json:"status"`
+	TotalAmount float64                        `json:"total_amount"`
+	Address     CustomerOrderAddressDTO        `json:"shipping_address"`
+	Items       []CustomerOrderItemResp        `json:"items"`
+	Payment     CustomerOrderPaymentDTO        `json:"payment"`
+	CancelReq   *CustomerCancelRequestResponse `json:"cancel_request,omitempty"`
 }
 
 // Each product inside this specific order
@@ -54,4 +51,18 @@ type CustomerOrderPaymentDTO struct {
 	Method string  `json:"method"`
 	Amount float64 `json:"amount"`
 	Status string  `json:"status"`
+}
+
+// order cancel
+
+type CreateCancelRequest struct {
+	OrderID uint   `json:"order_id" binding:"required"`
+	Reason  string `json:"reason" binding:"required,min=5,max=255"`
+}
+
+type CustomerCancelRequestResponse struct {
+	ID      uint   `json:"id"`
+	OrderID uint   `json:"order_id"`
+	Status  string `json:"status"`
+	Reason  string `json:"reason"`
 }
