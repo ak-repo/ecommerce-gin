@@ -1,0 +1,208 @@
+{{define "title"}}Add New User - Admin{{end}}
+{{define "content"}}
+<div class="max-w-2xl mx-auto p-6">
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-8">
+    <div class="flex items-center">
+      <div class="w-10 h-10 bg-blue-100 rounded-2xl flex items-center justify-center mr-3">
+        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900">Add New User</h1>
+        <p class="text-gray-600 mt-1">Create a new user account</p>
+      </div>
+    </div>
+    <a href="/admin/users" class="inline-flex items-center px-4 py-2.5 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-all duration-200 shadow-sm font-medium">
+      <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+      Back to Users
+    </a>
+  </div>
+
+  <!-- Error message -->
+  {{if .Error}}
+  <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl shadow-sm">
+    <div class="flex items-center">
+      <div class="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center mr-3">
+        <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </div>
+      <div>
+        <p class="font-semibold text-red-800">Error</p>
+        <p class="text-red-700 text-sm mt-1">{{.Error}}</p>
+      </div>
+    </div>
+  </div>
+  {{end}}
+
+  <!-- Success message -->
+  {{if .Success}}
+  <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl shadow-sm">
+    <div class="flex items-center">
+      <div class="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center mr-3">
+        <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+      </div>
+      <div>
+        <p class="font-semibold text-green-800">Success</p>
+        <p class="text-green-700 text-sm mt-1">{{.Success}}</p>
+      </div>
+    </div>
+  </div>
+  {{end}}
+
+  <!-- Add User Form -->
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+    <form method="POST" action="/admin/users/add" class="space-y-6">
+      <!-- Username -->
+      <div>
+        <label for="username" class="block text-sm font-medium text-gray-700 mb-2">Username *</label>
+        <input 
+          type="text" 
+          id="username" 
+          name="username" 
+          required
+          placeholder="Enter username"
+          class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+          value="{{.Form.Username}}"
+        >
+        <p class="text-xs text-gray-500 mt-1">Username must be unique and contain only letters, numbers, and underscores.</p>
+      </div>
+
+      <!-- Email -->
+      <div>
+        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email Address *</label>
+        <input 
+          type="email" 
+          id="email" 
+          name="email" 
+          required
+          placeholder="Enter email address"
+          class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+          value="{{.Form.Email}}"
+        >
+        <p class="text-xs text-gray-500 mt-1">A valid email address is required for the user.</p>
+      </div>
+
+      <!-- Password -->
+      <div>
+        <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password *</label>
+        <input 
+          type="password" 
+          id="password" 
+          name="password" 
+          required
+          placeholder="Enter password"
+          class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+        >
+        <p class="text-xs text-gray-500 mt-1">Password should be at least 8 characters long.</p>
+      </div>
+
+      <!-- Confirm Password -->
+      <div>
+        <label for="confirm_password" class="block text-sm font-medium text-gray-700 mb-2">Confirm Password *</label>
+        <input 
+          type="password" 
+          id="confirm_password" 
+          name="confirm_password" 
+          required
+          placeholder="Confirm password"
+          class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+        >
+        <p class="text-xs text-gray-500 mt-1">Please re-enter the password to confirm.</p>
+      </div>
+
+      <!-- Role -->
+      <div>
+        <label for="role" class="block text-sm font-medium text-gray-700 mb-2">Role *</label>
+        <select 
+          id="role" 
+          name="role" 
+          required
+          class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 bg-white"
+        >
+          <option value="">Select a role</option>
+          <option value="customer" {{if eq .Form.Role "customer"}}selected{{end}}>Customer</option>
+          <option value="store" {{if eq .Form.Role "store"}}selected{{end}}>Store</option>
+          <option value="admin" {{if eq .Form.Role "admin"}}selected{{end}}>Admin</option>
+        </select>
+        <p class="text-xs text-gray-500 mt-1">Choose the appropriate role for this user.</p>
+      </div>
+
+      <!-- Status -->
+      <div>
+        <label for="status" class="block text-sm font-medium text-gray-700 mb-2">Status *</label>
+        <select 
+          id="status" 
+          name="status" 
+          required
+          class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 bg-white"
+        >
+          <option value="">Select status</option>
+          <option value="active" {{if eq .Form.Status "active"}}selected{{end}}>Active</option>
+          <option value="inactive" {{if eq .Form.Status "inactive"}}selected{{end}}>Inactive</option>
+        </select>
+        <p class="text-xs text-gray-500 mt-1">Set the user account status.</p>
+      </div>
+
+      <!-- Email Verified -->
+      <div class="flex items-center">
+        <input 
+          type="checkbox" 
+          id="email_verified" 
+          name="email_verified" 
+          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+          {{if .Form.EmailVerified}}checked{{end}}
+        >
+        <label for="email_verified" class="ml-2 text-sm font-medium text-gray-700">
+          Mark email as verified
+        </label>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="flex gap-3 pt-6 border-t border-gray-200">
+        <button 
+          type="submit" 
+          class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 font-medium shadow-sm"
+        >
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+          Create User
+        </button>
+        <a 
+          href="/admin/users" 
+          class="inline-flex items-center px-6 py-3 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-all duration-200 font-medium"
+        >
+          Cancel
+        </a>
+      </div>
+    </form>
+  </div>
+
+  <!-- Help Text -->
+  <div class="mt-6 bg-blue-50 rounded-2xl border border-blue-200 p-6">
+    <div class="flex items-start">
+      <svg class="w-5 h-5 text-blue-600 mt-0.5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      <div>
+        <h3 class="text-sm font-semibold text-blue-800 mb-1">User Creation Guidelines</h3>
+        <ul class="text-xs text-blue-700 space-y-1">
+          <li>• Usernames must be unique and cannot be changed later</li>
+          <li>• Email addresses must be unique across the system</li>
+          <li>• Passwords will be securely hashed before storage</li>
+          <li>• Admin roles have full access to all system features</li>
+          <li>• Store roles can manage products and orders</li>
+          <li>• Customer roles have basic shopping privileges</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{{end}}

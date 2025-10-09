@@ -57,3 +57,8 @@ func (r *AdminUserRepo) AdminUserRoleChange(user *usersmanagement.AdminUserRoleC
 func (r *AdminUserRepo) AdminUserBlock(user *models.User) error {
 	return r.DB.Save(user).Error
 }
+
+// create user
+func (r *AdminUserRepo) AdminCreateUser(user *models.User) error {
+	return r.DB.Create(user).Error
+}

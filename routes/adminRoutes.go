@@ -6,6 +6,7 @@ import (
 	profilerepo "github.com/ak-repo/ecommerce-gin/internals/admin/admin_profile/profile_repo"
 	profileservice "github.com/ak-repo/ecommerce-gin/internals/admin/admin_profile/profile_service"
 	admindashhandler "github.com/ak-repo/ecommerce-gin/internals/admin/dashboard_management/admin_dash_handler"
+	"github.com/ak-repo/ecommerce-gin/internals/admin/dashboard_management/service"
 	adminorderhandler "github.com/ak-repo/ecommerce-gin/internals/admin/orders_management/admin_order_handler"
 	adminproducthandler "github.com/ak-repo/ecommerce-gin/internals/admin/product_management/admin_product_handler"
 	adminproductrepo "github.com/ak-repo/ecommerce-gin/internals/admin/product_management/admin_product_repo"
@@ -44,10 +45,7 @@ func RegisterAdminRoute(r *gin.Engine, db *db.Database, cfg *config.Config) {
 		//  auth
 		adminRoute.GET("/password-change", authHandler.AdminPasswordChange)
 		adminRoute.POST("/password-change", authHandler.AdminPasswordChange)
-
-		// dashbord
-		dashboardHandler := admindashhandler.NewAdminDashboardHandler()
-		adminRoute.GET("/dashboard", dashboardHandler.AdminDashboardShow)
+		adminRoute.GET("/logout", authHandler.AdminLogout)
 
 		// products management
 		productRepo := adminproductrepo.NewAdminProductRepo(db.DB)
@@ -82,6 +80,8 @@ func RegisterAdminRoute(r *gin.Engine, db *db.Database, cfg *config.Config) {
 		adminRoute.GET("/users/:id", userHandler.ListUserByIDHandler)
 		adminRoute.POST("/users/role/:id", userHandler.AdminUserRoleChangeHandler)
 		adminRoute.POST("/users/status/:id", userHandler.AdminUserBlockHandler)
+		adminRoute.GET("/users/add", userHandler.AdminUserAddFormShowHandler)
+		adminRoute.POST("/users/add", userHandler.AdminUserCreationHandler)
 
 		// admin profile
 		profileRepo := profilerepo.NewAdminProfileRepo(db.DB)
@@ -100,6 +100,12 @@ func RegisterAdminRoute(r *gin.Engine, db *db.Database, cfg *config.Config) {
 		adminRoute.GET("/reviews", reviewHandle.ListAllReviewsHandler)
 		adminRoute.POST("/reviews/approve/:id", reviewHandle.ApproveReviewHandler)
 		adminRoute.POST("/reviews/reject/:id", reviewHandle.RejectReviewHandler)
+
+		// dashbord
+		dashboardService := service.NewAdminDashboardService(orderRepo, productRepo, userRepo)
+		dashboardHandler := admindashhandler.NewAdminDashboardHandler(dashboardService)
+		adminRoute.GET("/dashboard", dashboardHandler.AdminDashboardShow)
+
 	}
 
 }

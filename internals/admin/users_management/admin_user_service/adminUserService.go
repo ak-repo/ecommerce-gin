@@ -7,6 +7,8 @@ import (
 
 	usersmanagement "github.com/ak-repo/ecommerce-gin/internals/admin/users_management"
 	adminuserinterface "github.com/ak-repo/ecommerce-gin/internals/admin/users_management/admin_user_interface"
+	"github.com/ak-repo/ecommerce-gin/models"
+	"github.com/ak-repo/ecommerce-gin/pkg/utils"
 )
 
 type AdminUserService struct {
@@ -70,7 +72,7 @@ func (s *AdminUserService) AdminGetUserByIDService(userID uint) (*usersmanagemen
 // user role change
 func (s *AdminUserService) AdminUserRoleChangeService(user *usersmanagement.AdminUserRoleChange) error {
 
-	validRoles := map[string]bool{"user": true, "store": true, "admin": true, "delivery": true}
+	validRoles := map[string]bool{"customer": true, "store": true, "admin": true, "delivery": true}
 	if !validRoles[user.Role] {
 		return fmt.Errorf("invalid role: %s", user.Role)
 	}
@@ -88,7 +90,7 @@ func (s *AdminUserService) AdminUserBlockService(userID uint) error {
 		return errors.New("user not found")
 	}
 	if user.Status == "active" {
-		user.Status = "blocked"
+		user.Status = "inactive"
 	} else {
 		user.Status = "active"
 	}
@@ -121,4 +123,27 @@ func (s *AdminUserService) AdminUserSearchService(query string) ([]usersmanageme
 
 	return users, nil
 
+}
+
+func (s *AdminUserService) AdminUserCreateService(req *usersmanagement.CreateUserRequest) (uint, error) {
+
+	hash, err := utils.HashPassword(req.ConfirmPassword)
+	if err != nil {
+		return 0, err
+	}
+
+	user := models.User{
+		Email:         req.Email,
+		PasswordHash:  hash,
+		Username:      req.Username,
+		Role:          req.Role,
+		Status:        req.Status,
+		EmailVerified: req.EmailVerified,
+	}
+
+	if err := s.AdminUserRepo.AdminCreateUser(&user); err != nil {
+		return 0, err
+	}
+
+	return user.ID, nil
 }

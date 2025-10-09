@@ -11,6 +11,8 @@ type HandlerInterface interface {
 	ListUserByIDHandler(ctx *gin.Context)
 	AdminUserRoleChangeHandler(ctx *gin.Context)
 	AdminUserBlockHandler(ctx *gin.Context)
+	AdminUserAddFormShowHandler(ctx *gin.Context)
+	AdminUserCreationHandler(ctx *gin.Context)
 }
 
 type ServiceInterface interface {
@@ -18,6 +20,7 @@ type ServiceInterface interface {
 	AdminGetUserByIDService(userID uint) (*usersmanagement.AdminUserDTO, error)
 	AdminUserRoleChangeService(user *usersmanagement.AdminUserRoleChange) error
 	AdminUserBlockService(userID uint) error
+	AdminUserCreateService(req *usersmanagement.CreateUserRequest) (uint, error)
 }
 
 type RepoInterface interface {
@@ -25,4 +28,5 @@ type RepoInterface interface {
 	AdminGetAllUsers() ([]models.User, error)
 	AdminUserRoleChange(user *usersmanagement.AdminUserRoleChange) error
 	AdminUserBlock(user *models.User) error
+	AdminCreateUser(user *models.User) error
 }

@@ -28,27 +28,13 @@ type AdminUserRoleChange struct {
 	Role string `json:"role" form:"role" binding:"required"`
 }
 
-// func ToAdminUserListDTO(u *models.User) *dto.AdminUserListDTO {
-// 	return &AdminUserListDTO{
-// 		ID:       u.ID,
-// 		Username: u.Username,
-// 		Email:    u.Email,
-// 		Role:     u.Role,
-// 		Status:   u.Status,
-// 	}
-// }
-
-// func ToAdminUserDTO(u *models.User) *dto.AdminUserDTO {
-// 	return &dto.AdminUserDTO{
-// 		ID:            u.ID,
-// 		Username:      u.Username,
-// 		Email:         u.Email,
-// 		Role:          u.Role,
-// 		Status:        u.Status,
-// 		EmailVerified: u.EmailVerified,
-// 		LastLoginIP:   u.LastLoginIP,
-// 		LastLoginAt:   u.LastLoginAt,
-// 		CreatedAt:     u.CreatedAt,
-// 		UpdatedAt:     u.UpdatedAt,
-// 	}
-// }
+// Request DTO for creating a new admin user
+type CreateUserRequest struct {
+	Username        string `form:"username" binding:"required,min=3,max=255"`
+	Email           string `form:"email" binding:"required,email"`
+	Password        string `form:"password" binding:"required,min=8"`
+	ConfirmPassword string `form:"confirm_password" binding:"required,eqfield=Password"`
+	Role            string `form:"role" binding:"required,oneof=customer store admin"`
+	Status          string `form:"status" binding:"required,oneof=active inactive"`
+	EmailVerified   bool   `form:"-"`
+}

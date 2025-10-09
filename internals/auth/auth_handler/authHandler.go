@@ -1,7 +1,6 @@
 package authhandler
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/ak-repo/ecommerce-gin/internals/auth"
@@ -103,8 +102,6 @@ func (h *AuthHandler) LoginHandler(ctx *gin.Context, role string) {
 		return
 	}
 
-	log.Println("user:", res.User)
-	// Set secure cookies
 	ctx.SetCookie("refreshToken", res.RefreshToken, int(res.RefreshExp), "/", "localhost", true, true)
 
 	if role == RoleAdmin {
@@ -120,3 +117,20 @@ func (h *AuthHandler) LoginHandler(ctx *gin.Context, role string) {
 }
 
 // logout  => customer, store, delivery-partner, admin
+
+// Admin
+func (h *AuthHandler) AdminLogout(ctx *gin.Context) {
+	h.LogoutHandler(ctx, RoleAdmin)
+}
+
+func (h *AuthHandler) LogoutHandler(ctx *gin.Context, role string) {
+
+	ctx.SetCookie("accessToken", "", -1, "/", "localhost", true, true)
+	ctx.SetCookie("refreshToken", "", -1, "/", "localhost", true, true)
+
+	if role == "admin" {
+		ctx.Redirect(http.StatusSeeOther, "/login")
+
+	}
+
+}

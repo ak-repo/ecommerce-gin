@@ -126,3 +126,35 @@ func (h *AdminUserHandler) AdminUserBlockHandler(ctx *gin.Context) {
 
 	ctx.Redirect(http.StatusSeeOther, fmt.Sprintf("/admin/users/%d", userID))
 }
+
+// GET admin/users/add =>  add user form
+func (h *AdminUserHandler) AdminUserAddFormShowHandler(ctx *gin.Context) {
+
+	ctx.HTML(http.StatusOK, "pages/users/addUser.html", nil)
+}
+
+// POST admin/users/add => post req and crearte new user
+func (h *AdminUserHandler) AdminUserCreationHandler(ctx *gin.Context) {
+	var req usersmanagement.CreateUserRequest
+	if err := ctx.ShouldBind(&req); err != nil {
+		utils.RenderError(ctx, http.StatusBadRequest, "admin", "invalid input", err)
+		return
+	}
+
+	// Checkbox handling
+	req.EmailVerified = ctx.PostForm("email_verified") == "1"
+
+	id, err := h.AdminUserService.AdminUserCreateService(&req)
+	if err != nil {
+		utils.RenderError(ctx, http.StatusInternalServerError, "admin", "user creation failed", err)
+		return
+	}
+
+	// Redirect after creation
+	if id == 0 {
+		ctx.Redirect(http.StatusSeeOther, "/admin/users/")
+	} else {
+		ctx.Redirect(http.StatusSeeOther, fmt.Sprintf("/admin/users/%d", id))
+	}
+}
+

@@ -17,7 +17,9 @@ type AuthHandlerInterface interface {
 	AdminLogin(ctx *gin.Context)
 	AdminLoginForm(ctx *gin.Context)
 	LoginHandler(ctx *gin.Context, role string)
-
+	AdminLogout(ctx *gin.Context)
+	LogoutHandler(ctx *gin.Context, role string)
+	
 	//password change
 	CustomerPasswordChange(ctx *gin.Context)
 	AdminPasswordChange(ctx *gin.Context)

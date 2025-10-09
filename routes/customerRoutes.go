@@ -19,6 +19,9 @@ import (
 	customerprofilerepo "github.com/ak-repo/ecommerce-gin/internals/customer/cust_profile/customer_profile_repo"
 	customerprofileservice "github.com/ak-repo/ecommerce-gin/internals/customer/cust_profile/customer_profile_service"
 	custreview "github.com/ak-repo/ecommerce-gin/internals/customer/cust_review"
+	custwishlisthandler "github.com/ak-repo/ecommerce-gin/internals/customer/cust_wishlist/cust_wishlist_handler"
+	custwishlistrepo "github.com/ak-repo/ecommerce-gin/internals/customer/cust_wishlist/cust_wishlist_repo"
+	custwishlistservice "github.com/ak-repo/ecommerce-gin/internals/customer/cust_wishlist/cust_wishlist_service"
 	orderrepos "github.com/ak-repo/ecommerce-gin/internals/order/order_repos"
 	orderservices "github.com/ak-repo/ecommerce-gin/internals/order/order_services"
 	reviewrepo "github.com/ak-repo/ecommerce-gin/internals/review/review_repo"
@@ -101,6 +104,15 @@ func RegisterCustomerRoute(r *gin.Engine, db *db.Database, cfg *config.Config) {
 		reviewHandler := custreview.NewCustomerReviewHandler(reviewService)
 
 		custRoute.POST("/review", reviewHandler.ReviewCreateCustomerHandler)
+
+		// wishlist
+		wishlistRepo := custwishlistrepo.NewWishlistRepo(db.DB)
+		wishlistService := custwishlistservice.NewWishlistSevice(wishlistRepo)
+		wishlistHandler := custwishlisthandler.NewWishlistHandler(wishlistService)
+
+		custRoute.GET("/wishlist", wishlistHandler.ListCustomerWishlistHandler)
+		custRoute.POST("/wishlist/:id", wishlistHandler.AddToWishlistHandler)
+		custRoute.DELETE("/wishlist/:id", wishlistHandler.RemoveFromWishlistHandler)
 	}
 
 }
