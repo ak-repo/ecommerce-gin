@@ -5,6 +5,9 @@ import (
 	profilehandler "github.com/ak-repo/ecommerce-gin/internals/admin/admin_profile/profile_handler"
 	profilerepo "github.com/ak-repo/ecommerce-gin/internals/admin/admin_profile/profile_repo"
 	profileservice "github.com/ak-repo/ecommerce-gin/internals/admin/admin_profile/profile_service"
+	categoryhandler "github.com/ak-repo/ecommerce-gin/internals/admin/category_management/category_handler"
+	categoryrepo "github.com/ak-repo/ecommerce-gin/internals/admin/category_management/category_repo"
+	categoryservice "github.com/ak-repo/ecommerce-gin/internals/admin/category_management/category_service"
 	admindashhandler "github.com/ak-repo/ecommerce-gin/internals/admin/dashboard_management/admin_dash_handler"
 	"github.com/ak-repo/ecommerce-gin/internals/admin/dashboard_management/service"
 	adminorderhandler "github.com/ak-repo/ecommerce-gin/internals/admin/orders_management/admin_order_handler"
@@ -106,6 +109,15 @@ func RegisterAdminRoute(r *gin.Engine, db *db.Database, cfg *config.Config) {
 		dashboardHandler := admindashhandler.NewAdminDashboardHandler(dashboardService)
 		adminRoute.GET("/dashboard", dashboardHandler.AdminDashboardShow)
 
+		// Categories
+		categoryRepo := categoryrepo.NewCategoryRepo(db.DB)
+		categoryService := categoryservice.NewCategoryService(categoryRepo)
+		categoryHandler := categoryhandler.NewCategoryHandler(categoryService)
+
+		adminRoute.GET("/categories", categoryHandler.ListAllCategoriesHandler)
+		adminRoute.GET("/categories/:id", categoryHandler.DetailedCategoryHandler)
+		adminRoute.GET("/categories/add", categoryHandler.NewCategoryFormHandler)
+		adminRoute.POST("/categories/add", categoryHandler.CreateNewcategoryHandler)
 	}
 
 }
