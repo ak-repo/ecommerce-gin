@@ -6,21 +6,22 @@ import (
 	"github.com/ak-repo/ecommerce-gin/config"
 	"github.com/ak-repo/ecommerce-gin/internals/auth"
 	authinterface "github.com/ak-repo/ecommerce-gin/internals/auth/auth_interface"
+	"github.com/ak-repo/ecommerce-gin/models"
 	jwtpkg "github.com/ak-repo/ecommerce-gin/pkg/jwt_pkg"
 	"github.com/ak-repo/ecommerce-gin/pkg/utils"
 )
 
-type AuthService struct {
-	authRepo authinterface.AuthRepoInterface
+type authService struct {
+	authRepo authinterface.Repository
 	cfg      *config.Config
 }
 
-func NewAuthService(authRepo authinterface.AuthRepoInterface, cfg *config.Config) authinterface.AuthServiceInterface {
-	return &AuthService{authRepo: authRepo, cfg: cfg}
+func NewAuthService(authRepo authinterface.Repository, cfg *config.Config) authinterface.Service {
+	return &authService{authRepo: authRepo,cfg: cfg}
 }
 
 // -------------------------------------------- Registration service -------------------------------------------------------
-func (s *AuthService) RegisterService(input *auth.RegisterRequest, role string) error {
+func (s *authService) Registeration(input *auth.RegisterRequest, role string) error {
 
 	hash, err := utils.HashPassword(input.Password)
 	if err != nil {
@@ -31,17 +32,23 @@ func (s *AuthService) RegisterService(input *auth.RegisterRequest, role string) 
 		return errors.New("email already taken")
 	}
 
-	return s.authRepo.CreateUser(input.Username, input.Email, hash, role)
+	user := models.User{
+		Email:         input.Email,
+		Username:      input.Username,
+		PasswordHash:  hash,
+		Role:          role,
+		Status:        "active",
+		EmailVerified: false,
+	}
+
+	return s.authRepo.Registeration(&user)
 }
 
 // -----------------------------------------------------Login service ----------------------------------------------------
-func (s *AuthService) LoginService(input *auth.LoginRequest, role string) (*auth.LoginResponse, error) {
+func (s *authService) Login(input *auth.LoginRequest, role string) (*auth.LoginResponse, error) {
 
 	user, err := s.authRepo.GetUserByEmail(input.Email)
-	if err != nil {
-		return nil, err
-	}
-	if user == nil {
+	if user == nil || err != nil {
 		return nil, errors.New("user not found")
 	}
 

@@ -70,17 +70,17 @@
       <!-- Actions -->
       <div class="mt-6 flex flex-wrap gap-3">
         <a
-          href="/admin/products/edit/{{.Product.ID}}"
+          href="/api/v1/admin/products/update/{{.Product.ID}}"
           class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
           >Edit</a
         >
         <a
-          href="/admin/products/delete/{{.Product.ID}}"
+          href="/api/v1/admin/products/delete/{{.Product.ID}}"
           class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
           >Delete</a
         >
         <a
-          href="/admin/products"
+          href="/api/v1/admin/products"
           class="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400"
           >Back</a
         >

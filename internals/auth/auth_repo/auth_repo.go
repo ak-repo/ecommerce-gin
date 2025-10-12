@@ -8,52 +8,38 @@ import (
 	"gorm.io/gorm"
 )
 
-type AuthRepo struct {
+type authRepo struct {
 	DB *gorm.DB
 }
 
-func NewAuthRepo(db *gorm.DB) authinterface.AuthRepoInterface {
-	return &AuthRepo{DB: db}
+func NewAuthRepo(db *gorm.DB) authinterface.Repository {
+	return &authRepo{DB: db}
 }
 
 // user registration
-func (r *AuthRepo) CreateUser(username, email, password, role string) error {
-	user := models.User{
-		Email:         email,
-		Username:      username,
-		PasswordHash:  password,
-		Role:          role,
-		Status:        "active",
-		EmailVerified: false,
-	}
-	return r.DB.Create(&user).Error
+func (r *authRepo) Registeration(user *models.User) error {
+
+	return r.DB.Create(user).Error
 }
 
 // return user details
-func (r *AuthRepo) GetUserByEmail(email string) (*models.User, error) {
+func (r *authRepo) GetUserByEmail(email string) (*models.User, error) {
 	var user models.User
 	err := r.DB.Where("email=?", email).First(&user).Error
 
-	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, nil
-		}
-		return nil, err
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil
 	}
 	return &user, nil
 }
 
 // user by id
-func (r *AuthRepo) GetUserByID(userID uint) (*models.User, error) {
+func (r *authRepo) GetUserByID(userID uint) (*models.User, error) {
 	var user models.User
 	err := r.DB.First(&user, userID).Error
-	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, nil
-		}
-		return nil, err
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil
 	}
 	return &user, nil
 
 }
-

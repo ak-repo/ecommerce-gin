@@ -7,7 +7,7 @@ import (
 	"github.com/ak-repo/ecommerce-gin/pkg/utils"
 )
 
-func (s *AuthService) PasswordChangeService(userID uint, req *auth.PasswordChange) error {
+func (s *authService) PasswordChange(userID uint, req *auth.PasswordChange) error {
 
 	if req.ConfirmPassword != req.NewPassword {
 		return errors.New("confirm and new password not matching")

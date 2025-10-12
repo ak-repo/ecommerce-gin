@@ -6,42 +6,38 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type AuthHandlerInterface interface {
-	RegisterationHandler(ctx *gin.Context, role string)
+type Handler interface {
+	Registeration(ctx *gin.Context, role string)
 	CustomerRegister(ctx *gin.Context)
-	StoreRegister(ctx *gin.Context)
-	DeliveryPartnerRegister(ctx *gin.Context)
 	CustomerLogin(ctx *gin.Context)
-	StoreLogin(ctx *gin.Context)
-	DeliveryPartnerLogin(ctx *gin.Context)
 	AdminLogin(ctx *gin.Context)
 	AdminLoginForm(ctx *gin.Context)
-	LoginHandler(ctx *gin.Context, role string)
+	Login(ctx *gin.Context, role string)
 	AdminLogout(ctx *gin.Context)
-	LogoutHandler(ctx *gin.Context, role string)
-	
+	Logout(ctx *gin.Context, role string)
+
 	//password change
 	CustomerPasswordChange(ctx *gin.Context)
 	AdminPasswordChange(ctx *gin.Context)
-	PasswordChangeHandler(ctx *gin.Context, role string)
+	PasswordChange(ctx *gin.Context, role string)
 
 	// otp
-	SendOTPHandler(ctx *gin.Context)
-	VerifyOTPHandler(ctx *gin.Context)
+	SendOTP(ctx *gin.Context)
+	VerifyOTP(ctx *gin.Context)
 }
 
-type AuthServiceInterface interface {
-	RegisterService(input *auth.RegisterRequest, role string) error
-	LoginService(input *auth.LoginRequest, role string) (*auth.LoginResponse, error)
-	PasswordChangeService(userID uint, req *auth.PasswordChange) error
+type Service interface {
+	 Registeration(input *auth.RegisterRequest, role string) error
+	 Login(input *auth.LoginRequest, role string) (*auth.LoginResponse, error) 
+	PasswordChange(userID uint, req *auth.PasswordChange) error
 
 	//otp
-	SentOTPService(req *auth.SendOTPRequest) error
-	VerifyOTPService(req *auth.VerifyOTPRequest) error
+	SendOTP(req *auth.SendOTPRequest) error
+	VerifyOTP(req *auth.VerifyOTPRequest) error
 }
 
-type AuthRepoInterface interface {
-	CreateUser(username, email, password, role string) error
+type Repository interface {
+	Registeration(user *models.User) error 
 	GetUserByEmail(email string) (*models.User, error)
 	GetUserByID(userID uint) (*models.User, error)
 	PasswordChange(userID uint, password string) error

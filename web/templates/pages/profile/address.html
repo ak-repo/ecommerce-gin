@@ -11,7 +11,7 @@
 
   <!-- Form -->
   <form
-    action="{{ if .Address.ID }}/admin/address/update/{{ .Address.ID }}{{ else }}/admin/address/update/0{{ end }}"
+    action="{{ if .Address.ID }}/api/v1/admin/profile/address/{{ .Address.ID }}{{ else }}/api/v1//admin/address/update/0{{ end }}"
     method="POST"
     class="space-y-4"
   >
@@ -126,12 +126,11 @@
   <!-- Back Links -->
   <div class="mt-6 text-center">
     <a
-      href="/admin/profile"
+      href="/api/v1/admin/profile"
       class="inline-block bg-gray-300 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-400 transition"
     >
       Back to Profile
     </a>
-   
   </div>
 </div>
 {{ end }}

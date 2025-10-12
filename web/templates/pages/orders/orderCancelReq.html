@@ -52,13 +52,13 @@
             <td class="px-6 py-4">
               {{if eq .Status "PENDING"}}
               <div class="flex gap-2">
-                <form action="/admin/orders/cancels/accept/{{.ID}}" method="POST">
+                <form action="/api/v1/admin/orders/cancel-requests/{{.ID}}/accept" method="POST">
                   <button type="submit" 
                     class="inline-flex items-center px-3 py-2 bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition-colors duration-200 text-sm font-medium border border-green-200">
                     Accept
                   </button>
                 </form>
-                <form action="/admin/orders/cancels/reject/{{.ID}}" method="POST">
+                <form action="/api/v1/admin/orders/cancel-requests/{{.ID}}/reject" method="POST">
                   <button type="submit" 
                     class="inline-flex items-center px-3 py-2 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors duration-200 text-sm font-medium border border-red-200">
                     Reject

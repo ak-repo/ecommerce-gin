@@ -145,3 +145,14 @@ Payment (Optional)
 Place Order
    ↓
 Clear Cart → Show Confirmation
+
+
+
+file
+| Old Name                 | New Recommended                                      | Reason                 |
+| ------------------------ | ---------------------------------------------------- | ---------------------- |
+| `carthandler/handler.go` | `internal/customer/cart/handler/handler.go`          | Organized by domain    |
+| `cartrepo/repo.go`       | `internal/customer/cart/repository/repository.go`    | Same naming across     |
+| `cartservice/service.go` | `internal/customer/cart/service/service.go`          | Clear pattern          |
+| `cart_interface.go`      | `internal/customer/cart/interface/cart_interface.go` | Consistent             |
+| `custcart/`              | `internal/customer/cart/dto/`                        | “custcart” → “cartdto” |

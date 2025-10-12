@@ -15,7 +15,7 @@
         <p class="text-gray-600 mt-1">Manage order details and status</p>
       </div>
     </div>
-    <a href="/admin/orders" class="inline-flex items-center px-4 py-2.5 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-all duration-200 shadow-sm font-medium">
+    <a href="/api/v1/admin/orders" class="inline-flex items-center px-4 py-2.5 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-all duration-200 shadow-sm font-medium">
       <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
       </svg>
@@ -131,7 +131,7 @@
                 <td class="py-4 text-sm text-gray-700">${{.UnitPrice}}</td>
                 <td class="py-4 text-sm font-semibold text-gray-900">${{.Subtotal}}</td>
                 <td class="py-4 text-center">
-                  <a href="/admin/products/{{.ProductID}}" 
+                  <a href="/api/v1/admin/products/{{.ProductID}}" 
                      class="inline-flex items-center justify-center w-8 h-8 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors duration-200"
                      title="View Product Details">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -170,7 +170,7 @@
           </div>
           <h3 class="text-lg font-semibold text-gray-900">Update Status</h3>
         </div>
-        <form action="/admin/orders/status/{{.Order.OrderID}}" method="POST">
+        <form action="/api/v1/admin/orders/status/{{.Order.OrderID}}" method="POST">
           <div class="space-y-4">
             <select name="status" class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 bg-white">
               <option value="pending" {{if eq .Order.Status "pending"}}selected{{end}}>⏳ Pending</option>

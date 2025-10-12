@@ -28,11 +28,10 @@ func RegisterRoute(r *gin.Engine, db *db.Database, cfg *config.Config) {
 			utils.RenderError(ctx, http.StatusNotFound, role.(string), "no page found", errors.New("invalid url"))
 		}
 		utils.RenderError(ctx, http.StatusNotFound, "no role", "no page found", errors.New("invalid url"))
-
 	})
 	r.Use(middleware.AccessMiddleware(cfg))
 
-	RegisterAdminRoute(r, db, cfg)
-	RegisterCustomerRoute(r, db, cfg)
+	RegisterAdminRoutes(r, db, cfg)
+	RegisterCustomerRoutes(r, db, cfg)
 
 }

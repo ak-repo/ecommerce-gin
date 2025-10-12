@@ -16,33 +16,23 @@ const (
 	RoleAdmin           = "admin"
 )
 
-type AuthHandler struct {
-	authService authinterface.AuthServiceInterface
+type authHandler struct {
+	authService authinterface.Service
 }
 
-func NewAuthHandler(authServcie authinterface.AuthServiceInterface) authinterface.AuthHandlerInterface {
-	return &AuthHandler{authService: authServcie}
+func NewAuthHandler(servcie authinterface.Service) authinterface.Handler {
+	return &authHandler{authService: servcie}
 }
 
 //----------------------------------------------------- Register   => customer, store,  delivery-partner--------------------------------------------------------
 
 // customer
-func (h *AuthHandler) CustomerRegister(ctx *gin.Context) {
-	h.RegisterationHandler(ctx, RoleCustomer)
-}
-
-// store
-func (h *AuthHandler) StoreRegister(ctx *gin.Context) {
-	h.RegisterationHandler(ctx, RoleStore)
-}
-
-// delivery-partner
-func (h *AuthHandler) DeliveryPartnerRegister(ctx *gin.Context) {
-	h.RegisterationHandler(ctx, RoleDeliveryPartner)
+func (h *authHandler) CustomerRegister(ctx *gin.Context) {
+	h.Registeration(ctx, RoleCustomer)
 }
 
 // main
-func (h *AuthHandler) RegisterationHandler(ctx *gin.Context, role string) {
+func (h *authHandler) Registeration(ctx *gin.Context, role string) {
 
 	var input auth.RegisterRequest
 	if err := ctx.ShouldBindJSON(&input); err != nil {
@@ -50,7 +40,7 @@ func (h *AuthHandler) RegisterationHandler(ctx *gin.Context, role string) {
 		return
 	}
 
-	err := h.authService.RegisterService(&input, role)
+	err := h.authService.Registeration(&input, role)
 	if err != nil {
 		utils.RenderError(ctx, http.StatusInternalServerError, role, "something went wrong while registering", err)
 		return
@@ -67,36 +57,26 @@ func (h *AuthHandler) RegisterationHandler(ctx *gin.Context, role string) {
 //-------------------------------------------------------------- login   => customer, store, delivery-partner, admin ---------------------------------------
 
 // customer
-func (h *AuthHandler) CustomerLogin(ctx *gin.Context) {
-	h.LoginHandler(ctx, RoleCustomer)
-}
-
-// store
-func (h *AuthHandler) StoreLogin(ctx *gin.Context) {
-	h.LoginHandler(ctx, RoleStore)
-}
-
-// delivery-partner
-func (h *AuthHandler) DeliveryPartnerLogin(ctx *gin.Context) {
-	h.LoginHandler(ctx, RoleDeliveryPartner)
+func (h *authHandler) CustomerLogin(ctx *gin.Context) {
+	h.Login(ctx, RoleCustomer)
 }
 
 // Admin
-func (h *AuthHandler) AdminLogin(ctx *gin.Context) {
-	h.LoginHandler(ctx, RoleAdmin)
+func (h *authHandler) AdminLogin(ctx *gin.Context) {
+	h.Login(ctx, RoleAdmin)
 }
 
-func (h *AuthHandler) AdminLoginForm(ctx *gin.Context) {
+func (h *authHandler) AdminLoginForm(ctx *gin.Context) {
 	ctx.HTML(http.StatusOK, "pages/auth/adminLogin.html", gin.H{})
 }
-func (h *AuthHandler) LoginHandler(ctx *gin.Context, role string) {
+func (h *authHandler) Login(ctx *gin.Context, role string) {
 	var input auth.LoginRequest
 	if err := ctx.ShouldBind(&input); err != nil {
 		utils.RenderError(ctx, http.StatusBadRequest, role, "invalid inputes", err)
 		return
 	}
 
-	res, err := h.authService.LoginService(&input, role)
+	res, err := h.authService.Login(&input, role)
 	if err != nil {
 		utils.RenderError(ctx, http.StatusBadRequest, role, "error while login", err)
 		return
@@ -106,7 +86,7 @@ func (h *AuthHandler) LoginHandler(ctx *gin.Context, role string) {
 
 	if role == RoleAdmin {
 		ctx.SetCookie("accessToken", res.AccessToken, int(res.AccessExp), "/", "localhost", true, true)
-		ctx.Redirect(http.StatusSeeOther, "/admin/dashboard")
+		ctx.Redirect(http.StatusSeeOther, "/api/v1/admin/dashboard")
 	} else {
 		utils.RenderSuccess(ctx, http.StatusOK, role, "Login successful", map[string]interface{}{
 			"token":  res.AccessToken,
@@ -119,11 +99,11 @@ func (h *AuthHandler) LoginHandler(ctx *gin.Context, role string) {
 // logout  => customer, store, delivery-partner, admin
 
 // Admin
-func (h *AuthHandler) AdminLogout(ctx *gin.Context) {
-	h.LogoutHandler(ctx, RoleAdmin)
+func (h *authHandler) AdminLogout(ctx *gin.Context) {
+	h.Logout(ctx, RoleAdmin)
 }
 
-func (h *AuthHandler) LogoutHandler(ctx *gin.Context, role string) {
+func (h *authHandler) Logout(ctx *gin.Context, role string) {
 
 	ctx.SetCookie("accessToken", "", -1, "/", "localhost", true, true)
 	ctx.SetCookie("refreshToken", "", -1, "/", "localhost", true, true)

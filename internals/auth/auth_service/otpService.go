@@ -11,7 +11,7 @@ import (
 	"github.com/ak-repo/ecommerce-gin/pkg/utils"
 )
 
-func (s *AuthService) SentOTPService(req *auth.SendOTPRequest) error {
+func (s *authService) SendOTP(req *auth.SendOTPRequest) error {
 
 	otp, err := utils.GenerateOTP(6)
 	if err != nil {
@@ -43,7 +43,7 @@ func (s *AuthService) SentOTPService(req *auth.SendOTPRequest) error {
 
 }
 
-func (s *AuthService) VerifyOTPService(req *auth.VerifyOTPRequest) error {
+func (s *authService) VerifyOTP(req *auth.VerifyOTPRequest) error {
 	record, err := s.authRepo.VerifyOTP(req)
 	if err != nil {
 		return err

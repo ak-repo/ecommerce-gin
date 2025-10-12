@@ -2,122 +2,146 @@ package routes
 
 import (
 	"github.com/ak-repo/ecommerce-gin/config"
-	profilehandler "github.com/ak-repo/ecommerce-gin/internals/admin/admin_profile/profile_handler"
-	profilerepo "github.com/ak-repo/ecommerce-gin/internals/admin/admin_profile/profile_repo"
-	profileservice "github.com/ak-repo/ecommerce-gin/internals/admin/admin_profile/profile_service"
-	categoryhandler "github.com/ak-repo/ecommerce-gin/internals/admin/category_management/category_handler"
-	categoryrepo "github.com/ak-repo/ecommerce-gin/internals/admin/category_management/category_repo"
-	categoryservice "github.com/ak-repo/ecommerce-gin/internals/admin/category_management/category_service"
-	admindashhandler "github.com/ak-repo/ecommerce-gin/internals/admin/dashboard_management/admin_dash_handler"
-	"github.com/ak-repo/ecommerce-gin/internals/admin/dashboard_management/service"
-	adminorderhandler "github.com/ak-repo/ecommerce-gin/internals/admin/orders_management/admin_order_handler"
-	adminproducthandler "github.com/ak-repo/ecommerce-gin/internals/admin/product_management/admin_product_handler"
-	adminproductrepo "github.com/ak-repo/ecommerce-gin/internals/admin/product_management/admin_product_repo"
-	adminproductservice "github.com/ak-repo/ecommerce-gin/internals/admin/product_management/admin_product_service"
-	reviewmanagement "github.com/ak-repo/ecommerce-gin/internals/admin/review_management"
-	adminuserhandler "github.com/ak-repo/ecommerce-gin/internals/admin/users_management/admin_user_handler"
-	adminuserrepo "github.com/ak-repo/ecommerce-gin/internals/admin/users_management/admin_user_repo"
-	adminuserservice "github.com/ak-repo/ecommerce-gin/internals/admin/users_management/admin_user_service"
+	categoryhandler "github.com/ak-repo/ecommerce-gin/internals/admin/category_management/handler"
+	categoryrepository "github.com/ak-repo/ecommerce-gin/internals/admin/category_management/repository"
+	categoryservice "github.com/ak-repo/ecommerce-gin/internals/admin/category_management/service"
+	dashboardhandler "github.com/ak-repo/ecommerce-gin/internals/admin/dashboard_management/handler"
+	dashboardservice "github.com/ak-repo/ecommerce-gin/internals/admin/dashboard_management/service"
+	productmanagementhandler "github.com/ak-repo/ecommerce-gin/internals/admin/product_management/handler"
+	productmanagementrepository "github.com/ak-repo/ecommerce-gin/internals/admin/product_management/repository"
+	productmanagementservice "github.com/ak-repo/ecommerce-gin/internals/admin/product_management/service"
+	usershandler "github.com/ak-repo/ecommerce-gin/internals/admin/users_management/handler"
+	usersrepository "github.com/ak-repo/ecommerce-gin/internals/admin/users_management/repository"
+	usersservice "github.com/ak-repo/ecommerce-gin/internals/admin/users_management/service"
 	authhandler "github.com/ak-repo/ecommerce-gin/internals/auth/auth_handler"
 	authrepo "github.com/ak-repo/ecommerce-gin/internals/auth/auth_repo"
 	authservice "github.com/ak-repo/ecommerce-gin/internals/auth/auth_service"
-	orderrepos "github.com/ak-repo/ecommerce-gin/internals/order/order_repos"
+	orderhandler "github.com/ak-repo/ecommerce-gin/internals/order/handler"
+	orderrepository "github.com/ak-repo/ecommerce-gin/internals/order/order_repos"
 	orderservices "github.com/ak-repo/ecommerce-gin/internals/order/order_services"
-	reviewrepo "github.com/ak-repo/ecommerce-gin/internals/review/review_repo"
-	reviewservice "github.com/ak-repo/ecommerce-gin/internals/review/review_service"
+	profilehandler "github.com/ak-repo/ecommerce-gin/internals/profile/handler"
+	profilerepository "github.com/ak-repo/ecommerce-gin/internals/profile/repository"
+	profileservice "github.com/ak-repo/ecommerce-gin/internals/profile/service"
+	reviewhandler "github.com/ak-repo/ecommerce-gin/internals/review/handler"
+	reviewrepository "github.com/ak-repo/ecommerce-gin/internals/review/repository"
+	reviewservice "github.com/ak-repo/ecommerce-gin/internals/review/service"
 	middleware "github.com/ak-repo/ecommerce-gin/middleware/auth"
-
 	db "github.com/ak-repo/ecommerce-gin/pkg/database"
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterAdminRoute(r *gin.Engine, db *db.Database, cfg *config.Config) {
-
-	// login
+// RegisterAdminRoutes defines all routes for admin functionalities
+func RegisterAdminRoutes(r *gin.Engine, db *db.Database, cfg *config.Config) {
+	// --------------------------
+	// INIT CORE REPOSITORIES
+	// --------------------------
 	authRepo := authrepo.NewAuthRepo(db.DB)
+	orderRepo := orderrepository.Newrepository(db.DB)
+	userRepo := usersrepository.NewrUsersRpository(db.DB)
+	productRepo := productmanagementrepository.NewProductRepo(db.DB)
+	categoryRepo := categoryrepository.NewCategoryRepo(db.DB)
+	reviewRepo := reviewrepository.NewReviewRepo(db.DB)
+	profileRepo := profilerepository.NewProfileRepository(db.DB)
+
+	// --------------------------
+	// INIT SERVICES
+	// --------------------------
 	authService := authservice.NewAuthService(authRepo, cfg)
+	orderService := orderservices.NewOrderService(orderRepo)
+	userService := usersservice.NewUsersService(userRepo)
+	productService := productmanagementservice.Newservice(productRepo)
+	categoryService := categoryservice.NewCategoryService(categoryRepo)
+	reviewService := reviewservice.NewReviewService(reviewRepo)
+	profileService := profileservice.NewProfileService(profileRepo, authRepo)
+	dashboardService := dashboardservice.NewDashboardService(orderRepo, productRepo, userRepo)
+
+	// --------------------------
+	// INIT HANDLERS
+	// --------------------------
 	authHandler := authhandler.NewAuthHandler(authService)
+	orderHandler := orderhandler.NewOrderHandler(orderService)
+	userHandler := usershandler.NewAdminUserHandler(userService)
+	productHandler := productmanagementhandler.Newhandler(productService)
+	categoryHandler := categoryhandler.NewCategoryHandler(categoryService)
+	reviewHandler := reviewhandler.NewReviewHandler(reviewService)
+	profileHandler := profilehandler.NewProfileHandler(profileService)
+	dashboardHandler := dashboardhandler.NewAdminDashboardHandler(&dashboardService)
 
-	r.GET("/login", authHandler.AdminLoginForm)
-	r.POST("/login", authHandler.AdminLogin)
-
-	adminRoute := r.Group("/admin")
-	adminRoute.Use(middleware.AuthMiddleware(cfg), middleware.RoleMiddleware("admin"))
-
+	// PUBLIC ADMIN ROUTES (no middleware)
+	public := r.Group("/api/v1/admin")
 	{
-		//  auth
-		adminRoute.GET("/password-change", authHandler.AdminPasswordChange)
-		adminRoute.POST("/password-change", authHandler.AdminPasswordChange)
-		adminRoute.GET("/logout", authHandler.AdminLogout)
-
-		// products management
-		productRepo := adminproductrepo.NewAdminProductRepo(db.DB)
-		productService := adminproductservice.NewAdminProductService(productRepo)
-		productHandler := adminproducthandler.NewAdminProductHandler(productService)
-
-		adminRoute.GET("/products", productHandler.AdminAllProducstListHandler)
-		adminRoute.GET("/products/:id", productHandler.AdminProductListHandler)
-		adminRoute.GET("/products/add", productHandler.AdminAddProductPageHandler)
-		adminRoute.POST("/products/add", productHandler.AdminAddProductHandler)
-		adminRoute.GET("/products/edit/:id", productHandler.AdminShowProductEditPageHandler)
-		adminRoute.POST("/products/edit/:id", productHandler.AdminUpdateProductHandler)
-
-		// orders management
-		orderRepo := orderrepos.NewOrderRepo(db.DB)
-		orderService := orderservices.NewOrderService(orderRepo)
-		orderHandler := adminorderhandler.NewAdminOrderHandler(orderService)
-
-		adminRoute.GET("/orders", orderHandler.ShowAllOrderHandler)
-		adminRoute.GET("/orders/:id", orderHandler.ShowOrderByIDHandler)
-		adminRoute.POST("/orders/status/:id", orderHandler.UpdateOrderStatusHandler)
-		adminRoute.GET("/orders/cancels", orderHandler.ShowAllCancelRequestHandler)
-		adminRoute.POST("/orders/cancels/accept/:id", orderHandler.OrderCancellationAcceptHandler)
-		adminRoute.POST("/orders/cancels/reject/:id", orderHandler.OrderCancellationRejectHandler)
-
-		// user management
-		userRepo := adminuserrepo.NewAdminUserRepo(db.DB)
-		userService := adminuserservice.NewAdminUserService(userRepo)
-		userHandler := adminuserhandler.NewAdminUserHandler(userService)
-
-		adminRoute.GET("/users", userHandler.ListAllUsersHandler)
-		adminRoute.GET("/users/:id", userHandler.ListUserByIDHandler)
-		adminRoute.POST("/users/role/:id", userHandler.AdminUserRoleChangeHandler)
-		adminRoute.POST("/users/status/:id", userHandler.AdminUserBlockHandler)
-		adminRoute.GET("/users/add", userHandler.AdminUserAddFormShowHandler)
-		adminRoute.POST("/users/add", userHandler.AdminUserCreationHandler)
-
-		// admin profile
-		profileRepo := profilerepo.NewAdminProfileRepo(db.DB)
-		profileSevice := profileservice.NewAdminProfileService(authRepo, profileRepo)
-		profileHandle := profilehandler.NewAdminProfileHandler(profileSevice)
-
-		adminRoute.GET("/profile", profileHandle.AdminProfileHandler)
-		adminRoute.GET("/address/:id", profileHandle.ShowAddressFormHandler)
-		adminRoute.POST("/address/update/:id", profileHandle.UpdateAddressHandler)
-
-		// reviews and rating management
-		reviewRepo := reviewrepo.NewReviewRepo(db.DB)
-		reviewService := reviewservice.NewReviewService(reviewRepo)
-		reviewHandle := reviewmanagement.NewAdminReviewService(reviewService)
-
-		adminRoute.GET("/reviews", reviewHandle.ListAllReviewsHandler)
-		adminRoute.POST("/reviews/approve/:id", reviewHandle.ApproveReviewHandler)
-		adminRoute.POST("/reviews/reject/:id", reviewHandle.RejectReviewHandler)
-
-		// dashbord
-		dashboardService := service.NewAdminDashboardService(orderRepo, productRepo, userRepo)
-		dashboardHandler := admindashhandler.NewAdminDashboardHandler(dashboardService)
-		adminRoute.GET("/dashboard", dashboardHandler.AdminDashboardShow)
-
-		// Categories
-		categoryRepo := categoryrepo.NewCategoryRepo(db.DB)
-		categoryService := categoryservice.NewCategoryService(categoryRepo)
-		categoryHandler := categoryhandler.NewCategoryHandler(categoryService)
-
-		adminRoute.GET("/categories", categoryHandler.ListAllCategoriesHandler)
-		adminRoute.GET("/categories/:id", categoryHandler.DetailedCategoryHandler)
-		adminRoute.GET("/categories/add", categoryHandler.NewCategoryFormHandler)
-		adminRoute.POST("/categories/add", categoryHandler.CreateNewcategoryHandler)
+		public.GET("/login", authHandler.AdminLoginForm)
+		public.POST("/login", authHandler.AdminLogin)
 	}
 
+	// PROTECTED ADMIN ROUTES
+	protected := public.Group("")
+	protected.Use(middleware.AuthMiddleware(cfg), middleware.RoleMiddleware("admin"))
+	{
+		// --------------------------
+		// AUTH MANAGEMENT
+		// --------------------------
+		protected.POST("/password-change", authHandler.AdminPasswordChange)
+		protected.GET("/password-change", authHandler.AdminPasswordChange)
+		protected.POST("/logout", authHandler.AdminLogout)
+
+		// --------------------------
+		// DASHBOARD
+		// --------------------------
+		protected.GET("/dashboard", dashboardHandler.DashboardOverview)
+
+		// --------------------------
+		// PRODUCTS MANAGEMENT
+		// --------------------------
+		protected.GET("/products", productHandler.GetAllProducts)
+		protected.GET("/products/:id", productHandler.GetProductByID)
+		protected.GET("/products/add", productHandler.AddProductForm)
+		protected.POST("/products/add", productHandler.AddProduct)
+		protected.GET("/products/update/:id", productHandler.EditProductForm)
+		protected.POST("/products/update/:id", productHandler.UpdateProduct)
+
+		// --------------------------
+		// ORDERS MANAGEMENT
+		// --------------------------
+		protected.GET("/orders", orderHandler.GetAllOrders)
+		protected.GET("/orders/:id", orderHandler.GetOrderByIDForAdmin)
+		protected.POST("/orders/status/:id", orderHandler.UpdateStatus)
+		protected.GET("/orders/cancel-requests", orderHandler.GetAllCancels)
+		protected.POST("/orders/cancel-requests/:id/accept", orderHandler.AcceptCancel)
+		protected.POST("/orders/cancel-requests/:id/reject", orderHandler.RejectCancel)
+
+		// need for change
+		protected.GET("/users/:id/orders", orderHandler.GetOrderByCustomerIDForCustomer)
+
+		// --------------------------
+		// USERS MANAGEMENT
+		// --------------------------
+		protected.GET("/users", userHandler.GetAllUsers)
+		protected.GET("/users/:id", userHandler.GetUserByID)
+		protected.GET("/users/add", userHandler.ShowUserAddForm)
+		protected.POST("/users/add", userHandler.CreateUser)
+		protected.POST("/users/:id/role", userHandler.ChangeUserRole)
+		protected.POST("/users/:id/status", userHandler.BlockUser)
+
+		// --------------------------
+		// PROFILE MANAGEMENT
+		// --------------------------
+		protected.GET("/profile", profileHandler.GetProfile)
+		protected.GET("/profile/address/:id", profileHandler.GetAddress)
+		protected.POST("/profile/address/:id", profileHandler.UpdateAddress)
+
+		// --------------------------
+		// REVIEWS MANAGEMENT
+		// --------------------------
+		protected.GET("/reviews", reviewHandler.GetAllReviews)
+		protected.POST("/reviews/:id/approve", reviewHandler.ApporveReview)
+		protected.POST("/reviews/:id/reject", reviewHandler.RejectReview)
+
+		// --------------------------
+		// CATEGORIES MANAGEMENT
+		// --------------------------
+		protected.GET("/categories", categoryHandler.GetAllCategories)
+		protected.GET("/categories/:id", categoryHandler.GetCategoryDetails)
+		protected.POST("/categories", categoryHandler.CreateCategory)
+	}
 }

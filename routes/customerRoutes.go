@@ -5,114 +5,118 @@ import (
 	authhandler "github.com/ak-repo/ecommerce-gin/internals/auth/auth_handler"
 	authrepo "github.com/ak-repo/ecommerce-gin/internals/auth/auth_repo"
 	authservice "github.com/ak-repo/ecommerce-gin/internals/auth/auth_service"
-	carthandler "github.com/ak-repo/ecommerce-gin/internals/customer/cust_cart/cart_handler"
-	cartrepo "github.com/ak-repo/ecommerce-gin/internals/customer/cust_cart/cart_repo"
-	cartservice "github.com/ak-repo/ecommerce-gin/internals/customer/cust_cart/cart_service"
-	custcheckouthandler "github.com/ak-repo/ecommerce-gin/internals/customer/cust_checkout/cust_checkout_handler"
-	custcheckoutrepo "github.com/ak-repo/ecommerce-gin/internals/customer/cust_checkout/cust_checkout_repo"
-	custcheckoutservice "github.com/ak-repo/ecommerce-gin/internals/customer/cust_checkout/cust_checkout_service"
-	customerorderhandler "github.com/ak-repo/ecommerce-gin/internals/customer/cust_order/customer_order_handler"
-	custproducthandler "github.com/ak-repo/ecommerce-gin/internals/customer/cust_product/cust_product_handler"
-	custproductrepo "github.com/ak-repo/ecommerce-gin/internals/customer/cust_product/cust_product_repo"
-	custproductservice "github.com/ak-repo/ecommerce-gin/internals/customer/cust_product/cust_product_service"
-	customerprofilehandler "github.com/ak-repo/ecommerce-gin/internals/customer/cust_profile/customer_profile_handler"
-	customerprofilerepo "github.com/ak-repo/ecommerce-gin/internals/customer/cust_profile/customer_profile_repo"
-	customerprofileservice "github.com/ak-repo/ecommerce-gin/internals/customer/cust_profile/customer_profile_service"
-	custreview "github.com/ak-repo/ecommerce-gin/internals/customer/cust_review"
-	custwishlisthandler "github.com/ak-repo/ecommerce-gin/internals/customer/cust_wishlist/cust_wishlist_handler"
-	custwishlistrepo "github.com/ak-repo/ecommerce-gin/internals/customer/cust_wishlist/cust_wishlist_repo"
-	custwishlistservice "github.com/ak-repo/ecommerce-gin/internals/customer/cust_wishlist/cust_wishlist_service"
-	orderrepos "github.com/ak-repo/ecommerce-gin/internals/order/order_repos"
+	carthandler "github.com/ak-repo/ecommerce-gin/internals/customer/cart/handler"
+	cartrepo "github.com/ak-repo/ecommerce-gin/internals/customer/cart/repo"
+	cartservice "github.com/ak-repo/ecommerce-gin/internals/customer/cart/service"
+	checkouthandler "github.com/ak-repo/ecommerce-gin/internals/customer/checkout/handler"
+	checkoutrepository "github.com/ak-repo/ecommerce-gin/internals/customer/checkout/repository"
+	checkoutservice "github.com/ak-repo/ecommerce-gin/internals/customer/checkout/service"
+	producthandler "github.com/ak-repo/ecommerce-gin/internals/customer/product/handler"
+	productrepository "github.com/ak-repo/ecommerce-gin/internals/customer/product/repository"
+	productservice "github.com/ak-repo/ecommerce-gin/internals/customer/product/service"
+	wishlisthandler "github.com/ak-repo/ecommerce-gin/internals/customer/wishlist/handler"
+	wishlistrepository "github.com/ak-repo/ecommerce-gin/internals/customer/wishlist/repository"
+	wishlistservice "github.com/ak-repo/ecommerce-gin/internals/customer/wishlist/service"
+	orderhandler "github.com/ak-repo/ecommerce-gin/internals/order/handler"
+	orderrepository "github.com/ak-repo/ecommerce-gin/internals/order/order_repos"
 	orderservices "github.com/ak-repo/ecommerce-gin/internals/order/order_services"
-	reviewrepo "github.com/ak-repo/ecommerce-gin/internals/review/review_repo"
-	reviewservice "github.com/ak-repo/ecommerce-gin/internals/review/review_service"
+	profilehandler "github.com/ak-repo/ecommerce-gin/internals/profile/handler"
+	profilerepository "github.com/ak-repo/ecommerce-gin/internals/profile/repository"
+	profileservice "github.com/ak-repo/ecommerce-gin/internals/profile/service"
+	reviewhandler "github.com/ak-repo/ecommerce-gin/internals/review/handler"
+	reviewrepository "github.com/ak-repo/ecommerce-gin/internals/review/repository"
+	reviewservice "github.com/ak-repo/ecommerce-gin/internals/review/service"
 	middleware "github.com/ak-repo/ecommerce-gin/middleware/auth"
-
 	db "github.com/ak-repo/ecommerce-gin/pkg/database"
 	"github.com/gin-gonic/gin"
 )
 
-// control all user routes
-func RegisterCustomerRoute(r *gin.Engine, db *db.Database, cfg *config.Config) {
+// RegisterCustomerRoutes sets up all customer-related routes
+func RegisterCustomerRoutes(r *gin.Engine, db *db.Database, cfg *config.Config) {
+	// --------------------------
+	// INIT CORE REPOSITORIES
+	// --------------------------
+	authRepo := authrepo.NewAuthRepo(db.DB)
+	productRepo := productrepository.NewProductRepository(db.DB)
+	reviewRepo := reviewrepository.NewReviewRepo(db.DB)
+	profileRepo := profilerepository.NewProfileRepository(db.DB)
+	orderRepo := orderrepository.Newrepository(db.DB)
+	wishlistRepo := wishlistrepository.NewWishlistRepo(db.DB)
+	cartRepo := cartrepo.NewCartRepo(db.DB)
+	checkoutRepo := checkoutrepository.NewCheckoutRepo(db.DB)
 
-	publicRoute := r.Group("/cust")
+	// --------------------------
+	// INIT SERVICES
+	// --------------------------
+	authService := authservice.NewAuthService(authRepo, cfg)
+	productService := productservice.NewProductService(productRepo)
+	reviewService := reviewservice.NewReviewService(reviewRepo)
+	profileService := profileservice.NewProfileService(profileRepo, authRepo)
+	cartService := cartservice.NewCartService(cartRepo, authRepo, productRepo)
+	checkoutService := checkoutservice.NewCheckoutService(cartService, profileService, authRepo, checkoutRepo)
+	orderService := orderservices.NewOrderService(orderRepo)
+	wishlistService := wishlistservice.NewWishlistSevice(wishlistRepo)
+
+	// --------------------------
+	// INIT HANDLERS
+	// --------------------------
+	authHandler := authhandler.NewAuthHandler(authService)
+	productHandler := producthandler.NewProductHandler(productService)
+	reviewHandler := reviewhandler.NewReviewHandler(reviewService)
+	profileHandler := profilehandler.NewProfileHandler(profileService)
+	cartHandler := carthandler.NewCartHandler(cartService)
+	checkoutHandler := checkouthandler.NewCheckoutHandler(checkoutService)
+	orderHandler := orderhandler.NewOrderHandler(orderService)
+	wishlistHandler := wishlisthandler.NewWishlistHandler(wishlistService)
+
+	// PUBLIC ROUTES
+	public := r.Group("/api/v1/customer")
 	{
-		// auth
-		authRepo := authrepo.NewAuthRepo(db.DB)
-		authService := authservice.NewAuthService(authRepo, cfg)
-		authHandler := authhandler.NewAuthHandler(authService)
+		// Auth
+		public.POST("/login", authHandler.CustomerLogin)
+		public.POST("/register", authHandler.CustomerRegister)
 
-		publicRoute.POST("/login", authHandler.CustomerLogin)
-		publicRoute.POST("/register", authHandler.CustomerRegister)
-
-		// products
-		productRepo := custproductrepo.NewCustomerProductRepo(db.DB)
-		productService := custproductservice.NewCustomerProductService(productRepo)
-		productHandler := custproducthandler.NewCustomerProductHandler(productService)
-
-		publicRoute.GET("/products", productHandler.CustomerAllProducstListHandler)
-		publicRoute.GET("/products/:id", productHandler.CustomerProductListHandler)
-
-		// auth => secure routes
-		custRoute := publicRoute.Group("/auth")
-		custRoute.Use(middleware.AuthMiddleware(cfg), middleware.RoleMiddleware("customer"))
-
-		custRoute.POST("/password-change", authHandler.CustomerPasswordChange)
-		custRoute.POST("/sent-OTP", authHandler.SendOTPHandler)
-		custRoute.POST("/verify-OTP", authHandler.VerifyOTPHandler)
-
-		// cart
-		cartRepo := cartrepo.NewCartRepository(db.DB)
-		cartService := cartservice.NewCartRepository(cartRepo, authRepo, productRepo)
-		cartHandler := carthandler.NewCartHandler(cartService)
-
-		custRoute.GET("/cart", cartHandler.ShowUserCartHandler)
-		custRoute.POST("/cart", cartHandler.AddtoCartHandler)
-		custRoute.PATCH("/cart/update", cartHandler.UpdateCartQuantityHandler)
-		custRoute.DELETE("/cart/remove", cartHandler.RemoveCartItemHandler)
-
-		// profile
-		profileRepo := customerprofilerepo.NewCustomerProfileRepo(db.DB)
-		profileService := customerprofileservice.NewCustomerProfileService(profileRepo, authRepo)
-		profileHandler := customerprofilehandler.NewCustomerProfileHandler(profileService)
-
-		custRoute.GET("/profile", profileHandler.CustomerProfileHandler)
-		custRoute.GET("/profile/address", profileHandler.GetCustomerAddress)
-		custRoute.PATCH("/profile/address", profileHandler.CustomerAddressUpdateHandler)
-
-		// checkout
-		checkoutRepo := custcheckoutrepo.NewCustomerCheckoutRepo(db.DB)
-		checkoutService := custcheckoutservice.NewCustomerCheckoutService(cartService, profileService, authRepo, checkoutRepo)
-		checkoutHandler := custcheckouthandler.NewCustomerCheckoutHandler(checkoutService)
-
-		custRoute.GET("/checkout", checkoutHandler.CustomerShowCheckoutHandler)
-		custRoute.POST("/checkout", checkoutHandler.CustomerCheckoutHandler)
-
-		// orders
-		orderRepo := orderrepos.NewOrderRepo(db.DB)
-		orderService := orderservices.NewOrderService(orderRepo)
-		orderHandler := customerorderhandler.NewCustomerOrderHandler(orderService)
-
-		custRoute.GET("/orders", orderHandler.ListCustomerOrdersHandler)
-		custRoute.GET("/orders/:id", orderHandler.CustomerOrderDetailHandler)
-		custRoute.POST("/orders/cancel", orderHandler.CustomerOrderCancellationReqHandler)
-		custRoute.GET("/orders/cancel-response/:id", orderHandler.CustomerOrderCancellationReqResponseHandler)
-
-		// reviews
-		reviewRepo := reviewrepo.NewReviewRepo(db.DB)
-		reviewService := reviewservice.NewReviewService(reviewRepo)
-		reviewHandler := custreview.NewCustomerReviewHandler(reviewService)
-
-		custRoute.POST("/review", reviewHandler.ReviewCreateCustomerHandler)
-
-		// wishlist
-		wishlistRepo := custwishlistrepo.NewWishlistRepo(db.DB)
-		wishlistService := custwishlistservice.NewWishlistSevice(wishlistRepo)
-		wishlistHandler := custwishlisthandler.NewWishlistHandler(wishlistService)
-
-		custRoute.GET("/wishlist", wishlistHandler.ListCustomerWishlistHandler)
-		custRoute.POST("/wishlist/:id", wishlistHandler.AddToWishlistHandler)
-		custRoute.DELETE("/wishlist/:id", wishlistHandler.RemoveFromWishlistHandler)
+		// Product Browsing
+		public.GET("/products", productHandler.GetAllProducts)
+		public.GET("/products/:id", productHandler.GetProductByID)
 	}
 
+	// PROTECTED ROUTES (Authenticated Customers)
+	protected := public.Group("/auth")
+	protected.Use(middleware.AuthMiddleware(cfg), middleware.RoleMiddleware("customer"))
+	{
+		// Auth Management
+		protected.POST("/password-change", authHandler.CustomerPasswordChange)
+		protected.POST("/send-otp", authHandler.SendOTP)
+		protected.POST("/verify-otp", authHandler.VerifyOTP)
+
+		// Profile
+		protected.GET("/profile", profileHandler.GetProfile)
+		protected.GET("/profile/address", profileHandler.GetAddress)
+		protected.PATCH("/profile/address", profileHandler.UpdateAddress)
+
+		// Cart
+		protected.GET("/cart", cartHandler.GetUserCart)
+		protected.POST("/cart", cartHandler.AddItem)
+		protected.PATCH("/cart", cartHandler.UpdateQuantity)
+		protected.DELETE("/cart", cartHandler.RemoveItem)
+
+		// Checkout
+		protected.GET("/checkout", checkoutHandler.CheckoutSummary)
+		protected.POST("/checkout", checkoutHandler.ProcessCheckout)
+
+		// Orders
+		protected.GET("/orders", orderHandler.GetOrderByCustomerIDForCustomer)
+		protected.GET("/orders/:id", orderHandler.GetOrderByIDForCustomer)
+		protected.POST("/orders/cancel", orderHandler.CancelOrder)
+		protected.GET("/orders/cancel-response/:id", orderHandler.CancellationResponse)
+
+		// Wishlist
+		protected.GET("/wishlist", wishlistHandler.List)
+		protected.POST("/wishlist/:id", wishlistHandler.Add)
+		protected.DELETE("/wishlist/:id", wishlistHandler.Remove)
+
+		// Reviews
+		protected.POST("/review", reviewHandler.AddReview)
+	}
 }

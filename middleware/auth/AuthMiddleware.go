@@ -14,13 +14,11 @@ func AuthMiddleware(cfg *config.Config) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var tokenString string
 
-		// 1 Check for Authorization header
 		authHeader := ctx.GetHeader("Authorization")
 		if strings.HasPrefix(authHeader, "Bearer ") {
 			tokenString = strings.TrimPrefix(authHeader, "Bearer ")
 		}
 
-		// 2 Fallback to cookie if no bearer token
 		if tokenString == "" {
 			cookieToken, err := ctx.Cookie("accessToken")
 			if err != nil || cookieToken == "" {
@@ -31,7 +29,6 @@ func AuthMiddleware(cfg *config.Config) gin.HandlerFunc {
 			tokenString = cookieToken
 		}
 
-		// 3 Validate token
 		claims, err := jwtpkg.TokenValidator(tokenString, cfg)
 		if err != nil {
 			utils.RenderError(ctx, http.StatusUnauthorized, "no role assigned", "session has ended or expired", err)
@@ -39,7 +36,6 @@ func AuthMiddleware(cfg *config.Config) gin.HandlerFunc {
 			return
 		}
 
-		// 4 Save claims into context
 		ctx.Set("email", claims.Email)
 		ctx.Set("role", claims.Role)
 		ctx.Set("userID", claims.UserID)

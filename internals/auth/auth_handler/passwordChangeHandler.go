@@ -1,7 +1,6 @@
 package authhandler
 
 import (
-	"errors"
 	"net/http"
 
 	"github.com/ak-repo/ecommerce-gin/internals/auth"
@@ -9,32 +8,32 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *AuthHandler) CustomerPasswordChange(ctx *gin.Context) {
-	h.PasswordChangeHandler(ctx, RoleCustomer)
+func (h *authHandler) CustomerPasswordChange(ctx *gin.Context) {
+	h.PasswordChange(ctx, RoleCustomer)
 }
-func (h *AuthHandler) AdminPasswordChange(ctx *gin.Context) {
+func (h *authHandler) AdminPasswordChange(ctx *gin.Context) {
 	if ctx.Request.Method == "GET" {
 		ctx.HTML(http.StatusOK, "pages/auth/passwordChange.html", gin.H{})
 		return
 	}
-	h.PasswordChangeHandler(ctx, RoleAdmin)
+	h.PasswordChange(ctx, RoleAdmin)
 
 }
 
 // password chamge main function
-func (h *AuthHandler) PasswordChangeHandler(ctx *gin.Context, role string) {
+func (h *authHandler) PasswordChange(ctx *gin.Context, role string) {
 	var req auth.PasswordChange
 	if err := ctx.ShouldBind(&req); err != nil {
 		utils.RenderError(ctx, http.StatusBadRequest, role, "invalid input", err)
 		return
 	}
-	userID, exists := ctx.Get("userID")
-	if !exists || userID == "" {
-		utils.RenderError(ctx, http.StatusUnauthorized, role, "unauthorised ", errors.New("user id not found or not valid"))
+	userID, err := utils.GetUserID(ctx)
+	if err != nil {
+		utils.RenderError(ctx, http.StatusBadRequest, "customer", "user id not found", err)
 		return
 	}
 
-	if err := h.authService.PasswordChangeService(userID.(uint), &req); err != nil {
+	if err := h.authService.PasswordChange(userID, &req); err != nil {
 		utils.RenderError(ctx, http.StatusInternalServerError, role, "password change failed", err)
 		return
 	}

@@ -10,14 +10,14 @@ import (
 )
 
 // sent otp
-func (h *AuthHandler) SendOTPHandler(ctx *gin.Context) {
+func (h *authHandler) SendOTP(ctx *gin.Context) {
 	var req auth.SendOTPRequest
 	if err := ctx.ShouldBind(&req); err != nil {
 		utils.RenderError(ctx, http.StatusBadRequest, "customer", "invalid input", err)
 		return
 	}
 
-	if err := h.authService.SentOTPService(&req); err != nil {
+	if err := h.authService.SendOTP(&req); err != nil {
 		utils.RenderError(ctx, http.StatusInternalServerError, "customer", "otp generation failed", err)
 		return
 	}
@@ -28,14 +28,14 @@ func (h *AuthHandler) SendOTPHandler(ctx *gin.Context) {
 }
 
 // verify
-func (h *AuthHandler) VerifyOTPHandler(ctx *gin.Context) {
+func (h *authHandler) VerifyOTP(ctx *gin.Context) {
 
 	var req auth.VerifyOTPRequest
 	if err := ctx.ShouldBind(&req); err != nil {
 		utils.RenderError(ctx, http.StatusBadRequest, "customer", "invalid input", err)
 		return
 	}
-	if err := h.authService.VerifyOTPService(&req); err != nil {
+	if err := h.authService.VerifyOTP(&req); err != nil {
 		utils.RenderError(ctx, http.StatusInternalServerError, "customer", "otp verification failed", err)
 		return
 	}
