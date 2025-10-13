@@ -37,3 +37,15 @@ func (r *repository) AddAddress(address *models.Address) error {
 
 	return r.DB.Create(address).Error
 }
+
+func (r *repository) UploadPicture(profilePic *models.ProfilePic) error {
+
+	return r.DB.Create(profilePic).Error
+}
+
+func (r *repository) GetPicture(userID uint) (*models.ProfilePic, error) {
+	var picture models.ProfilePic
+	err := r.DB.Where("user_id=?", userID).First(&picture).Error
+
+	return &picture, err
+}

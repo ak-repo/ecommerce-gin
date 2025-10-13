@@ -1,1 +1,37 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Binaries
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Go build output
+/bin/
+/build/
+/*.exe
+*.out
+
+# Dependency directories
+/vendor/
+
+# IDE files
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Environment files
 .env
+.env.*.local
+
+# Uploaded files
+/web/uploads/
+/uploads/
+
+# Temporary files
+*.tmp
+*.swp

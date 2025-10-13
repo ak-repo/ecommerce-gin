@@ -84,7 +84,7 @@ func RegisterAdminRoutes(r *gin.Engine, db *db.Database, cfg *config.Config) {
 		// --------------------------
 		protected.POST("/password-change", authHandler.AdminPasswordChange)
 		protected.GET("/password-change", authHandler.AdminPasswordChange)
-		protected.POST("/logout", authHandler.AdminLogout)
+		protected.GET("/logout", authHandler.AdminLogout)
 
 		// --------------------------
 		// DASHBOARD
@@ -128,6 +128,7 @@ func RegisterAdminRoutes(r *gin.Engine, db *db.Database, cfg *config.Config) {
 		protected.GET("/profile", profileHandler.GetProfile)
 		protected.GET("/profile/address/:id", profileHandler.GetAddress)
 		protected.POST("/profile/address/:id", profileHandler.UpdateAddress)
+		protected.POST("/profile/profile_pic", profileHandler.UploadPicture)
 
 		// --------------------------
 		// REVIEWS MANAGEMENT

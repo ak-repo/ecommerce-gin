@@ -10,16 +10,20 @@ type Handler interface {
 	GetProfile(ctx *gin.Context)
 	GetAddress(ctx *gin.Context)
 	UpdateAddress(ctx *gin.Context)
+	UploadPicture(ctx *gin.Context)
 }
 
 type Service interface {
 	GetProfile(userID uint) (*profiledto.ProfileDTO, error)
 	GetAddress(userID uint) (*profiledto.AddressDTO, error)
 	UpdateAddress(address *profiledto.AddressDTO, userID uint) error
+	UploadPicture(userID uint, file string) error
 }
 
 type Repository interface {
 	GetAddress(userID uint) (*models.Address, error)
 	UpdateAddress(address *models.Address) error
 	AddAddress(address *models.Address) error
+	UploadPicture(profilePic *models.ProfilePic) error
+	GetPicture(userID uint) (*models.ProfilePic, error) 
 }

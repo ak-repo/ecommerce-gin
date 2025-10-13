@@ -1,11 +1,12 @@
 package profiledto
 
 type ProfileDTO struct {
-	ID      uint       `json:"id"`
-	Name    string     `json:"name"`
-	Email   string     `json:"email"`
-	Role    string     `json:"role"`
-	Address AddressDTO `json:"address"`
+	ID         uint          `json:"id"`
+	Name       string        `json:"name"`
+	Email      string        `json:"email"`
+	Role       string        `json:"role"`
+	Address    AddressDTO    `json:"address"`
+	ProfilePic ProfilePicDTO `json:"profile_pic"`
 }
 
 type AddressDTO struct {
@@ -16,4 +17,8 @@ type AddressDTO struct {
 	Phone       string `json:"phone" binding:"required"`
 	PostalCode  string `json:"zip_code" binding:"required"`
 	Country     string `json:"country" binding:"required"`
+}
+
+type ProfilePicDTO struct {
+	ImageURL string `json:"image_url"`
 }

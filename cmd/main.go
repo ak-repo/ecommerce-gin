@@ -32,7 +32,6 @@ func main() {
 
 	r := gin.New()
 	r.Use(gin.Logger(), gin.Recovery())
-	// r.Static("/web/static", "./web/static")
 	// CORS configuration
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:5173"}, // your frontend URL
@@ -44,6 +43,7 @@ func main() {
 	}))
 
 	r.HTMLRender = createMyRender("web/templates")
+	r.Static("uploads", "./web/uploads")
 
 	routes.RegisterRoute(r, database, cfg)
 

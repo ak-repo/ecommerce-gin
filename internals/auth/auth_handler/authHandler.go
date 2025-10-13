@@ -109,7 +109,7 @@ func (h *authHandler) Logout(ctx *gin.Context, role string) {
 	ctx.SetCookie("refreshToken", "", -1, "/", "localhost", true, true)
 
 	if role == "admin" {
-		ctx.Redirect(http.StatusSeeOther, "/login")
+		ctx.Redirect(http.StatusSeeOther, "/api/v1/admin/login")
 
 	}
 

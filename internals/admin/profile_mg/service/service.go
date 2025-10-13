@@ -26,9 +26,11 @@ func (s *service) GetProfile(userID uint) (*profiledto.ProfileDTO, error) {
 		return nil, errors.New("user not found")
 	}
 	address, err := s.ProfileRepo.GetAddress(userID)
-	if err != nil || address == nil {
+	if err != nil {
 		return nil, errors.New("no address found")
 	}
+
+	picture, _ := s.ProfileRepo.GetPicture(user.ID)
 
 	profile := profiledto.ProfileDTO{
 		ID:    user.ID,
@@ -45,6 +47,12 @@ func (s *service) GetProfile(userID uint) (*profiledto.ProfileDTO, error) {
 			State:       address.State,
 			PostalCode:  address.PostalCode,
 			Country:     address.Country,
+		}
+	}
+
+	if picture != nil {
+		profile.ProfilePic = profiledto.ProfilePicDTO{
+			ImageURL: picture.ImageURL,
 		}
 	}
 	return &profile, nil
@@ -88,19 +96,27 @@ func (s *service) GetAddress(userID uint) (*profiledto.AddressDTO, error) {
 		return nil, errors.New("user not found")
 	}
 	data, err := s.ProfileRepo.GetAddress(userID)
-	if data == nil || err != nil {
+	if err != nil {
 		return nil, errors.New("no address found")
 	}
 
-	address := profiledto.AddressDTO{
-		Phone:       data.Phone,
-		ID:          data.ID,
-		AddressLine: data.AddressLine,
-		City:        data.City,
-		State:       data.State,
-		PostalCode:  data.PostalCode,
-		Country:     data.Country,
+	var address profiledto.AddressDTO
+	if data != nil {
+		address.Phone = data.Phone
+		address.ID = data.ID
+		address.AddressLine = data.AddressLine
+		address.City = data.City
+		address.State = data.State
+		address.PostalCode = data.PostalCode
+		address.Country = data.Country
 	}
-
 	return &address, nil
+}
+
+func (s *service) UploadPicture(userID uint, filepath string) error {
+	profilePic := models.ProfilePic{
+		UserID:   userID,
+		ImageURL: filepath,
+	}
+	return s.ProfileRepo.UploadPicture(&profilePic)
 }

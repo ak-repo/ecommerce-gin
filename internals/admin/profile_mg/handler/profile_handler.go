@@ -1,7 +1,11 @@
 package profilehandler
 
 import (
+	"fmt"
 	"net/http"
+	"os"
+	"path/filepath"
+	"time"
 
 	profiledto "github.com/ak-repo/ecommerce-gin/internals/admin/profile_mg/profile_dto"
 	profileinterface "github.com/ak-repo/ecommerce-gin/internals/admin/profile_mg/profile_interface"
@@ -20,53 +24,36 @@ func NewProfileHandlerMG(profileService profileinterface.Service) profileinterfa
 func (h *handler) GetProfile(ctx *gin.Context) {
 	userID, err := utils.GetUserID(ctx)
 	if err != nil {
-		utils.RenderError(ctx, http.StatusBadRequest, "customer", "user id not found", err)
+		utils.RenderError(ctx, http.StatusBadRequest, "admin", "user id not found", err)
 		return
 	}
 
 	profile, err := h.ProfileService.GetProfile(userID)
 	if err != nil {
-		utils.RenderError(ctx, http.StatusInternalServerError, "customer", "DB issue", err)
+		utils.RenderError(ctx, http.StatusInternalServerError, "admin", "DB issue", err)
 		return
 	}
 
-	role, _ := ctx.Get("role")
-	if role == "admin" {
-		ctx.HTML(http.StatusOK, "pages/profile/profile.html", gin.H{
-			"Profile": profile,
-		})
-		return
-	}
-
-	utils.RenderSuccess(ctx, http.StatusOK, "customer", "user profile found", map[string]interface{}{
+	ctx.HTML(http.StatusOK, "pages/profile/profile.html", gin.H{
 		"Profile": profile,
 	})
-
 }
 
 func (h *handler) GetAddress(ctx *gin.Context) {
 	userID, err := utils.GetUserID(ctx)
 	if err != nil {
-		utils.RenderError(ctx, http.StatusBadRequest, "customer", "user id not found", err)
+		utils.RenderError(ctx, http.StatusBadRequest, "admin", "user id not found", err)
 		return
 	}
 
 	address, err := h.ProfileService.GetAddress(userID)
 	if err != nil {
-		utils.RenderError(ctx, http.StatusInternalServerError, "customer", "address not found", err)
+		utils.RenderError(ctx, http.StatusInternalServerError, "admin", "address not found", err)
 		return
 	}
 
-	role, _ := ctx.Get("role")
-	if role == "admin" {
-		ctx.HTML(http.StatusOK, "pages/profile/address.html", gin.H{
-			"Address": address,
-		})
-		return
-	}
-
-	utils.RenderSuccess(ctx, http.StatusOK, "customer", "user address", map[string]interface{}{
-		"address": address,
+	ctx.HTML(http.StatusOK, "pages/profile/address.html", gin.H{
+		"Address": address,
 	})
 
 }
@@ -74,26 +61,59 @@ func (h *handler) GetAddress(ctx *gin.Context) {
 func (h *handler) UpdateAddress(ctx *gin.Context) {
 	userID, err := utils.GetUserID(ctx)
 	if err != nil {
-		utils.RenderError(ctx, http.StatusBadRequest, "customer", "user id not found", err)
+		utils.RenderError(ctx, http.StatusBadRequest, "admin", "user id not found", err)
 		return
 	}
 
 	var address profiledto.AddressDTO
 	if err := ctx.ShouldBind(&address); err != nil {
-		utils.RenderError(ctx, http.StatusBadRequest, "customer", "binding isssue", err)
+		utils.RenderError(ctx, http.StatusBadRequest, "admin", "binding isssue", err)
 		return
 	}
 
 	if err := h.ProfileService.UpdateAddress(&address, userID); err != nil {
-		utils.RenderError(ctx, http.StatusInternalServerError, "customer", "address update failed", err)
+		utils.RenderError(ctx, http.StatusInternalServerError, "admin", "address update failed", err)
 		return
 	}
 
-	role, _ := ctx.Get("role")
-	if role == "admin" {
-		ctx.Redirect(http.StatusSeeOther, "/api/v1/admin/profile")
+	ctx.Redirect(http.StatusSeeOther, "/api/v1/admin/profile")
+}
+
+func (h *handler) UploadPicture(ctx *gin.Context) {
+	file, err := ctx.FormFile("profile_pic")
+	if err != nil {
+		utils.RenderError(ctx, http.StatusBadRequest, "admin", "image file not supported", err)
 		return
 	}
 
-	utils.RenderSuccess(ctx, http.StatusOK, "customer", "address updated", nil)
+	userID, err := utils.GetUserID(ctx)
+	if err != nil {
+		utils.RenderError(ctx, http.StatusBadRequest, "admin", "user id not found", err)
+		return
+	}
+
+	timestamp := time.Now().Unix()
+	ext := filepath.Ext(file.Filename)
+	newFileName := fmt.Sprintf("admin_%d_%d%s", userID, timestamp, ext)
+	saveDir := "./web/uploads/profile"
+	if err := os.MkdirAll(saveDir, os.ModePerm); err != nil {
+		utils.RenderError(ctx, http.StatusInternalServerError, "admin", "failed to create upload directory", err)
+		return
+	}
+	savePath := filepath.Join(saveDir, newFileName)
+
+	//  Save file to disk
+	if err := ctx.SaveUploadedFile(file, savePath); err != nil {
+		utils.RenderError(ctx, http.StatusInternalServerError, "admin", "failed to upload image", err)
+		return
+	}
+
+	//  Update DB with new profile pic
+	relativePath := filepath.Join("profile", newFileName)
+	if err := h.ProfileService.UploadPicture(userID, relativePath); err != nil {
+		utils.RenderError(ctx, http.StatusInternalServerError, "admin", "failed to update profile picture", err)
+		return
+	}
+
+	ctx.Redirect(http.StatusSeeOther, "/api/v1/admin/profile")
 }
