@@ -34,14 +34,11 @@ func (h *Handler) CheckoutSummary(ctx *gin.Context) {
 		return
 	}
 
-	utils.RenderSuccess(ctx, http.StatusOK, "customer", "checkout summary", map[string]interface{}{
-		"data": checkout,
-	})
+	utils.RenderSuccess(ctx, http.StatusOK, "customer", "checkout summary", checkout)
 
 }
 
 // POST cust/auth/checkout CheckoutHandler
-
 func (h *Handler) ProcessCheckout(ctx *gin.Context) {
 	userID, err := utils.GetUserID(ctx)
 	if err != nil {
@@ -62,8 +59,6 @@ func (h *Handler) ProcessCheckout(ctx *gin.Context) {
 		return
 	}
 
-	utils.RenderSuccess(ctx, http.StatusOK, "customer", "order created", map[string]interface{}{
-		"data": response,
-	})
+	utils.RenderSuccess(ctx, http.StatusOK, "customer", "order created", response)
 
 }

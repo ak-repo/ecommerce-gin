@@ -26,9 +26,7 @@ func (h *handler) GetAllProducts(ctx *gin.Context) {
 		return
 	}
 
-	utils.RenderSuccess(ctx, http.StatusOK, "customer", "products fetched successfully", map[string]interface{}{
-		"data": products,
-	})
+	utils.RenderSuccess(ctx, http.StatusOK, "customer", "products fetched successfully", products)
 }
 
 // GET - cust/product/:id => product by id
@@ -52,8 +50,6 @@ func (h *handler) GetProductByID(ctx *gin.Context) {
 		return
 	}
 
-	utils.RenderSuccess(ctx, http.StatusOK, "customer", "product fetched successfully", map[string]interface{}{
-		"data": product,
-	})
+	utils.RenderSuccess(ctx, http.StatusOK, "customer", "product fetched successfully", product)
 
 }

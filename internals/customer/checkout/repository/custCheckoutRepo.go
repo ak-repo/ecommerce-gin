@@ -2,7 +2,7 @@ package checkoutrepository
 
 import (
 	checkoutinterface "github.com/ak-repo/ecommerce-gin/internals/customer/checkout/checkout_interface"
-	"github.com/ak-repo/ecommerce-gin/models"
+	"github.com/ak-repo/ecommerce-gin/internals/models"
 	"gorm.io/gorm"
 )
 

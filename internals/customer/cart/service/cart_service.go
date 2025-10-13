@@ -7,7 +7,7 @@ import (
 	cartinterface "github.com/ak-repo/ecommerce-gin/internals/customer/cart/cart_interface"
 	"github.com/ak-repo/ecommerce-gin/internals/customer/cart/dto"
 	productinterface "github.com/ak-repo/ecommerce-gin/internals/customer/product/product_interface"
-	"github.com/ak-repo/ecommerce-gin/models"
+	"github.com/ak-repo/ecommerce-gin/internals/models"
 )
 
 type service struct {

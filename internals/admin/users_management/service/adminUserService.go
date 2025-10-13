@@ -7,7 +7,7 @@ import (
 
 	userdto "github.com/ak-repo/ecommerce-gin/internals/admin/users_management/user_dto"
 	usersinterface "github.com/ak-repo/ecommerce-gin/internals/admin/users_management/user_interface"
-	"github.com/ak-repo/ecommerce-gin/models"
+	"github.com/ak-repo/ecommerce-gin/internals/models"
 	"github.com/ak-repo/ecommerce-gin/pkg/utils"
 	"gorm.io/gorm"
 )
@@ -90,8 +90,6 @@ func (s *service) BlockUser(userID uint) error {
 	}
 	return s.UsersRepo.UpdateUser(user)
 }
-
-
 
 func (s *service) CreateUser(req *userdto.CreateUserRequest) (uint, error) {
 

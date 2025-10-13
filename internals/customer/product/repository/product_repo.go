@@ -2,7 +2,7 @@ package productrepository
 
 import (
 	productinterface "github.com/ak-repo/ecommerce-gin/internals/customer/product/product_interface"
-	"github.com/ak-repo/ecommerce-gin/models"
+	"github.com/ak-repo/ecommerce-gin/internals/models"
 	"gorm.io/gorm"
 )
 

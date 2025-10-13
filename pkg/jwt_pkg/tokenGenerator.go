@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/ak-repo/ecommerce-gin/config"
-	"github.com/ak-repo/ecommerce-gin/models"
+	"github.com/ak-repo/ecommerce-gin/internals/models"
 	"github.com/golang-jwt/jwt/v4"
 )
 

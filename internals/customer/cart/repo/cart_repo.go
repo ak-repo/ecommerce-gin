@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	cartinterface "github.com/ak-repo/ecommerce-gin/internals/customer/cart/cart_interface"
-	"github.com/ak-repo/ecommerce-gin/models"
+	"github.com/ak-repo/ecommerce-gin/internals/models"
 	"gorm.io/gorm"
 )
 

@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	authinterface "github.com/ak-repo/ecommerce-gin/internals/auth/auth_interface"
-	"github.com/ak-repo/ecommerce-gin/models"
+	"github.com/ak-repo/ecommerce-gin/internals/models"
 	"gorm.io/gorm"
 )
 

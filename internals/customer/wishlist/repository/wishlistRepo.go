@@ -2,7 +2,7 @@ package wishlistrepository
 
 import (
 	wishlistinterface "github.com/ak-repo/ecommerce-gin/internals/customer/wishlist/wishlist_interface"
-	"github.com/ak-repo/ecommerce-gin/models"
+	"github.com/ak-repo/ecommerce-gin/internals/models"
 	"gorm.io/gorm"
 )
 

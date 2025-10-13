@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/ak-repo/ecommerce-gin/internals/auth"
-	"github.com/ak-repo/ecommerce-gin/models"
+	"github.com/ak-repo/ecommerce-gin/internals/models"
 	"gorm.io/gorm"
 )
 

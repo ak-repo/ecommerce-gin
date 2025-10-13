@@ -2,7 +2,7 @@ package authinterface
 
 import (
 	"github.com/ak-repo/ecommerce-gin/internals/auth"
-	"github.com/ak-repo/ecommerce-gin/models"
+	"github.com/ak-repo/ecommerce-gin/internals/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -27,8 +27,8 @@ type Handler interface {
 }
 
 type Service interface {
-	 Registeration(input *auth.RegisterRequest, role string) error
-	 Login(input *auth.LoginRequest, role string) (*auth.LoginResponse, error) 
+	Registeration(input *auth.RegisterRequest, role string) error
+	Login(input *auth.LoginRequest, role string) (*auth.LoginResponse, error)
 	PasswordChange(userID uint, req *auth.PasswordChange) error
 
 	//otp
@@ -37,7 +37,7 @@ type Service interface {
 }
 
 type Repository interface {
-	Registeration(user *models.User) error 
+	Registeration(user *models.User) error
 	GetUserByEmail(email string) (*models.User, error)
 	GetUserByID(userID uint) (*models.User, error)
 	PasswordChange(userID uint, password string) error

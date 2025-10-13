@@ -2,7 +2,7 @@ package wishlistinterface
 
 import (
 	wishlistdto "github.com/ak-repo/ecommerce-gin/internals/customer/wishlist/wishlist_dto"
-	"github.com/ak-repo/ecommerce-gin/models"
+	"github.com/ak-repo/ecommerce-gin/internals/models"
 	"github.com/gin-gonic/gin"
 )
 

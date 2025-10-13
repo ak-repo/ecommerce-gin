@@ -2,7 +2,7 @@ package checkoutdto
 
 import (
 	"github.com/ak-repo/ecommerce-gin/internals/customer/cart/dto"
-	profiledto "github.com/ak-repo/ecommerce-gin/internals/profile/profile_dto"
+	profiledto "github.com/ak-repo/ecommerce-gin/internals/customer/profile/profile_dto"
 )
 
 // POST

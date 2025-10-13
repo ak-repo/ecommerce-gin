@@ -2,7 +2,7 @@ package productinterface
 
 import (
 	productdto "github.com/ak-repo/ecommerce-gin/internals/customer/product/product_dto"
-	"github.com/ak-repo/ecommerce-gin/models"
+	"github.com/ak-repo/ecommerce-gin/internals/models"
 	"github.com/gin-gonic/gin"
 )
 

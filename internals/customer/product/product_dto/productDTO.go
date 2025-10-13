@@ -1,6 +1,6 @@
 package productdto
 
-import reviewdto "github.com/ak-repo/ecommerce-gin/internals/review/review_dto"
+import "time"
 
 // Customer-facing full product details
 type CustomerProductResponse struct {
@@ -14,8 +14,8 @@ type CustomerProductResponse struct {
 	ImageURL      string      `json:"image_url,omitempty"`
 	Category      CategoryDTO `json:"category"`
 
-	IsPublished bool `json:"is_published"`
-	Reviews     []reviewdto.ReviewResponse
+	IsPublished bool             `json:"is_published"`
+	Reviews     []ReviewResponse `json:"reviews"`
 }
 
 // Lightweight product for listing (e.g., homepage, catalog)
@@ -33,4 +33,13 @@ type CustomerProductListItem struct {
 type CategoryDTO struct {
 	ID   uint   `json:"id"`
 	Name string `json:"name"`
+}
+
+type ReviewResponse struct {
+	ID        uint      `json:"id"`
+	ProductID uint      `json:"product_id"`
+	UserID    uint      `json:"user_id"`
+	Rating    uint      `json:"rating"`
+	Comment   string    `json:"comment"`
+	CreatedAt time.Time `json:"created_at"`
 }

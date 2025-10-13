@@ -1,8 +1,8 @@
-package  productmanagementinterface
+package productmanagementinterface
 
 import (
 	productdto "github.com/ak-repo/ecommerce-gin/internals/admin/product_management/product_dto"
-	"github.com/ak-repo/ecommerce-gin/models"
+	"github.com/ak-repo/ecommerce-gin/internals/models"
 	"github.com/gin-gonic/gin"
 )
 

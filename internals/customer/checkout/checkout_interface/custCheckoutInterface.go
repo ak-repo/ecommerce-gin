@@ -2,7 +2,7 @@ package checkoutinterface
 
 import (
 	checkoutdto "github.com/ak-repo/ecommerce-gin/internals/customer/checkout/dto"
-	"github.com/ak-repo/ecommerce-gin/models"
+	"github.com/ak-repo/ecommerce-gin/internals/models"
 	"github.com/gin-gonic/gin"
 )
 

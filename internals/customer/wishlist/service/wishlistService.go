@@ -5,7 +5,7 @@ import (
 
 	wishlistdto "github.com/ak-repo/ecommerce-gin/internals/customer/wishlist/wishlist_dto"
 	wishlistinterface "github.com/ak-repo/ecommerce-gin/internals/customer/wishlist/wishlist_interface"
-	"github.com/ak-repo/ecommerce-gin/models"
+	"github.com/ak-repo/ecommerce-gin/internals/models"
 )
 
 type service struct {
@@ -50,7 +50,6 @@ func (s *service) List(userID uint) (*wishlistdto.WishlistDTO, error) {
 
 }
 
-
 func (s *service) Add(userID, productID uint) error {
 	wishlist, err := s.WishlistRepo.List(userID)
 	if err != nil {
@@ -67,9 +66,8 @@ func (s *service) Add(userID, productID uint) error {
 		WishlistID: wishlist.ID,
 		ProductID:  productID,
 	}
-	return s.WishlistRepo.Add(&wishlistItem) 
+	return s.WishlistRepo.Add(&wishlistItem)
 }
-
 
 func (s *service) Remove(wishlistItemID uint) error {
 	return s.WishlistRepo.Remove(wishlistItemID)

@@ -1,7 +1,7 @@
 package db
 
 import (
-	"github.com/ak-repo/ecommerce-gin/models"
+	"github.com/ak-repo/ecommerce-gin/internals/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

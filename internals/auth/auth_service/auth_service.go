@@ -6,7 +6,7 @@ import (
 	"github.com/ak-repo/ecommerce-gin/config"
 	"github.com/ak-repo/ecommerce-gin/internals/auth"
 	authinterface "github.com/ak-repo/ecommerce-gin/internals/auth/auth_interface"
-	"github.com/ak-repo/ecommerce-gin/models"
+	"github.com/ak-repo/ecommerce-gin/internals/models"
 	jwtpkg "github.com/ak-repo/ecommerce-gin/pkg/jwt_pkg"
 	"github.com/ak-repo/ecommerce-gin/pkg/utils"
 )
@@ -17,7 +17,7 @@ type authService struct {
 }
 
 func NewAuthService(authRepo authinterface.Repository, cfg *config.Config) authinterface.Service {
-	return &authService{authRepo: authRepo,cfg: cfg}
+	return &authService{authRepo: authRepo, cfg: cfg}
 }
 
 // -------------------------------------------- Registration service -------------------------------------------------------

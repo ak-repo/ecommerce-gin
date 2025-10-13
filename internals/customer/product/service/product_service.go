@@ -5,7 +5,6 @@ import (
 
 	productdto "github.com/ak-repo/ecommerce-gin/internals/customer/product/product_dto"
 	productinterface "github.com/ak-repo/ecommerce-gin/internals/customer/product/product_interface"
-	reviewdto "github.com/ak-repo/ecommerce-gin/internals/review/review_dto"
 )
 
 type service struct {
@@ -29,10 +28,10 @@ func (s *service) GetAllProducts() ([]productdto.CustomerProductListItem, error)
 		product := productdto.CustomerProductListItem{
 			Title:         item.Title,
 			ID:            item.ID,
-			SKU:           item.SKU,
 			BasePrice:     item.BasePrice,
 			DiscountPrice: item.DiscountPrice,
 			ImageURL:      item.ImageURL,
+			CategoryName:  item.Category.Name,
 		}
 		products = append(products, product)
 
@@ -51,7 +50,6 @@ func (s *service) GetProductByID(productID uint) (*productdto.CustomerProductRes
 		Title:         data.Title,
 		ID:            data.ID,
 		Description:   data.Description,
-		SKU:           data.SKU,
 		BasePrice:     data.BasePrice,
 		DiscountPrice: data.DiscountPrice,
 		Stock:         data.Stock,
@@ -62,9 +60,9 @@ func (s *service) GetProductByID(productID uint) (*productdto.CustomerProductRes
 			Name: data.Category.Name,
 		},
 	}
-	var reviews []reviewdto.ReviewResponse
+	var reviews []productdto.ReviewResponse
 	for _, r := range data.Reviews {
-		review := reviewdto.ReviewResponse{
+		review := productdto.ReviewResponse{
 			ID:        r.ID,
 			ProductID: r.ProductID,
 			UserID:    r.UserID,

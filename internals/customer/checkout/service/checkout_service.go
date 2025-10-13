@@ -7,19 +7,18 @@ import (
 	cartinterface "github.com/ak-repo/ecommerce-gin/internals/customer/cart/cart_interface"
 	checkoutinterface "github.com/ak-repo/ecommerce-gin/internals/customer/checkout/checkout_interface"
 	checkoutdto "github.com/ak-repo/ecommerce-gin/internals/customer/checkout/dto"
-	profileinterface "github.com/ak-repo/ecommerce-gin/internals/profile/profile_interface"
-
-	"github.com/ak-repo/ecommerce-gin/models"
+	profileinter "github.com/ak-repo/ecommerce-gin/internals/customer/profile/profile_interface"
+	"github.com/ak-repo/ecommerce-gin/internals/models"
 )
 
 type service struct {
 	cartService    cartinterface.Service
-	AddressService profileinterface.Service
+	AddressService profileinter.Service
 	UserRepo       authinterface.Repository
 	CheckoutRepo   checkoutinterface.Repository
 }
 
-func NewCheckoutService(cart cartinterface.Service, address profileinterface.Service, userRepo authinterface.Repository, checkout checkoutinterface.Repository) checkoutinterface.Service {
+func NewCheckoutService(cart cartinterface.Service, address profileinter.Service, userRepo authinterface.Repository, checkout checkoutinterface.Repository) checkoutinterface.Service {
 	return &service{cartService: cart, AddressService: address, UserRepo: userRepo, CheckoutRepo: checkout}
 }
 

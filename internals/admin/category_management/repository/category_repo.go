@@ -2,7 +2,7 @@ package categoryrepository
 
 import (
 	categoryinterface "github.com/ak-repo/ecommerce-gin/internals/admin/category_management/category_interface"
-	"github.com/ak-repo/ecommerce-gin/models"
+	"github.com/ak-repo/ecommerce-gin/internals/models"
 	"gorm.io/gorm"
 )
 

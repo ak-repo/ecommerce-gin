@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/ak-repo/ecommerce-gin/internals/auth"
-	"github.com/ak-repo/ecommerce-gin/models"
+	"github.com/ak-repo/ecommerce-gin/internals/models"
 	"github.com/ak-repo/ecommerce-gin/pkg/utils"
 )
 

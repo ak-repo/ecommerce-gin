@@ -32,10 +32,8 @@ func (h *handler) GetUserCart(ctx *gin.Context) {
 		return
 	}
 
-	utils.RenderSuccess(ctx, http.StatusOK, "customer", "cart fetched successfully", map[string]interface{}{
-		"data":       cart,
-		"cart_count": len(cart.Items),
-	})
+	utils.RenderSuccess(ctx, http.StatusOK, "customer", "cart fetched successfully", cart)
+
 }
 
 // POST - cust/auth/cart

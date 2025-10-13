@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/ak-repo/ecommerce-gin/config"
-	"github.com/ak-repo/ecommerce-gin/models"
-	"github.com/ak-repo/ecommerce-gin/routes"
+	"github.com/ak-repo/ecommerce-gin/internals/models"
+	"github.com/ak-repo/ecommerce-gin/internals/routes"
 
 	db "github.com/ak-repo/ecommerce-gin/pkg/database"
 	"github.com/gin-contrib/cors"

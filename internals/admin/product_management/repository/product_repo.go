@@ -1,8 +1,8 @@
-package  productmanagementrepository
+package productmanagementrepository
 
 import (
 	productinterface "github.com/ak-repo/ecommerce-gin/internals/admin/product_management/product_interface"
-	"github.com/ak-repo/ecommerce-gin/models"
+	"github.com/ak-repo/ecommerce-gin/internals/models"
 	"gorm.io/gorm"
 )
 

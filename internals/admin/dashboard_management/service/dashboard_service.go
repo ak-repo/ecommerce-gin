@@ -2,10 +2,9 @@ package dashboardservice
 
 import (
 	dashboarddto "github.com/ak-repo/ecommerce-gin/internals/admin/dashboard_management/dashboard_dto"
-	productinterface "github.com/ak-repo/ecommerce-gin/internals/admin/product_management/product_interface"
+	orderinterface "github.com/ak-repo/ecommerce-gin/internals/admin/order_mg/order_interface"
 	usersinterface "github.com/ak-repo/ecommerce-gin/internals/admin/users_management/user_interface"
-
-	orderinterface "github.com/ak-repo/ecommerce-gin/internals/order/order_interface"
+	productinterface "github.com/ak-repo/ecommerce-gin/internals/customer/product/product_interface"
 )
 
 type adminDashboardService struct {

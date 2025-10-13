@@ -6,7 +6,7 @@ import (
 
 	productdto "github.com/ak-repo/ecommerce-gin/internals/admin/product_management/product_dto"
 	productinterface "github.com/ak-repo/ecommerce-gin/internals/admin/product_management/product_interface"
-	"github.com/ak-repo/ecommerce-gin/models"
+	"github.com/ak-repo/ecommerce-gin/internals/models"
 )
 
 type service struct {

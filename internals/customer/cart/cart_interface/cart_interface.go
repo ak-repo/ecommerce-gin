@@ -2,7 +2,7 @@ package cartinterface
 
 import (
 	"github.com/ak-repo/ecommerce-gin/internals/customer/cart/dto"
-	"github.com/ak-repo/ecommerce-gin/models"
+	"github.com/ak-repo/ecommerce-gin/internals/models"
 	"github.com/gin-gonic/gin"
 )
 

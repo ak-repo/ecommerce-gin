@@ -3,7 +3,7 @@ package categoryservice
 import (
 	categorydto "github.com/ak-repo/ecommerce-gin/internals/admin/category_management/category_dto"
 	categoryinterface "github.com/ak-repo/ecommerce-gin/internals/admin/category_management/category_interface"
-	"github.com/ak-repo/ecommerce-gin/models"
+	"github.com/ak-repo/ecommerce-gin/internals/models"
 )
 
 type service struct {
