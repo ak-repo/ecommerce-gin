@@ -1,13 +1,13 @@
-package productmanagementhandler
+package producthandler
 
 import (
 	"errors"
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 	"time"
 
+	categoryinterface "github.com/ak-repo/ecommerce-gin/internals/admin/category_management/category_interface"
 	productdto "github.com/ak-repo/ecommerce-gin/internals/admin/product_management/product_dto"
 	productinterface "github.com/ak-repo/ecommerce-gin/internals/admin/product_management/product_interface"
 	"github.com/ak-repo/ecommerce-gin/pkg/utils"
@@ -15,11 +15,12 @@ import (
 )
 
 type handler struct {
-	ProductService productinterface.Service
+	ProductService  productinterface.Service
+	CategoryService categoryinterface.Service
 }
 
-func Newhandler(service productinterface.Service) productinterface.Handler {
-	return &handler{ProductService: service}
+func NewProductHandlerMG(service productinterface.Service, categorysvc categoryinterface.Service) productinterface.Handler {
+	return &handler{ProductService: service, CategoryService: categorysvc}
 }
 
 // GET admin/products
@@ -58,7 +59,6 @@ func (h *handler) GetProductByID(ctx *gin.Context) {
 		return
 	}
 
-	log.Println("pro: ", product)
 	ctx.HTML(http.StatusOK, "pages/product/product.html", gin.H{
 		"Product":     product,
 		"CurrentYear": time.Now().Year(),
@@ -81,9 +81,15 @@ func (h *handler) EditProductForm(ctx *gin.Context) {
 		return
 	}
 
+	category, err := h.CategoryService.GetAllCategories()
+	if err != nil {
+		utils.RenderError(ctx, http.StatusInternalServerError, "admin", "failed to fetch product", err)
+		return
+	}
+
 	ctx.HTML(http.StatusOK, "pages/product/editProduct.html", gin.H{
 		"Product":    product,
-		"Categories": product.Category,
+		"Categories": category,
 	})
 }
 
@@ -116,7 +122,7 @@ func (h *handler) UpdateProduct(ctx *gin.Context) {
 		utils.RenderError(ctx, http.StatusInternalServerError, "admin", "update unsuccessful", err)
 		return
 	}
-	ctx.Redirect(http.StatusSeeOther, fmt.Sprintf("/admin/products/%d", uid))
+	ctx.Redirect(http.StatusSeeOther, fmt.Sprintf("/api/v1//admin/products/%d", uid))
 
 }
 
@@ -143,5 +149,5 @@ func (h *handler) AddProduct(ctx *gin.Context) {
 		return
 	}
 
-	ctx.Redirect(http.StatusSeeOther, "/admin/products")
+	ctx.Redirect(http.StatusSeeOther, "/api/v1/admin/products")
 }

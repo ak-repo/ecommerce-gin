@@ -1,4 +1,4 @@
-package productmanagementrepository
+package productrepo
 
 import (
 	productinterface "github.com/ak-repo/ecommerce-gin/internals/admin/product_management/product_interface"
@@ -10,13 +10,17 @@ type repository struct {
 	DB *gorm.DB
 }
 
-func NewProductRepo(db *gorm.DB) productinterface.Repository {
+func NewProductRepoMG(db *gorm.DB) productinterface.Repository {
 	return &repository{DB: db}
 }
 
-func (r *repository) GetAllProducts() ([]models.Product, error) {
+func (r *repository) GetAllProducts(query string) ([]models.Product, error) {
+	db := r.DB.Model(&models.Product{})
+	if query != "" {
+		db.Where("title ILIKE ?", "%"+query+"%")
+	}
 	var products []models.Product
-	err := r.DB.Preload("Category").Find(&products).Error
+	err := db.Preload("Category").Find(&products).Error
 	return products, err
 }
 

@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
+	productdto "github.com/ak-repo/ecommerce-gin/internals/customer/product/product_dto"
 	productinterface "github.com/ak-repo/ecommerce-gin/internals/customer/product/product_interface"
 	"github.com/ak-repo/ecommerce-gin/pkg/utils"
 	"github.com/gin-gonic/gin"
@@ -52,4 +53,21 @@ func (h *handler) GetProductByID(ctx *gin.Context) {
 
 	utils.RenderSuccess(ctx, http.StatusOK, "customer", "product fetched successfully", product)
 
+}
+
+// POST - cust/products/filter => filtered products
+func (h *handler) FilterProducts(ctx *gin.Context) {
+	var req productdto.FilterParams
+
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		utils.RenderError(ctx, http.StatusBadRequest, "customer", "invalid input", err)
+		return
+	}
+	products, err := h.ProductService.FilterProducts(&req)
+	if err != nil {
+		utils.RenderError(ctx, http.StatusInternalServerError, "customer", "Failed to load products", err)
+		return
+	}
+
+	utils.RenderSuccess(ctx, http.StatusOK, "customer", " filtered products fetched successfully", products)
 }

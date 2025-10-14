@@ -13,9 +13,9 @@ import (
 	orderhandler "github.com/ak-repo/ecommerce-gin/internals/admin/order_mg/handler"
 	orderrepo "github.com/ak-repo/ecommerce-gin/internals/admin/order_mg/repo"
 	orderservice "github.com/ak-repo/ecommerce-gin/internals/admin/order_mg/service"
-	productmanagementhandler "github.com/ak-repo/ecommerce-gin/internals/admin/product_management/handler"
-	productmanagementrepository "github.com/ak-repo/ecommerce-gin/internals/admin/product_management/repository"
-	productmanagementservice "github.com/ak-repo/ecommerce-gin/internals/admin/product_management/service"
+	producthandler "github.com/ak-repo/ecommerce-gin/internals/admin/product_management/handler"
+	productrepo "github.com/ak-repo/ecommerce-gin/internals/admin/product_management/repository"
+	productservice "github.com/ak-repo/ecommerce-gin/internals/admin/product_management/service"
 	profilehandler "github.com/ak-repo/ecommerce-gin/internals/admin/profile_mg/handler"
 	profilerepository "github.com/ak-repo/ecommerce-gin/internals/admin/profile_mg/repository"
 	profileservice "github.com/ak-repo/ecommerce-gin/internals/admin/profile_mg/service"
@@ -42,7 +42,7 @@ func RegisterAdminRoutes(r *gin.Engine, db *db.Database, cfg *config.Config) {
 	authRepo := authrepo.NewAuthRepo(db.DB)
 	orderRepo := orderrepo.NewOrderRepositoryMG(db.DB)
 	userRepo := usersrepository.NewrUsersRpository(db.DB)
-	productRepo := productmanagementrepository.NewProductRepo(db.DB)
+	productRepo := productrepo.NewProductRepoMG(db.DB)
 	categoryRepo := categoryrepository.NewCategoryRepo(db.DB)
 	reviewRepo := reviewrepo.NewReviewRepoMG(db.DB)
 	profileRepo := profilerepository.NewProfileRepoMG(db.DB)
@@ -54,7 +54,7 @@ func RegisterAdminRoutes(r *gin.Engine, db *db.Database, cfg *config.Config) {
 	authService := authservice.NewAuthService(authRepo, cfg)
 	orderService := orderservice.NewOrderServiceMG(orderRepo)
 	userService := usersservice.NewUsersService(userRepo)
-	productService := productmanagementservice.Newservice(productRepo)
+	productService := productservice.NewProductServiceMG(productRepo)
 	categoryService := categoryservice.NewCategoryService(categoryRepo)
 	reviewService := reviewsvc.NewReviewServiceMG(reviewRepo)
 	profileService := profileservice.NewProfileServiceMG(profileRepo, authRepo)
@@ -67,7 +67,7 @@ func RegisterAdminRoutes(r *gin.Engine, db *db.Database, cfg *config.Config) {
 	authHandler := authhandler.NewAuthHandler(authService)
 	orderHandler := orderhandler.NewOrderHandlerMG(orderService)
 	userHandler := usershandler.NewAdminUserHandler(userService)
-	productHandler := productmanagementhandler.Newhandler(productService)
+	productHandler := producthandler.NewProductHandlerMG(productService,categoryService)
 	categoryHandler := categoryhandler.NewCategoryHandler(categoryService)
 	reviewHandler := reviewhandler.NewReviewHandlerMG(reviewService)
 	profileHandler := profilehandler.NewProfileHandlerMG(profileService)

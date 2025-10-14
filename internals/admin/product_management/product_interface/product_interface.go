@@ -24,7 +24,7 @@ type Service interface {
 }
 
 type Repository interface {
-	GetAllProducts() ([]models.Product, error)
+	GetAllProducts(query string) ([]models.Product, error)
 	GetProductByID(id uint) (*models.Product, error)
 	AddProduct(product *models.Product) error
 	UpdateProduct(product *models.Product) error

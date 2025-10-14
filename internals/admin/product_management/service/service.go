@@ -1,8 +1,7 @@
-package productmanagementservice
+package productservice
 
 import (
 	"errors"
-	"strings"
 
 	productdto "github.com/ak-repo/ecommerce-gin/internals/admin/product_management/product_dto"
 	productinterface "github.com/ak-repo/ecommerce-gin/internals/admin/product_management/product_interface"
@@ -13,12 +12,12 @@ type service struct {
 	ProductRepo productinterface.Repository
 }
 
-func Newservice(repo productinterface.Repository) productinterface.Service {
+func NewProductServiceMG(repo productinterface.Repository) productinterface.Service {
 	return &service{ProductRepo: repo}
 }
 
 func (s *service) GetAllProducts(query string) ([]productdto.ProductListItem, error) {
-	data, err := s.ProductRepo.GetAllProducts()
+	data, err := s.ProductRepo.GetAllProducts(query)
 	if data == nil || err != nil {
 		return nil, errors.New("products not found")
 	}
@@ -26,22 +25,21 @@ func (s *service) GetAllProducts(query string) ([]productdto.ProductListItem, er
 	var products []productdto.ProductListItem
 
 	for _, item := range data {
-		if strings.Contains(strings.ToLower(item.Title), strings.ToLower(query)) {
-			product := productdto.ProductListItem{
-				Title:         item.Title,
-				ID:            item.ID,
-				SKU:           item.SKU,
-				BasePrice:     item.BasePrice,
-				DiscountPrice: item.DiscountPrice,
-				Stock:         item.Stock,
-				ImageURL:      item.ImageURL,
-				IsActive:      item.IsActive,
-				IsPublished:   item.IsPublished,
-			}
-			products = append(products, product)
-		}
 
+		product := productdto.ProductListItem{
+			Title:         item.Title,
+			ID:            item.ID,
+			SKU:           item.SKU,
+			BasePrice:     item.BasePrice,
+			DiscountPrice: item.DiscountPrice,
+			Stock:         item.Stock,
+			ImageURL:      item.ImageURL,
+			IsActive:      item.IsActive,
+			IsPublished:   item.IsPublished,
+		}
+		products = append(products, product)
 	}
+
 	return products, nil
 }
 

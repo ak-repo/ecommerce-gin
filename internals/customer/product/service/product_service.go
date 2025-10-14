@@ -46,7 +46,7 @@ func (s *service) GetProductByID(productID uint) (*productdto.CustomerProductRes
 		return nil, errors.New("product not found")
 	}
 
-	listproduct := productdto.CustomerProductResponse{
+	product := productdto.CustomerProductResponse{
 		Title:         data.Title,
 		ID:            data.ID,
 		Description:   data.Description,
@@ -54,17 +54,15 @@ func (s *service) GetProductByID(productID uint) (*productdto.CustomerProductRes
 		DiscountPrice: data.DiscountPrice,
 		Stock:         data.Stock,
 		ImageURL:      data.ImageURL,
-		IsPublished:   data.IsPublished,
 		Category: productdto.CategoryDTO{
 			ID:   data.Category.ID,
 			Name: data.Category.Name,
 		},
 	}
-	var reviews []productdto.ReviewResponse
+	var reviews []productdto.Reviews
 	for _, r := range data.Reviews {
-		review := productdto.ReviewResponse{
+		review := productdto.Reviews{
 			ID:        r.ID,
-			ProductID: r.ProductID,
 			UserID:    r.UserID,
 			Rating:    r.Rating,
 			Comment:   r.Comment,
@@ -72,7 +70,56 @@ func (s *service) GetProductByID(productID uint) (*productdto.CustomerProductRes
 		}
 		reviews = append(reviews, review)
 	}
-	listproduct.Reviews = reviews
+	product.Reviews = reviews
 
-	return &listproduct, nil
+	// similar products
+	var similarProducts []productdto.SimilarProducts
+	similars, err := s.ProductRepo.FilterProducts(&productdto.FilterParams{
+		Category: product.Category.Name,
+		MinPrice: product.BasePrice - 10,
+		MaxPrice: product.BasePrice + 10,
+		Limit:    5,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	for _, i := range similars {
+		product := productdto.SimilarProducts{
+			ID:            i.ID,
+			Title:         i.Title,
+			BasePrice:     i.BasePrice,
+			DiscountPrice: i.DiscountPrice,
+			ImageURL:      i.ImageURL,
+			CategoryName:  i.Category.Name,
+		}
+		similarProducts = append(similarProducts, product)
+	}
+	product.SimilarProducts = similarProducts
+
+	return &product, nil
+}
+
+func (s *service) FilterProducts(req *productdto.FilterParams) ([]productdto.CustomerProductListItem, error) {
+	data, err := s.ProductRepo.FilterProducts(req)
+
+	if data == nil || err != nil {
+		return nil, errors.New("products not found")
+	}
+
+	var products []productdto.CustomerProductListItem
+
+	for _, item := range data {
+		product := productdto.CustomerProductListItem{
+			Title:         item.Title,
+			ID:            item.ID,
+			BasePrice:     item.BasePrice,
+			DiscountPrice: item.DiscountPrice,
+			ImageURL:      item.ImageURL,
+			CategoryName:  item.Category.Name,
+		}
+		products = append(products, product)
+
+	}
+	return products, nil
 }

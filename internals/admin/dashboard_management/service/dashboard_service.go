@@ -3,17 +3,17 @@ package dashboardservice
 import (
 	dashboarddto "github.com/ak-repo/ecommerce-gin/internals/admin/dashboard_management/dashboard_dto"
 	orderinterface "github.com/ak-repo/ecommerce-gin/internals/admin/order_mg/order_interface"
+	productmanagementinterface "github.com/ak-repo/ecommerce-gin/internals/admin/product_management/product_interface"
 	usersinterface "github.com/ak-repo/ecommerce-gin/internals/admin/users_management/user_interface"
-	productinterface "github.com/ak-repo/ecommerce-gin/internals/customer/product/product_interface"
 )
 
 type adminDashboardService struct {
 	Orders   orderinterface.Repository
-	Products productinterface.Repository
+	Products productmanagementinterface.Repository
 	Users    usersinterface.Repository
 }
 
-func NewDashboardService(order orderinterface.Repository, product productinterface.Repository, user usersinterface.Repository) adminDashboardService {
+func NewDashboardService(order orderinterface.Repository, product productmanagementinterface.Repository, user usersinterface.Repository) adminDashboardService {
 	return adminDashboardService{Orders: order, Users: user, Products: product}
 }
 
@@ -24,7 +24,7 @@ func (s *adminDashboardService) DashboardOverview() (*dashboarddto.DashboardData
 	if err != nil {
 		return nil, err
 	}
-	products, err := s.Products.GetAllProducts()
+	products, err := s.Products.GetAllProducts("")
 	if err != nil {
 		return nil, err
 	}

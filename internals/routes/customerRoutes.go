@@ -85,6 +85,7 @@ func RegisterCustomerRoutes(r *gin.Engine, db *db.Database, cfg *config.Config) 
 		// Product Browsing
 		public.GET("/products", productHandler.GetAllProducts)
 		public.GET("/products/:id", productHandler.GetProductByID)
+		public.POST("/products/filter", productHandler.FilterProducts)
 
 		// Banners
 		public.GET("/banners", pagesHandler.GetBanners)

@@ -29,6 +29,6 @@ type Product struct {
 
 	// --- Reviews ---
 	Reviews     []Review `gorm:"foreignKey:ProductID"`
-	AvgRating   float64  `gorm:"-:migration"` // calculated, ignored by GORM migrations
-	ReviewCount int      `gorm:"-:migration"` // calculated
+	AvgRating   float64  `gorm:"-"`
+	ReviewCount int      `gorm:"-"`
 }
