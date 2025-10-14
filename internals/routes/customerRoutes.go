@@ -14,6 +14,9 @@ import (
 	orderhandler "github.com/ak-repo/ecommerce-gin/internals/customer/order/handler"
 	orderrepo "github.com/ak-repo/ecommerce-gin/internals/customer/order/repo"
 	orderservice "github.com/ak-repo/ecommerce-gin/internals/customer/order/service"
+	pageshandler "github.com/ak-repo/ecommerce-gin/internals/customer/pages/handler"
+	pagesrepo "github.com/ak-repo/ecommerce-gin/internals/customer/pages/repo"
+	pagessvc "github.com/ak-repo/ecommerce-gin/internals/customer/pages/service"
 	producthandler "github.com/ak-repo/ecommerce-gin/internals/customer/product/handler"
 	productrepository "github.com/ak-repo/ecommerce-gin/internals/customer/product/repository"
 	productservice "github.com/ak-repo/ecommerce-gin/internals/customer/product/service"
@@ -44,6 +47,7 @@ func RegisterCustomerRoutes(r *gin.Engine, db *db.Database, cfg *config.Config) 
 	wishlistRepo := wishlistrepository.NewWishlistRepo(db.DB)
 	cartRepo := cartrepo.NewCartRepo(db.DB)
 	checkoutRepo := checkoutrepository.NewCheckoutRepo(db.DB)
+	pagesRepo := pagesrepo.NewPagesRepo(db.DB)
 
 	// --------------------------
 	// INIT SERVICES
@@ -56,6 +60,7 @@ func RegisterCustomerRoutes(r *gin.Engine, db *db.Database, cfg *config.Config) 
 	checkoutService := checkoutservice.NewCheckoutService(cartService, profileService, authRepo, checkoutRepo)
 	orderService := orderservice.NewOrderService(orderRepo)
 	wishlistService := wishlistservice.NewWishlistSevice(wishlistRepo)
+	pagesService := pagessvc.NewPagesService(pagesRepo)
 
 	// --------------------------
 	// INIT HANDLERS
@@ -68,6 +73,7 @@ func RegisterCustomerRoutes(r *gin.Engine, db *db.Database, cfg *config.Config) 
 	checkoutHandler := checkouthandler.NewCheckoutHandler(checkoutService)
 	orderHandler := orderhandler.NewOrderHandler(orderService)
 	wishlistHandler := wishlisthandler.NewWishlistHandler(wishlistService)
+	pagesHandler := pageshandler.NewPagesHanlder(pagesService)
 
 	// PUBLIC ROUTES
 	public := r.Group("/api/v1/customer")
@@ -79,6 +85,9 @@ func RegisterCustomerRoutes(r *gin.Engine, db *db.Database, cfg *config.Config) 
 		// Product Browsing
 		public.GET("/products", productHandler.GetAllProducts)
 		public.GET("/products/:id", productHandler.GetProductByID)
+
+		// Banners
+		public.GET("/banners", pagesHandler.GetBanners)
 	}
 
 	// PROTECTED ROUTES (Authenticated Customers)

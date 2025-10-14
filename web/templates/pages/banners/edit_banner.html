@@ -1,0 +1,105 @@
+{{define "content"}}
+<div class="flex justify-between items-center mb-6">
+  <h1 class="text-2xl font-bold">Edit Banner</h1>
+  <a
+    href="/api/v1/admin/banners"
+    class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700"
+    >Back to List</a
+  >
+</div>
+
+<div class="bg-white shadow rounded p-6 max-w-lg">
+  <form
+    action="/api/v1/admin/banners/{{.Banner.ID}}/update"
+    method="POST"
+    enctype="multipart/form-data"
+    class="space-y-4"
+  >
+    <!-- Title -->
+    <div>
+      <label class="block font-semibold mb-1" for="title">Title</label>
+      <input
+        type="text"
+        name="title"
+        id="title"
+        value="{{.Banner.Title}}"
+        required
+        class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+    </div>
+
+    <!-- Description -->
+    <div>
+      <label class="block font-semibold mb-1" for="description"
+        >Description</label
+      >
+      <textarea
+        name="description"
+        id="description"
+        rows="3"
+        class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+{{.Banner.Description}}</textarea
+      >
+    </div>
+
+    <!-- Current Image Preview -->
+    <div>
+      <label class="block font-semibold mb-1">Current Image</label>
+      <img
+        src="/uploads/{{.Banner.ImageURL}}"
+        alt="{{.Banner.Title}}"
+        class="w-64 h-32 object-cover rounded border"
+      />
+    </div>
+
+    <!-- Image Upload -->
+    <div>
+      <label class="block font-semibold mb-1" for="image"
+        >Replace Image (optional)</label
+      >
+      <input
+        type="file"
+        name="image"
+        id="image"
+        accept="image/*"
+        class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+    </div>
+
+    <!-- IsActive Toggle -->
+    <div class="flex items-center space-x-2">
+      <!-- Hidden field ensures a value is always sent (false if unchecked) -->
+      <input type="hidden" name="is_active" value="false" />
+
+      <!-- Actual checkbox -->
+      <input
+        type="checkbox"
+        name="is_active"
+        id="is_active"
+        value="true"
+        {{if
+        .Banner.IsActive}}checked{{end}}
+        class="h-4 w-4"
+      />
+      <label for="is_active" class="font-semibold">Active</label>
+    </div>
+
+    <!-- Buttons -->
+    <div class="flex space-x-3 pt-4">
+      <button
+        type="submit"
+        class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+      >
+        Update Banner
+      </button>
+
+      <a
+        href="/api/v1/admin/banners/{{.Banner.ID}}/delete"
+        class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+        >Delete</a
+      >
+    </div>
+  </form>
+</div>
+{{end}}

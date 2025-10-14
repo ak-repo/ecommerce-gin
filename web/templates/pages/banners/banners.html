@@ -1,0 +1,145 @@
+{{define "content"}}
+<div class="max-w-7xl mx-auto">
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-8">
+    <div>
+      <h1 class="text-3xl font-bold text-gray-900">Banner Management</h1>
+      <p class="text-gray-600 mt-2">
+        Manage your website banners and promotions
+      </p>
+    </div>
+    <a
+      href="/api/v1/admin/banners/add"
+      class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium flex items-center"
+    >
+      <svg
+        class="w-5 h-5 mr-2"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M12 4v16m8-8H4"
+        />
+      </svg>
+      New Banner
+    </a>
+  </div>
+
+  <!-- Banners Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {{range .Banners}}
+    <div
+      class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
+    >
+      <!-- Banner Image -->
+      <div class="h-48 bg-gray-100 overflow-hidden">
+        <img
+          src="/uploads/{{.ImageURL}}"
+          alt="{{.Title}}"
+          class="w-full h-full object-cover"
+        />
+      </div>
+
+      <!-- Banner Content -->
+      <div class="p-6">
+        <div class="flex items-start justify-between mb-3">
+          <h3 class="text-lg font-semibold text-gray-900 line-clamp-2">
+            {{.Title}}
+          </h3>
+          <span class="flex-shrink-0 ml-2">
+            {{if .IsActive}}
+            <span
+              class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"
+            >
+              Active
+            </span>
+            {{else}}
+            <span
+              class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800"
+            >
+              Inactive
+            </span>
+            {{end}}
+          </span>
+        </div>
+
+        <div class="text-sm text-gray-500 mb-1">ID: {{.ID}}</div>
+
+        <!-- View Button -->
+        <div class="mt-4">
+          <a
+            href="/api/v1/admin/banners/{{.ID}}"
+            class="w-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors py-2 px-4 rounded-lg font-medium flex items-center justify-center"
+          >
+            <svg
+              class="w-4 h-4 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+              />
+            </svg>
+            View Details
+          </a>
+        </div>
+      </div>
+    </div>
+    {{end}}
+  </div>
+
+  <!-- Empty State -->
+  {{if not .Banners}}
+  <div class="text-center py-12">
+    <svg
+      class="w-16 h-16 text-gray-400 mx-auto mb-4"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+      />
+    </svg>
+    <h3 class="text-lg font-medium text-gray-900 mb-2">No banners yet</h3>
+    <p class="text-gray-500 mb-6">Get started by creating your first banner</p>
+    <a
+      href="/api/v1/admin/banners/add"
+      class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium inline-flex items-center"
+    >
+      <svg
+        class="w-5 h-5 mr-2"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M12 4v16m8-8H4"
+        />
+      </svg>
+      Create First Banner
+    </a>
+  </div>
+  {{end}}
+</div>
+{{end}}

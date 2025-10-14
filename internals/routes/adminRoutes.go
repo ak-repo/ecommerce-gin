@@ -2,6 +2,9 @@ package routes
 
 import (
 	"github.com/ak-repo/ecommerce-gin/config"
+	bannerhandler "github.com/ak-repo/ecommerce-gin/internals/admin/banner_mg/handler"
+	bannerrepo "github.com/ak-repo/ecommerce-gin/internals/admin/banner_mg/repo"
+	bannerservice "github.com/ak-repo/ecommerce-gin/internals/admin/banner_mg/service"
 	categoryhandler "github.com/ak-repo/ecommerce-gin/internals/admin/category_management/handler"
 	categoryrepository "github.com/ak-repo/ecommerce-gin/internals/admin/category_management/repository"
 	categoryservice "github.com/ak-repo/ecommerce-gin/internals/admin/category_management/service"
@@ -43,6 +46,7 @@ func RegisterAdminRoutes(r *gin.Engine, db *db.Database, cfg *config.Config) {
 	categoryRepo := categoryrepository.NewCategoryRepo(db.DB)
 	reviewRepo := reviewrepo.NewReviewRepoMG(db.DB)
 	profileRepo := profilerepository.NewProfileRepoMG(db.DB)
+	bannerRepo := bannerrepo.NewBannerRepoMG(db.DB)
 
 	// --------------------------
 	// INIT SERVICES
@@ -55,6 +59,7 @@ func RegisterAdminRoutes(r *gin.Engine, db *db.Database, cfg *config.Config) {
 	reviewService := reviewsvc.NewReviewServiceMG(reviewRepo)
 	profileService := profileservice.NewProfileServiceMG(profileRepo, authRepo)
 	dashboardService := dashboardservice.NewDashboardService(orderRepo, productRepo, userRepo)
+	bannerService := bannerservice.NewBannerServiceMG(bannerRepo)
 
 	// --------------------------
 	// INIT HANDLERS
@@ -67,6 +72,7 @@ func RegisterAdminRoutes(r *gin.Engine, db *db.Database, cfg *config.Config) {
 	reviewHandler := reviewhandler.NewReviewHandlerMG(reviewService)
 	profileHandler := profilehandler.NewProfileHandlerMG(profileService)
 	dashboardHandler := dashboardhandler.NewAdminDashboardHandler(&dashboardService)
+	bannerHandler := bannerhandler.NewBannerHandlerMG(bannerService)
 
 	// PUBLIC ADMIN ROUTES (no middleware)
 	public := r.Group("/api/v1/admin")
@@ -143,5 +149,17 @@ func RegisterAdminRoutes(r *gin.Engine, db *db.Database, cfg *config.Config) {
 		protected.GET("/categories", categoryHandler.GetAllCategories)
 		protected.GET("/categories/:id", categoryHandler.GetCategoryDetails)
 		protected.POST("/categories", categoryHandler.CreateCategory)
+
+		// --------------------------
+		// BANNER MANAGEMENT
+		// --------------------------
+		protected.GET("/banners", bannerHandler.GetAllBanners)
+		protected.GET("/banners/:id", bannerHandler.GetBannerByID)
+		protected.GET("/banners/add", bannerHandler.CreateForm)
+		protected.POST("/banners/add", bannerHandler.Create)
+		protected.GET("/banners/:id/update", bannerHandler.UpdateForm)
+		protected.POST("/banners/:id/update", bannerHandler.Update)
+		protected.GET("/banners/:id/delete", bannerHandler.Delete)
+
 	}
 }
