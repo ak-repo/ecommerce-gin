@@ -13,6 +13,7 @@ type Handler interface {
 	BlockUser(ctx *gin.Context)
 	ShowUserAddForm(ctx *gin.Context)
 	CreateUser(ctx *gin.Context)
+	DeleteUser(ctx *gin.Context) 
 }
 
 type Service interface {
@@ -21,6 +22,7 @@ type Service interface {
 	ChangeUserRole(req *userdto.AdminUserRoleChange) error
 	BlockUser(userID uint) error
 	CreateUser(req *userdto.CreateUserRequest) (uint, error)
+	DeleteUser(userID uint) error 
 }
 
 type Repository interface {
@@ -28,4 +30,5 @@ type Repository interface {
 	GetUserByID(userID uint) (*models.User, error)
 	UpdateUser(user *models.User) error // generic
 	CreateUser(user *models.User) error
+	DeleteUser(userID uint) error 
 }

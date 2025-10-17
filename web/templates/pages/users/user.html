@@ -98,18 +98,11 @@
     </form>
     {{end}}
 
-    <!-- Conditional Orders Button -->
-    {{if eq .User.Role "customer"}}
-      <a href="/api/v1/admin/users/{{.User.ID}}/orders" 
+      <a href="/api/v1/admin/users/delete/{{.User.ID}}" 
          class="bg-indigo-500 text-white px-4 py-1.5 rounded-lg hover:bg-indigo-600 transition">
-        View Customer Orders
+        Delete
       </a>
-    {{else if eq .User.Role "store"}}
-      <a href="/admin/stores/{{.User.ID}}/orders" 
-         class="bg-teal-500 text-white px-4 py-1.5 rounded-lg hover:bg-teal-600 transition">
-        View Store Orders
-      </a>
-    {{end}}
+ 
 
   </div>
 

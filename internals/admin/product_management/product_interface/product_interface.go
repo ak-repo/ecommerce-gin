@@ -13,6 +13,7 @@ type Handler interface {
 	AddProductForm(ctx *gin.Context)
 	EditProductForm(ctx *gin.Context)
 	UpdateProduct(ctx *gin.Context)
+	DeleteProduct(ctx *gin.Context)
 }
 
 type Service interface {

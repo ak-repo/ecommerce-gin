@@ -81,14 +81,14 @@ func (h *handler) UpdateQuantity(ctx *gin.Context) {
 func (h *handler) RemoveItem(ctx *gin.Context) {
 
 	var id struct {
-		CartItemID uint `json:"cart_item_id" form:"cart_item_id" binding:"required"`
+		CartItemID int `json:"cart_item_id" form:"cart_item_id" binding:"required"`
 	}
 	if err := ctx.ShouldBind(&id); err != nil || id.CartItemID == 0 {
 		utils.RenderError(ctx, http.StatusBadRequest, "customer", "invalid input", err)
 		return
 	}
 
-	if err := h.service.RemoveItem(id.CartItemID); err != nil {
+	if err := h.service.RemoveItem(uint(id.CartItemID)); err != nil {
 		utils.RenderError(ctx, http.StatusInternalServerError, "customer", "failed to remove cart item.", err)
 		return
 	}

@@ -109,3 +109,7 @@ func (s *service) CreateUser(req *userdto.CreateUserRequest) (uint, error) {
 	}
 	return user.ID, nil
 }
+
+func (s *service) DeleteUser(userID uint) error {
+	return s.UsersRepo.DeleteUser(userID)
+}

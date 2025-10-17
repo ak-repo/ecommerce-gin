@@ -111,6 +111,7 @@ func RegisterAdminRoutes(r *gin.Engine, db *db.Database, cfg *config.Config) {
 		protected.POST("/products/add", productHandler.AddProduct)
 		protected.GET("/products/update/:id", productHandler.EditProductForm)
 		protected.POST("/products/update/:id", productHandler.UpdateProduct)
+		protected.GET("/products/delete/:id", productHandler.DeleteProduct)
 
 		// --------------------------
 		// ORDERS MANAGEMENT
@@ -132,6 +133,7 @@ func RegisterAdminRoutes(r *gin.Engine, db *db.Database, cfg *config.Config) {
 		protected.POST("/users/:id/role", userHandler.ChangeUserRole)
 		protected.POST("/users/:id/status", userHandler.BlockUser)
 		protected.GET("/users/:id/orders", orderHandler.GetOrderByCustomerID)
+		protected.GET("/users/delete/:id", userHandler.DeleteUser)
 
 		// --------------------------
 		// PROFILE MANAGEMENT

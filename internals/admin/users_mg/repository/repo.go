@@ -58,3 +58,7 @@ func (r *repository) UpdateUser(user *models.User) error {
 func (r *repository) CreateUser(user *models.User) error {
 	return r.DB.Create(user).Error
 }
+
+func (r *repository) DeleteUser(userID uint) error {
+	return r.DB.Delete(&models.User{}, userID).Error
+}

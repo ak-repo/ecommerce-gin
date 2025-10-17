@@ -1,6 +1,8 @@
 package orderrepo
 
 import (
+	"fmt"
+
 	orderinterface "github.com/ak-repo/ecommerce-gin/internals/customer/order/order_interface"
 	"github.com/ak-repo/ecommerce-gin/internals/models"
 	"gorm.io/gorm"
@@ -41,6 +43,17 @@ func (r *repository) GetOrderByCustomerID(userID uint) ([]models.Order, error) {
 }
 
 func (r *repository) CancelOrder(cancel *models.OrderCancelRequest) error {
+	var count int64
+	if err := r.DB.Model(&models.OrderCancelRequest{}).
+		Where("order_id = ?", cancel.OrderID).
+		Count(&count).Error; err != nil {
+		return err
+	}
+
+	if count > 0 {
+		return fmt.Errorf("a cancel request for order %d already exists", cancel.OrderID)
+	}
+
 	return r.DB.Create(cancel).Error
 }
 

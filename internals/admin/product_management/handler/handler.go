@@ -24,6 +24,26 @@ func NewProductHandlerMG(service productinterface.Service, categorysvc categoryi
 	return &handler{ProductService: service, CategoryService: categorysvc}
 }
 
+// GET admin/products/delete/:id
+func (h *handler) DeleteProduct(ctx *gin.Context) {
+
+	id := ctx.Param("id")
+	productID, err := strconv.ParseUint(id, 10, 64)
+	if err != nil || id == "" {
+		utils.RenderError(ctx, http.StatusBadRequest, "admin", "product id not found", errors.New("no id in the give url=> parameter missing"))
+
+		return
+	}
+
+	if err = h.ProductService.DeleteProduct(uint(productID)); err != nil {
+		utils.RenderError(ctx, http.StatusInternalServerError, "admin", "failed to delete product", err)
+		return
+
+	}
+
+	ctx.Redirect(http.StatusSeeOther, "/api/v1/admin/products")
+
+}
 
 // GET admin/products
 func (h *handler) GetAllProducts(ctx *gin.Context) {
@@ -147,8 +167,15 @@ func (h *handler) UpdateProduct(ctx *gin.Context) {
 
 // GET => admin/products/add
 func (h *handler) AddProductForm(ctx *gin.Context) {
+	category, err := h.CategoryService.GetAllCategories()
+	if err != nil {
+		utils.RenderError(ctx, http.StatusInternalServerError, "admin", "categories not found for adding", err)
+		return
+	}
 
-	ctx.HTML(http.StatusOK, "pages/product/addProduct.html", nil)
+	ctx.HTML(http.StatusOK, "pages/product/addProduct.html", gin.H{
+		"Categories": category,
+	})
 
 }
 

@@ -148,3 +148,21 @@ func (h *handler) CreateUser(ctx *gin.Context) {
 		ctx.Redirect(http.StatusSeeOther, fmt.Sprintf("/api/v1/admin/users/%d", id))
 	}
 }
+
+func (h *handler) DeleteUser(ctx *gin.Context) {
+	id := ctx.Param("id")
+	userID, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		utils.RenderError(ctx, http.StatusBadRequest, "admin", "invalid user ID", err)
+		return
+	}
+
+	if err = h.UsersService.DeleteUser(uint(userID)); err != nil {
+
+		utils.RenderError(ctx, http.StatusInternalServerError, "admin", "user deletation failed", err)
+		return
+	}
+
+	ctx.Redirect(http.StatusSeeOther, "/api/v1/admin/users/")
+
+}

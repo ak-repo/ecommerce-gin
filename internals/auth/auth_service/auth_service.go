@@ -55,6 +55,9 @@ func (s *authService) Login(input *auth.LoginRequest, role string) (*auth.LoginR
 	if ok := utils.CompareHashAndPassword(input.Password, user.PasswordHash); !ok {
 		return nil, errors.New("entered password is not matching")
 	}
+	if user.Status != "active" {
+		return nil, errors.New("user has been blocked")
+	}
 
 	accessToken, err := jwtpkg.AccessTokenGenerator(user, s.cfg)
 	if err != nil {

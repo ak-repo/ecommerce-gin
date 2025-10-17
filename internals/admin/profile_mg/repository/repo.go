@@ -39,8 +39,22 @@ func (r *repository) AddAddress(address *models.Address) error {
 }
 
 func (r *repository) UploadPicture(profilePic *models.ProfilePic) error {
+	tx := r.DB.Begin()
+	if tx.Error != nil {
+		return tx.Error
+	}
 
-	return r.DB.Create(profilePic).Error
+	if err := tx.Where("user_id = ?", profilePic.UserID).Delete(&models.ProfilePic{}).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	if err := tx.Create(profilePic).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit().Error
 }
 
 func (r *repository) GetPicture(userID uint) (*models.ProfilePic, error) {

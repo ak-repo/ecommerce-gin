@@ -102,13 +102,13 @@ func (h *handler) UploadPicture(ctx *gin.Context) {
 	}
 	savePath := filepath.Join(saveDir, newFileName)
 
-	//  Save file to disk
+	// disk
 	if err := ctx.SaveUploadedFile(file, savePath); err != nil {
 		utils.RenderError(ctx, http.StatusInternalServerError, "admin", "failed to upload image", err)
 		return
 	}
 
-	//  Update DB with new profile pic
+	//   DB 
 	relativePath := filepath.Join("profile", newFileName)
 	if err := h.ProfileService.UploadPicture(userID, relativePath); err != nil {
 		utils.RenderError(ctx, http.StatusInternalServerError, "admin", "failed to update profile picture", err)
