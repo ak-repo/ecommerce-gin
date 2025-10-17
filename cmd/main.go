@@ -2,20 +2,12 @@ package main
 
 import (
 	"log"
-	"path/filepath"
-	"strings"
-	"time"
 
 	"github.com/ak-repo/ecommerce-gin/config"
-	"github.com/ak-repo/ecommerce-gin/internals/models"
+	db "github.com/ak-repo/ecommerce-gin/config/database"
 	"github.com/ak-repo/ecommerce-gin/internals/routes"
 
-	db "github.com/ak-repo/ecommerce-gin/pkg/database"
-	"github.com/gin-contrib/cors"
-	"github.com/gin-contrib/multitemplate"
 	"github.com/gin-gonic/gin"
-	"golang.org/x/crypto/bcrypt"
-	"gorm.io/gorm"
 )
 
 func main() {
@@ -24,26 +16,12 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to load env file: %v", err)
 	}
-
 	database, err := db.NewDB(cfg.GetDSN())
 	if err != nil {
 		log.Fatalf("failed to connect DB: %v", err)
 	}
 
 	r := gin.New()
-	r.Use(gin.Logger(), gin.Recovery())
-	// CORS configuration
-	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:5173"}, // your frontend URL
-		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
-		ExposeHeaders:    []string{"Content-Length"},
-		AllowCredentials: true,
-		MaxAge:           12 * time.Hour,
-	}))
-
-	r.HTMLRender = createMyRender("web/templates")
-	r.Static("uploads", "./web/uploads")
 
 	routes.RegisterRoute(r, database, cfg)
 
@@ -51,46 +29,6 @@ func main() {
 		log.Fatalf("failed to start server: %v", err)
 	}
 
+
 }
 
-func createMyRender(templatesDir string) multitemplate.Renderer {
-	t := multitemplate.NewRenderer()
-
-	adminLayouts, _ := filepath.Glob(filepath.Join(templatesDir, "layouts", "admin_base.html"))
-	adminPages, _ := filepath.Glob(filepath.Join(templatesDir, "pages", "**", "*.html"))
-
-	for _, page := range adminPages {
-		name, _ := filepath.Rel(templatesDir, page)
-
-		var files []string
-
-		if strings.HasSuffix(name, "adminLogin.html") {
-			// Use admin login base
-			files = []string{filepath.Join(templatesDir, "layouts", "admin_login_base.html"), page}
-
-		} else if strings.HasSuffix(name, "success.html") || strings.HasSuffix(name, "error.html") || strings.HasSuffix(name, "404.html") {
-			// Render without any base
-			files = []string{page}
-
-		} else {
-			// Default: use normal admin base with sidebar
-			files = append(adminLayouts, page)
-		}
-
-		t.AddFromFiles(name, files...)
-	}
-
-	return t
-}
-
-func SeedAdmin(db *gorm.DB) {
-	hash, _ := bcrypt.GenerateFromPassword([]byte("11"), bcrypt.DefaultCost)
-	db.FirstOrCreate(&models.User{
-		Username:      "super admin",
-		Email:         "admin@freshbox.com",
-		PasswordHash:  string(hash),
-		Role:          "admin",
-		Status:        "active",
-		EmailVerified: true,
-	}, models.User{Email: "admin@freshbox.com"})
-}

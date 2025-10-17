@@ -1,6 +1,7 @@
 package authhandler
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/ak-repo/ecommerce-gin/internals/auth"
@@ -47,7 +48,7 @@ func (h *authHandler) Registeration(ctx *gin.Context, role string) {
 	}
 
 	utils.RenderSuccess(ctx, http.StatusCreated, role, role+"'s registration successful", map[string]interface{}{
-		"username": input.Username,
+		"user": input.Username,
 		"email":    input.Email,
 		"role":     role,
 	})
@@ -90,7 +91,7 @@ func (h *authHandler) Login(ctx *gin.Context, role string) {
 	} else {
 		utils.RenderSuccess(ctx, http.StatusOK, role, "Login successful", map[string]interface{}{
 			"token":  res.AccessToken,
-			"userID": res.User.ID,
+			"user": res.User.ID,
 		})
 	}
 
@@ -112,5 +113,17 @@ func (h *authHandler) Logout(ctx *gin.Context, role string) {
 		ctx.Redirect(http.StatusSeeOther, "/api/v1/admin/login")
 
 	}
+
+}
+
+// me
+func (h *authHandler) GetMe(ctx *gin.Context) {
+	user, exists := ctx.Get("userID")
+	if !exists {
+		utils.RenderError(ctx, http.StatusUnauthorized, "customer", "unauthorised", errors.New("not logged in"))
+		return
+	}
+
+	utils.RenderSuccess(ctx, http.StatusOK, "customer", "success", gin.H{"user": user})
 
 }

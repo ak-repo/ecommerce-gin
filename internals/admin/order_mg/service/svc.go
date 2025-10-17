@@ -82,6 +82,7 @@ func (s *service) GetOrderByID(id uint) (*orderdto.OrderDetailResponse, error) {
 		OrderDate:   data.CreatedAt,
 		Status:      data.Status,
 		TotalAmount: data.TotalAmount,
+		UserEmail:   data.User.Email,
 		Address: orderdto.OrderAddressDTO{
 			ID:      data.ShippingAddress.ID,
 			Street:  data.ShippingAddress.AddressLine,

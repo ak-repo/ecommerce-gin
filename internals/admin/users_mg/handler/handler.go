@@ -2,11 +2,13 @@ package usershandler
 
 import (
 	"fmt"
+	"math"
 	"net/http"
 	"strconv"
+	"time"
 
-	userdto "github.com/ak-repo/ecommerce-gin/internals/admin/users_management/user_dto"
-	usersinterface "github.com/ak-repo/ecommerce-gin/internals/admin/users_management/user_interface"
+	userdto "github.com/ak-repo/ecommerce-gin/internals/admin/users_mg/user_dto"
+	usersinterface "github.com/ak-repo/ecommerce-gin/internals/admin/users_mg/user_interface"
 	"github.com/ak-repo/ecommerce-gin/pkg/utils"
 	"github.com/gin-gonic/gin"
 )
@@ -21,40 +23,38 @@ func NewAdminUserHandler(service usersinterface.Service) usersinterface.Handler 
 
 // GET admin/users   => display all users & users search
 func (h *handler) GetAllUsers(ctx *gin.Context) {
-	search := ctx.Query("q")
-	role := ctx.Query("role")
-	status := ctx.Query("status")
-	users, err := h.UsersService.GetAllUsers(search)
+
+	var req userdto.UsersPagination
+	var err error
+	req.Query = ctx.Query("q")
+	req.Role = ctx.Query("role")
+	req.Status = ctx.Query("status")
+	req.Limit, err = strconv.Atoi(ctx.DefaultQuery("limit", "6"))
+	if err != nil {
+		req.Limit = 6
+	}
+	req.Page, err = strconv.Atoi(ctx.DefaultQuery("page", "1"))
+	if err != nil {
+		req.Page = 1
+	}
+
+	users, err := h.UsersService.GetAllUsers(&req)
 	if err != nil {
 		utils.RenderError(ctx, http.StatusInternalServerError, "admin", "users not found => DP not found", err)
 		return
 	}
-	var filterd []userdto.AdminUserListDTO
-	if role != "" {
-		for _, u := range users {
 
-			if u.Role == role {
-				filterd = append(filterd, u)
-			}
-		}
-	}
+	req.TotalPages = int(math.Ceil(float64(req.Total) / float64(req.Limit)))
 
-	if status != "" {
-		for _, u := range users {
-
-			if u.Status == status {
-				filterd = append(filterd, u)
-			}
-		}
-	}
-	if len(filterd) == 0 {
-		filterd = users
-	}
 	ctx.HTML(http.StatusOK, "pages/users/users.html", gin.H{
-		"Users":        filterd,
-		"Query":        search,
-		"FilterStatus": status,
-		"FilterRole":   role,
+		"Users":        users,
+		"Query":        req.Query,
+		"FilterStatus": req.Status,
+		"FilterRole":   req.Role,
+		"Page":         req.Page,
+		"Limit":        req.Limit,
+		"TotalPages":   req.TotalPages,
+		"CurrentYear":  time.Now().Year(),
 	})
 }
 

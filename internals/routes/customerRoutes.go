@@ -2,6 +2,7 @@ package routes
 
 import (
 	"github.com/ak-repo/ecommerce-gin/config"
+	db "github.com/ak-repo/ecommerce-gin/config/database"
 	authhandler "github.com/ak-repo/ecommerce-gin/internals/auth/auth_handler"
 	authrepo "github.com/ak-repo/ecommerce-gin/internals/auth/auth_repo"
 	authservice "github.com/ak-repo/ecommerce-gin/internals/auth/auth_service"
@@ -29,8 +30,7 @@ import (
 	wishlisthandler "github.com/ak-repo/ecommerce-gin/internals/customer/wishlist/handler"
 	wishlistrepository "github.com/ak-repo/ecommerce-gin/internals/customer/wishlist/repository"
 	wishlistservice "github.com/ak-repo/ecommerce-gin/internals/customer/wishlist/service"
-	authmiddleware "github.com/ak-repo/ecommerce-gin/internals/middleware/auth"
-	db "github.com/ak-repo/ecommerce-gin/pkg/database"
+	authmiddleware "github.com/ak-repo/ecommerce-gin/pkg/middleware/auth"
 	"github.com/gin-gonic/gin"
 )
 
@@ -99,6 +99,7 @@ func RegisterCustomerRoutes(r *gin.Engine, db *db.Database, cfg *config.Config) 
 		protected.POST("/password-change", authHandler.CustomerPasswordChange)
 		protected.POST("/send-otp", authHandler.SendOTP)
 		protected.POST("/verify-otp", authHandler.VerifyOTP)
+		protected.GET("/me", authHandler.GetMe)
 
 		// Profile
 		protected.GET("/profile", profileHandler.GetProfile)

@@ -1,247 +1,94 @@
 {{ define "content" }}
-<div class="max-w-7x5 mx-auto p-6">
+<div class="max-w-7x3 mx-auto p-6">
   <!-- Header -->
   <div class="flex items-center mb-10">
-    <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mr-5 shadow-lg">
-      <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-      </svg>
-    </div>
-    <div>
-      <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Dashboard Overview</h1>
-      <p class="text-gray-600 mt-2 text-lg">
-        Welcome back! Here's what's happening today.
-      </p>
-    </div>
+    <h1 class="text-3xl font-bold text-gray-900 tracking-tight">
+      Dashboard Overview
+    </h1>
   </div>
 
   <!-- Stats Cards -->
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-10">
-    <!-- Total Revenue -->
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all duration-300 group">
-      <div class="flex items-center justify-between mb-3">
-        <p class="text-sm font-medium text-gray-500 uppercase tracking-wide">Total Revenue</p>
-        <div class="w-8 h-8 bg-blue-50 rounded-lg flex items-center justify-center group-hover:bg-blue-100 transition-colors">
-          <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>
-          </svg>
-        </div>
-      </div>
+    <div class="bg-white rounded-2xl shadow-sm p-6">
+      <p class="text-sm text-gray-500 uppercase">Total Revenue</p>
       <p class="text-2xl font-bold text-gray-900">₹{{.TotalRevenue}}</p>
-      <div class="flex items-center mt-2">
-        <span class="text-xs text-green-600 font-medium bg-green-50 px-2 py-1 rounded-full">+12.5%</span>
-      </div>
     </div>
-    
-    <!-- Total Products -->
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all duration-300 group">
-      <div class="flex items-center justify-between mb-3">
-        <p class="text-sm font-medium text-gray-500 uppercase tracking-wide">Total Products</p>
-        <div class="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center group-hover:bg-green-100 transition-colors">
-          <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
-          </svg>
-        </div>
-      </div>
+    <div class="bg-white rounded-2xl shadow-sm p-6">
+      <p class="text-sm text-gray-500 uppercase">Total Products</p>
       <p class="text-2xl font-bold text-gray-900">{{.TotalProducts}}</p>
-      <div class="flex items-center mt-2">
-        <span class="text-xs text-green-600 font-medium bg-green-50 px-2 py-1 rounded-full">+8.2%</span>
-      </div>
     </div>
-    
-    <!-- Total Orders -->
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all duration-300 group">
-      <div class="flex items-center justify-between mb-3">
-        <p class="text-sm font-medium text-gray-500 uppercase tracking-wide">Total Orders</p>
-        <div class="w-8 h-8 bg-purple-50 rounded-lg flex items-center justify-center group-hover:bg-purple-100 transition-colors">
-          <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
-          </svg>
-        </div>
-      </div>
+    <div class="bg-white rounded-2xl shadow-sm p-6">
+      <p class="text-sm text-gray-500 uppercase">Total Orders</p>
       <p class="text-2xl font-bold text-gray-900">{{.TotalOrders}}</p>
-      <div class="flex items-center mt-2">
-        <span class="text-xs text-green-600 font-medium bg-green-50 px-2 py-1 rounded-full">+15.3%</span>
-      </div>
     </div>
-    
-    <!-- Pending Orders -->
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all duration-300 group">
-      <div class="flex items-center justify-between mb-3">
-        <p class="text-sm font-medium text-gray-500 uppercase tracking-wide">Pending Orders</p>
-        <div class="w-8 h-8 bg-yellow-50 rounded-lg flex items-center justify-center group-hover:bg-yellow-100 transition-colors">
-          <svg class="w-4 h-4 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-          </svg>
-        </div>
-      </div>
+    <div class="bg-white rounded-2xl shadow-sm p-6">
+      <p class="text-sm text-gray-500 uppercase">Pending Orders</p>
       <p class="text-2xl font-bold text-gray-900">{{.PendingOrders}}</p>
-      <div class="flex items-center mt-2">
-        <span class="text-xs text-red-600 font-medium bg-red-50 px-2 py-1 rounded-full">-3.1%</span>
-      </div>
     </div>
-    
-    <!-- Total Customers -->
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all duration-300 group">
-      <div class="flex items-center justify-between mb-3">
-        <p class="text-sm font-medium text-gray-500 uppercase tracking-wide">Total Customers</p>
-        <div class="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center group-hover:bg-indigo-100 transition-colors">
-          <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-          </svg>
-        </div>
-      </div>
+    <div class="bg-white rounded-2xl shadow-sm p-6">
+      <p class="text-sm text-gray-500 uppercase">Total Customers</p>
       <p class="text-2xl font-bold text-gray-900">{{.TotalCustomers}}</p>
-      <div class="flex items-center mt-2">
-        <span class="text-xs text-green-600 font-medium bg-green-50 px-2 py-1 rounded-full">+5.7%</span>
-      </div>
     </div>
   </div>
 
-  <!-- Recent Orders & Top Products -->
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
-    <!-- Recent Orders -->
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-      <div class="px-6 py-5 border-b border-gray-200 bg-gray-50">
-        <h2 class="text-xl font-semibold text-gray-900 flex items-center">
-          <svg class="w-5 h-5 text-gray-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-          </svg>
-          Recent Orders
-        </h2>
-      </div>
-      <div class="overflow-x-auto">
-        <table class="min-w-full">
-          <thead class="bg-gray-50">
-            <tr>
-              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Order ID</th>
-              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Customer</th>
-              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Items</th>
-              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Total</th>
-              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Status</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-100">
-            {{range .RecentOrders}}
-            <tr class="hover:bg-gray-50 transition-colors duration-200">
-              <td class="px-6 py-4 text-sm font-medium text-gray-900">#{{.OrderID}}</td>
-              <td class="px-6 py-4 text-sm text-gray-700">{{.CustomerName}}</td>
-              <td class="px-6 py-4 text-sm text-gray-700">{{.ItemsCount}}</td>
-              <td class="px-6 py-4 text-sm font-semibold text-gray-900">₹{{.TotalAmount}}</td>
-              <td class="px-6 py-4">
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium 
-                  {{if eq .Status "Completed"}}bg-green-100 text-green-800
-                  {{else if eq .Status "Pending"}}bg-yellow-100 text-yellow-800
-                  {{else if eq .Status "Processing"}}bg-blue-100 text-blue-800
-                  {{else}}bg-gray-100 text-gray-800{{end}}">
-                  {{.Status}}
-                </span>
-              </td>
-            </tr>
-            {{else}}
-            <tr>
-              <td colspan="5" class="px-6 py-8 text-center text-gray-500">
-                <svg class="w-12 h-12 mx-auto text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-                </svg>
-                No recent orders available
-              </td>
-            </tr>
-            {{end}}
-          </tbody>
-        </table>
-      </div>
+  <!-- Charts -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+    <!-- Line Chart -->
+    <div class="bg-white rounded-xl shadow-sm p-3">
+      <h2 class="text-base font-semibold text-gray-900 mb-1">Revenue Trend</h2>
+      <canvas id="lineChart" class="w-28 h-28"></canvas>
     </div>
 
-    <!-- Top Products -->
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-      <div class="px-6 py-5 border-b border-gray-200 bg-gray-50">
-        <h2 class="text-xl font-semibold text-gray-900 flex items-center">
-          <svg class="w-5 h-5 text-gray-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
-          </svg>
-          Top Products
-        </h2>
-      </div>
-      <div class="overflow-x-auto">
-        <table class="min-w-full">
-          <thead class="bg-gray-50">
-            <tr>
-              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Name</th>
-              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Category</th>
-              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Price</th>
-              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Stock</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-100">
-            {{range .TopProducts}}
-            <tr class="hover:bg-gray-50 transition-colors duration-200">
-              <td class="px-6 py-4">
-                <div class="flex items-center">
-                  <div class="w-8 h-8 bg-gradient-to-br from-blue-100 to-blue-200 rounded-lg mr-3 flex items-center justify-center">
-                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
-                    </svg>
-                  </div>
-                  <span class="text-sm font-medium text-gray-900">{{.Name}}</span>
-                </div>
-              </td>
-              <td class="px-6 py-4 text-sm text-gray-700">{{.Category}}</td>
-              <td class="px-6 py-4 text-sm font-semibold text-gray-900">₹{{.Price}}</td>
-              <td class="px-6 py-4">
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium 
-                  {{if .InStock}}bg-green-100 text-green-800{{else}}bg-red-100 text-red-800{{end}}">
-                  {{if .InStock}}In Stock{{else}}Out of Stock{{end}}
-                </span>
-              </td>
-            </tr>
-            {{else}}
-            <tr>
-              <td colspan="4" class="px-6 py-8 text-center text-gray-500">
-                <svg class="w-12 h-12 mx-auto text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
-                </svg>
-                No top products available
-              </td>
-            </tr>
-            {{end}}
-          </tbody>
-        </table>
-      </div>
+    <!-- Pie Chart -->
+    <div class=" bg-white rounded-xl shadow-sm p-3 flex flex-col items-center">
+      <h2 class="text-base font-semibold text-gray-900 mb-1">Orders Status</h2>
+      <canvas id="pieChart" class="w-24 h-24"></canvas>
     </div>
-  </div>
-
-  <!-- Revenue Chart - Unchanged -->
-  <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-8">
-    <h2 class="text-xl font-semibold text-gray-900 mb-4">
-      Revenue in Last 7 Days
-    </h2>
-    <canvas id="revenueChart" class="w-full h-64"></canvas>
   </div>
 </div>
 
-<!-- Chart.js Script -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-  const ctx = document.getElementById('revenueChart').getContext('2d');
-  const revenueChart = new Chart(ctx, {
+  // Line Chart
+  const lineCtx = document.getElementById('lineChart').getContext('2d');
+  new Chart(lineCtx, {
     type: 'line',
     data: {
-      labels: {{.RevenueChart.Dates}},      // ["2025-10-01","2025-10-02",...]
+      labels: {{.RevenueChart.Dates}},      // ["Oct 9", "Oct 10", ...]
       datasets: [{
         label: 'Revenue (₹)',
-        data: {{.RevenueChart.Amounts}},    // [1200,1500,900,...]
-        fill: true,
-        backgroundColor: 'rgba(59, 130, 246, 0.2)',
+        data: {{.RevenueChart.Amounts}},    // [1200, 1500, ...]
         borderColor: 'rgba(59, 130, 246, 1)',
+        backgroundColor: 'rgba(59, 130, 246, 0.2)',
+        fill: true,
         tension: 0.3
       }]
     },
     options: {
       responsive: true,
-      plugins: { legend: { position: 'top' } },
+      plugins: { legend: { display: false } },
       scales: { y: { beginAtZero: true } }
     }
+  });
+
+  // Pie Chart
+  const pieCtx = document.getElementById('pieChart').getContext('2d');
+  new Chart(pieCtx, {
+    type: 'pie',
+    data: {
+      labels: {{.OrdersChart.Labels}},   // ["Delivered", "Pending", "Cancelled"]
+      datasets: [{
+        data: {{.OrdersChart.Values}},   // [80, 15, 5]
+        backgroundColor: [
+          'rgba(34, 197, 94, 0.7)',
+          'rgba(250, 204, 21, 0.7)',
+          'rgba(239, 68, 68, 0.7)'
+        ],
+        borderColor: ['#fff','#fff','#fff'],
+        borderWidth: 2
+      }]
+    },
+    options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
   });
 </script>
 {{ end }}

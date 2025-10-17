@@ -27,6 +27,7 @@ type OrderDetailResponse struct {
 	UserID      uint            `json:"user_id"`
 	OrderID     uint            `json:"order_id"`
 	OrderDate   time.Time       `json:"order_date"`
+	UserEmail   string          `json:"user_email"`
 	Status      string          `json:"status"`
 	TotalAmount float64         `json:"total_amount"`
 	Address     OrderAddressDTO `json:"shipping_address"`

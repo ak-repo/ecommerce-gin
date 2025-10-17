@@ -3,6 +3,7 @@ package producthandler
 import (
 	"errors"
 	"fmt"
+	"math"
 	"net/http"
 	"strconv"
 	"time"
@@ -23,18 +24,36 @@ func NewProductHandlerMG(service productinterface.Service, categorysvc categoryi
 	return &handler{ProductService: service, CategoryService: categorysvc}
 }
 
+
 // GET admin/products
 func (h *handler) GetAllProducts(ctx *gin.Context) {
-	query := ctx.Query("q")
-	products, err := h.ProductService.GetAllProducts(query)
+	var req productdto.ProductPagination
+	var err error
+
+	req.Page, err = strconv.Atoi(ctx.DefaultQuery("page", "1"))
+	if err != nil {
+		req.Page = 1
+	}
+	req.Limit, err = strconv.Atoi(ctx.DefaultQuery("limit", "5"))
+
+	if err != nil {
+		req.Limit = 10
+	}
+	req.Query = ctx.Query("q")
+
+	products, err := h.ProductService.GetAllProducts(&req)
 	if err != nil {
 		utils.RenderError(ctx, http.StatusInternalServerError, "admin", "Failed to load products", err)
 		return
 	}
 
+	req.TotalPages = int(math.Ceil(float64(req.Total) / float64(req.Limit)))
 	ctx.HTML(http.StatusOK, "pages/product/products.html", gin.H{
 		"Products":    products,
-		"Query":       query,
+		"Query":       req.Query,
+		"Page":        req.Page,
+		"Limit":       req.Limit,
+		"TotalPages":  req.TotalPages,
 		"CurrentYear": time.Now().Year(),
 	})
 }

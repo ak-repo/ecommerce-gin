@@ -1,7 +1,7 @@
 package usersinterface
 
 import (
-	userdto "github.com/ak-repo/ecommerce-gin/internals/admin/users_management/user_dto"
+	userdto "github.com/ak-repo/ecommerce-gin/internals/admin/users_mg/user_dto"
 	"github.com/ak-repo/ecommerce-gin/internals/models"
 	"github.com/gin-gonic/gin"
 )
@@ -16,7 +16,7 @@ type Handler interface {
 }
 
 type Service interface {
-	GetAllUsers(query string) ([]userdto.AdminUserListDTO, error)
+	GetAllUsers(req *userdto.UsersPagination) ([]userdto.AdminUserListDTO, error)
 	GetUserByID(userID uint) (*userdto.AdminUserDTO, error)
 	ChangeUserRole(req *userdto.AdminUserRoleChange) error
 	BlockUser(userID uint) error
@@ -24,7 +24,7 @@ type Service interface {
 }
 
 type Repository interface {
-	GetAllUsers() ([]models.User, error)
+	GetAllUsers(req *userdto.UsersPagination) ([]models.User, error)
 	GetUserByID(userID uint) (*models.User, error)
 	UpdateUser(user *models.User) error // generic
 	CreateUser(user *models.User) error

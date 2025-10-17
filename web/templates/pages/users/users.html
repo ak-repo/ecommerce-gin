@@ -1,6 +1,6 @@
 {{define "title"}}Admin - Users List{{end}}
 {{define "content"}}
-<div class="max-w-7xl mx-auto p-6">
+<div class="max-w-7x5 mx-auto p-6">
   <!-- Header -->
   <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
     <div class="flex items-center mb-4 sm:mb-0">
@@ -185,4 +185,39 @@
     </div>
   </div>
 </div>
+
+<!-- pagination  -->
+ <div
+ id="pagination" class="flex justify-center items-center mt-6 gap-2" >
+</div>
+
+<script>
+
+  const currentPage = {{.Page}};
+  const totalPages = {{.TotalPages}};
+  const query =  "{{.Query}}";
+  const limit = {{.Limit}};
+
+  const container = document.getElementById('pagination');
+
+  function createPageLink(page,text,disabled=false,active=false){
+    const a = document.createElement('a');
+    a.textContent = text;
+    if (!disabled) a.href = `?q=${query}&page=${page}&limit=${limit}`;
+    a.className = `px-3 py-1 rounded-lg transition-all duration-200 ${active ? 'bg-blue-600 text-white' : 'bg-blue-50 text-blue-700 hover:bg-blue-100'}`;
+    if(disabled) a.className = 'px-3 py-1 bg-gray-100 text-gray-400 rounded-lg cursor-not-allowed';
+    return a;
+  }
+  // previous buttton
+  container.appendChild(createPageLink(currentPage-1,'Previous',currentPage <= 1));
+
+  // page number
+  for (let i=1; i<=totalPages;i++){
+    container.appendChild(createPageLink(i,i,false,i === currentPage));
+  }
+
+    // Next button
+  container.appendChild(createPageLink(currentPage + 1, 'Next', currentPage >= totalPages));
+</script>
+
 {{end}}

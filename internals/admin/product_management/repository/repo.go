@@ -1,6 +1,7 @@
 package productrepo
 
 import (
+	productdto "github.com/ak-repo/ecommerce-gin/internals/admin/product_management/product_dto"
 	productinterface "github.com/ak-repo/ecommerce-gin/internals/admin/product_management/product_interface"
 	"github.com/ak-repo/ecommerce-gin/internals/models"
 	"gorm.io/gorm"
@@ -14,13 +15,21 @@ func NewProductRepoMG(db *gorm.DB) productinterface.Repository {
 	return &repository{DB: db}
 }
 
-func (r *repository) GetAllProducts(query string) ([]models.Product, error) {
+func (r *repository) GetAllProducts(req *productdto.ProductPagination) ([]models.Product, error) {
 	db := r.DB.Model(&models.Product{})
-	if query != "" {
-		db.Where("title ILIKE ?", "%"+query+"%")
+	if req.Query != "" {
+		db.Where("title ILIKE ?", "%"+req.Query+"%")
 	}
+	db.Count(&req.Total)
+
+	offset := (req.Page - 1) * req.Limit
+
 	var products []models.Product
-	err := db.Preload("Category").Find(&products).Error
+	err := db.Preload("Category").
+		Limit(req.Limit).
+		Offset(offset).
+		Order("created_at DESC").
+		Find(&products).Error
 	return products, err
 }
 
@@ -43,3 +52,5 @@ func (r *repository) DeleteProduct(productID uint) error {
 func (r *repository) AddProduct(product *models.Product) error {
 	return r.DB.Create(&product).Error
 }
+
+

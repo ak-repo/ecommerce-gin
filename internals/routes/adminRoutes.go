@@ -2,14 +2,18 @@ package routes
 
 import (
 	"github.com/ak-repo/ecommerce-gin/config"
+
+	db "github.com/ak-repo/ecommerce-gin/config/database"
 	bannerhandler "github.com/ak-repo/ecommerce-gin/internals/admin/banner_mg/handler"
 	bannerrepo "github.com/ak-repo/ecommerce-gin/internals/admin/banner_mg/repo"
 	bannerservice "github.com/ak-repo/ecommerce-gin/internals/admin/banner_mg/service"
 	categoryhandler "github.com/ak-repo/ecommerce-gin/internals/admin/category_management/handler"
 	categoryrepository "github.com/ak-repo/ecommerce-gin/internals/admin/category_management/repository"
 	categoryservice "github.com/ak-repo/ecommerce-gin/internals/admin/category_management/service"
-	dashboardhandler "github.com/ak-repo/ecommerce-gin/internals/admin/dashboard_management/handler"
-	dashboardservice "github.com/ak-repo/ecommerce-gin/internals/admin/dashboard_management/service"
+
+	boardhandler "github.com/ak-repo/ecommerce-gin/internals/admin/dashboard_mg/handler"
+	boardrepo "github.com/ak-repo/ecommerce-gin/internals/admin/dashboard_mg/repo"
+	boardservice "github.com/ak-repo/ecommerce-gin/internals/admin/dashboard_mg/service"
 	orderhandler "github.com/ak-repo/ecommerce-gin/internals/admin/order_mg/handler"
 	orderrepo "github.com/ak-repo/ecommerce-gin/internals/admin/order_mg/repo"
 	orderservice "github.com/ak-repo/ecommerce-gin/internals/admin/order_mg/service"
@@ -22,15 +26,15 @@ import (
 	reviewhandler "github.com/ak-repo/ecommerce-gin/internals/admin/review_management/handler"
 	reviewrepo "github.com/ak-repo/ecommerce-gin/internals/admin/review_management/repository"
 	reviewsvc "github.com/ak-repo/ecommerce-gin/internals/admin/review_management/service"
-	usershandler "github.com/ak-repo/ecommerce-gin/internals/admin/users_management/handler"
-	usersrepository "github.com/ak-repo/ecommerce-gin/internals/admin/users_management/repository"
-	usersservice "github.com/ak-repo/ecommerce-gin/internals/admin/users_management/service"
+	usershandler "github.com/ak-repo/ecommerce-gin/internals/admin/users_mg/handler"
+	usersrepository "github.com/ak-repo/ecommerce-gin/internals/admin/users_mg/repository"
+	usersservice "github.com/ak-repo/ecommerce-gin/internals/admin/users_mg/service"
+
 	authhandler "github.com/ak-repo/ecommerce-gin/internals/auth/auth_handler"
 	authrepo "github.com/ak-repo/ecommerce-gin/internals/auth/auth_repo"
 	authservice "github.com/ak-repo/ecommerce-gin/internals/auth/auth_service"
-	authmiddleware "github.com/ak-repo/ecommerce-gin/internals/middleware/auth"
+	authmiddleware "github.com/ak-repo/ecommerce-gin/pkg/middleware/auth"
 
-	db "github.com/ak-repo/ecommerce-gin/pkg/database"
 	"github.com/gin-gonic/gin"
 )
 
@@ -47,6 +51,7 @@ func RegisterAdminRoutes(r *gin.Engine, db *db.Database, cfg *config.Config) {
 	reviewRepo := reviewrepo.NewReviewRepoMG(db.DB)
 	profileRepo := profilerepository.NewProfileRepoMG(db.DB)
 	bannerRepo := bannerrepo.NewBannerRepoMG(db.DB)
+	boardRepo := boardrepo.NewNewDashRepo(db.DB)
 
 	// --------------------------
 	// INIT SERVICES
@@ -58,7 +63,7 @@ func RegisterAdminRoutes(r *gin.Engine, db *db.Database, cfg *config.Config) {
 	categoryService := categoryservice.NewCategoryService(categoryRepo)
 	reviewService := reviewsvc.NewReviewServiceMG(reviewRepo)
 	profileService := profileservice.NewProfileServiceMG(profileRepo, authRepo)
-	dashboardService := dashboardservice.NewDashboardService(orderRepo, productRepo, userRepo)
+	boardService := boardservice.NewDashboardService(boardRepo)
 	bannerService := bannerservice.NewBannerServiceMG(bannerRepo)
 
 	// --------------------------
@@ -67,11 +72,11 @@ func RegisterAdminRoutes(r *gin.Engine, db *db.Database, cfg *config.Config) {
 	authHandler := authhandler.NewAuthHandler(authService)
 	orderHandler := orderhandler.NewOrderHandlerMG(orderService)
 	userHandler := usershandler.NewAdminUserHandler(userService)
-	productHandler := producthandler.NewProductHandlerMG(productService,categoryService)
+	productHandler := producthandler.NewProductHandlerMG(productService, categoryService)
 	categoryHandler := categoryhandler.NewCategoryHandler(categoryService)
 	reviewHandler := reviewhandler.NewReviewHandlerMG(reviewService)
 	profileHandler := profilehandler.NewProfileHandlerMG(profileService)
-	dashboardHandler := dashboardhandler.NewAdminDashboardHandler(&dashboardService)
+	dashboardHandler := boardhandler.NewAdminDashboardHandler(boardService)
 	bannerHandler := bannerhandler.NewBannerHandlerMG(bannerService)
 
 	// PUBLIC ADMIN ROUTES (no middleware)

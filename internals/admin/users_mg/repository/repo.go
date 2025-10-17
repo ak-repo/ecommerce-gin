@@ -3,7 +3,8 @@ package usersrepository
 import (
 	"errors"
 
-	usersinterface "github.com/ak-repo/ecommerce-gin/internals/admin/users_management/user_interface"
+	userdto "github.com/ak-repo/ecommerce-gin/internals/admin/users_mg/user_dto"
+	usersinterface "github.com/ak-repo/ecommerce-gin/internals/admin/users_mg/user_interface"
 	"github.com/ak-repo/ecommerce-gin/internals/models"
 	"gorm.io/gorm"
 )
@@ -16,9 +17,27 @@ func NewrUsersRpository(db *gorm.DB) usersinterface.Repository {
 	return &repository{DB: db}
 }
 
-func (r *repository) GetAllUsers() ([]models.User, error) {
+func (r *repository) GetAllUsers(req *userdto.UsersPagination) ([]models.User, error) {
+
+	db := r.DB.Model(&models.User{})
+	if req.Query != "" {
+		db.Where("username ILIKE ?", "%"+req.Query+"%")
+	}
+	if req.Role != "" {
+		db.Where("role=?", req.Role)
+	}
+	if req.Status != "" {
+		db.Where("status=?", req.Status)
+	}
+
+	db.Count(&req.Total)
+
+	offset := (req.Page - 1) * req.Limit
+
 	var users []models.User
-	err := r.DB.Find(&users).Error
+	err := db.Limit(req.Limit).
+		Offset(offset).
+		Find(&users).Error
 	return users, err
 }
 

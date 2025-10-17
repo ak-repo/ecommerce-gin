@@ -1,18 +1,18 @@
-package dashboardhandler
+package boardhandler
 
 import (
 	"net/http"
 
-	dashboardinterface "github.com/ak-repo/ecommerce-gin/internals/admin/dashboard_management/dashboard_interface"
+	boardinter "github.com/ak-repo/ecommerce-gin/internals/admin/dashboard_mg/dashboard_interface"
 	"github.com/ak-repo/ecommerce-gin/pkg/utils"
 	"github.com/gin-gonic/gin"
 )
 
 type adminDashboardHandler struct {
-	DashboardService dashboardinterface.Service
+	DashboardService boardinter.Service
 }
 
-func NewAdminDashboardHandler(service dashboardinterface.Service) dashboardinterface.Handler {
+func NewAdminDashboardHandler(service boardinter.Service) boardinter.Handler {
 	return &adminDashboardHandler{DashboardService: service}
 
 }

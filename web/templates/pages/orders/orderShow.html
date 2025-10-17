@@ -179,7 +179,8 @@
               <option value="shipped" {{if eq .Order.Status "shipped"}}selected{{end}}>🚚 Shipped</option>
               <option value="delivered" {{if eq .Order.Status "delivered"}}selected{{end}}>📦 Delivered</option>
               <option value="refunded" {{if eq .Order.Status "refunded"}}selected{{end}}>💸 Refunded</option>
-              <option value="completed" {{if eq .Order.Status "completed"}}selected{{end}}>🎉 Completed</option>
+              <option value="cancelled" {{if eq .Order.Status "cancelled"}}selected{{end}}>Cancelled</option>
+               <option value="completed" {{if eq .Order.Status "completed"}}selected{{end}}>🎉 Completed</option>
             </select>
             <button type="submit" class="w-full bg-blue-600 text-white py-3 px-4 rounded-xl hover:bg-blue-700 transition-all duration-200 font-semibold shadow-sm hover:shadow-md">
               Update Order Status

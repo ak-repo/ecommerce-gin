@@ -3,10 +3,9 @@ package usersservice
 import (
 	"errors"
 	"fmt"
-	"strings"
 
-	userdto "github.com/ak-repo/ecommerce-gin/internals/admin/users_management/user_dto"
-	usersinterface "github.com/ak-repo/ecommerce-gin/internals/admin/users_management/user_interface"
+	userdto "github.com/ak-repo/ecommerce-gin/internals/admin/users_mg/user_dto"
+	usersinterface "github.com/ak-repo/ecommerce-gin/internals/admin/users_mg/user_interface"
 	"github.com/ak-repo/ecommerce-gin/internals/models"
 	"github.com/ak-repo/ecommerce-gin/pkg/utils"
 	"gorm.io/gorm"
@@ -20,26 +19,24 @@ func NewUsersService(repo usersinterface.Repository) usersinterface.Service {
 	return &service{UsersRepo: repo}
 }
 
-func (s *service) GetAllUsers(query string) ([]userdto.AdminUserListDTO, error) {
-	data, err := s.UsersRepo.GetAllUsers()
+func (s *service) GetAllUsers(req *userdto.UsersPagination) ([]userdto.AdminUserListDTO, error) {
+	data, err := s.UsersRepo.GetAllUsers(req)
 	if err != nil {
 		return nil, err
 	}
 	var users []userdto.AdminUserListDTO
 	for _, u := range data {
-		if strings.Contains(strings.ToLower(u.Username), strings.ToLower(query)) {
-			user := userdto.AdminUserListDTO{
-				ID:            u.ID,
-				Username:      u.Username,
-				Email:         u.Email,
-				Role:          u.Role,
-				Status:        u.Status,
-				EmailVerified: u.EmailVerified,
-			}
-			users = append(users, user)
+		user := userdto.AdminUserListDTO{
+			ID:            u.ID,
+			Username:      u.Username,
+			Email:         u.Email,
+			Role:          u.Role,
+			Status:        u.Status,
+			EmailVerified: u.EmailVerified,
 		}
-
+		users = append(users, user)
 	}
+
 	return users, nil
 }
 

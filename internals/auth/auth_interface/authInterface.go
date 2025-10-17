@@ -15,6 +15,7 @@ type Handler interface {
 	Login(ctx *gin.Context, role string)
 	AdminLogout(ctx *gin.Context)
 	Logout(ctx *gin.Context, role string)
+	GetMe(ctx *gin.Context)
 
 	//password change
 	CustomerPasswordChange(ctx *gin.Context)

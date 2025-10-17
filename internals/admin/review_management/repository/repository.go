@@ -19,6 +19,7 @@ func (r *repository) GetAllReviews() ([]models.Review, error) {
 	err := r.DB.
 		Preload("User").
 		Preload("Product").
+		Order("created_at DESC").
 		Find(&reviews).Error
 	return reviews, err
 }

@@ -69,3 +69,11 @@ type CategoryDTO struct {
 	ID   uint   `json:"id"`
 	Name string `json:"name"`
 }
+
+type ProductPagination struct {
+	Page       int    `json:"page"`        // current page
+	Limit      int    `json:"limit"`       // items per page
+	Total      int64  `json:"total"`       // total items in DB
+	TotalPages int    `json:"total_pages"` // total pages
+	Query      string `json:"query"`
+}

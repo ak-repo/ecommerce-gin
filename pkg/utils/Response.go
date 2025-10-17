@@ -61,7 +61,7 @@ func RenderSuccess(ctx *gin.Context, status int, role string, message string, da
 		})
 
 	} else {
-		ctx.JSON(http.StatusOK, JSONResponse{
+		ctx.JSON(http.StatusOK,JSONResponse{
 			Status:      "success",
 			Message:     message,
 			Role:        role,

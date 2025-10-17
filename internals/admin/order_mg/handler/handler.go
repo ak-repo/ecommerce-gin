@@ -109,7 +109,7 @@ func (h *handler) UpdateStatus(ctx *gin.Context) {
 		utils.RenderError(ctx, http.StatusInternalServerError, "admin", "status update failed", err)
 		return
 	}
-	ctx.Redirect(http.StatusSeeOther, fmt.Sprintf("/admin/orders/%d", req.OrderID))
+	ctx.Redirect(http.StatusSeeOther, fmt.Sprintf("/api/v1/admin/orders/%d", req.OrderID))
 }
 
 // GET admin/orders/cancels

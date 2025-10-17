@@ -16,16 +16,14 @@ func NewProductServiceMG(repo productinterface.Repository) productinterface.Serv
 	return &service{ProductRepo: repo}
 }
 
-func (s *service) GetAllProducts(query string) ([]productdto.ProductListItem, error) {
-	data, err := s.ProductRepo.GetAllProducts(query)
+func (s *service) GetAllProducts(req *productdto.ProductPagination) ([]productdto.ProductListItem, error) {
+	data, err := s.ProductRepo.GetAllProducts(req)
 	if data == nil || err != nil {
 		return nil, errors.New("products not found")
 	}
 
 	var products []productdto.ProductListItem
-
 	for _, item := range data {
-
 		product := productdto.ProductListItem{
 			Title:         item.Title,
 			ID:            item.ID,
@@ -39,7 +37,6 @@ func (s *service) GetAllProducts(query string) ([]productdto.ProductListItem, er
 		}
 		products = append(products, product)
 	}
-
 	return products, nil
 }
 

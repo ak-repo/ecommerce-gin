@@ -16,7 +16,7 @@ type Handler interface {
 }
 
 type Service interface {
-	GetAllProducts(query string) ([]productdto.ProductListItem, error)
+	GetAllProducts(req *productdto.ProductPagination) ([]productdto.ProductListItem, error)
 	GetProductByID(productID uint) (*productdto.ProductResponse, error)
 	AddProduct(newProduct *productdto.CreateProductRequest) error
 	UpdateProduct(updatedProduct *productdto.UpdateProductRequest) error
@@ -24,9 +24,11 @@ type Service interface {
 }
 
 type Repository interface {
-	GetAllProducts(query string) ([]models.Product, error)
+	GetAllProducts(req *productdto.ProductPagination) ([]models.Product, error)
 	GetProductByID(id uint) (*models.Product, error)
 	AddProduct(product *models.Product) error
 	UpdateProduct(product *models.Product) error
 	DeleteProduct(productID uint) error
 }
+
+

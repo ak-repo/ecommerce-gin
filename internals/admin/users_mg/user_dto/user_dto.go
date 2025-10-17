@@ -38,3 +38,13 @@ type CreateUserRequest struct {
 	Status          string `form:"status" binding:"required,oneof=active inactive"`
 	EmailVerified   bool   `form:"-"`
 }
+
+type UsersPagination struct {
+	Page       int    `json:"page"`        // current page
+	Limit      int    `json:"limit"`       // items per page
+	Total      int64  `json:"total"`       // total items in DB
+	TotalPages int    `json:"total_pages"` // total pages
+	Query      string `json:"query"`
+	Role       string `json:"role"`
+	Status     string `json:"status"`
+}
