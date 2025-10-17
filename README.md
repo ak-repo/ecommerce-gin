@@ -68,7 +68,7 @@ ecommerce-gin/
 #### 1️⃣ Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/ecommerce-gin.git
+git clone https://github.com/ak-repo/ecommerce-gin.git
 cd ecommerce-gin
 ```
 
